@@ -8,7 +8,7 @@ import BackToTop from "./components/sub-components/BackToTop";
 import "./App.css";
 
 const App = () => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
 
   //INFO theme settings
   useEffect(() => {

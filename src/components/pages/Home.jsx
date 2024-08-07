@@ -9,12 +9,12 @@ import MusicVideos from "./MusicVideos";
 
 function Home({ theme }) {
   return (
-    <>
+    <div id="home">
       <CanvasLogo theme={theme} />
 
       <Hero theme={theme} />
       <MusicVideos theme={theme} />
-    </>
+    </div>
   );
 }
 

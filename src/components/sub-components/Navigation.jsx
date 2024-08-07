@@ -15,6 +15,18 @@ const Navigation = ({ theme, toggleTheme }) => {
   useEffect(() => {
     const hash = location.hash.substring(1);
     setSelected(hash ? hash : "home");
+
+    // Scroll to the hash section on initial load
+    if (hash) {
+      const targetElement = document.getElementById(hash);
+      if (targetElement) {
+        gsap.to(window, {
+          scrollTo: { y: targetElement, offsetY: 0 },
+          duration: 1,
+          ease: "power2.inOut",
+        });
+      }
+    }
   }, [location]);
 
   useEffect(() => {
@@ -38,6 +50,14 @@ const Navigation = ({ theme, toggleTheme }) => {
 
   const handleItemClick = (item) => {
     setSelected(item);
+    const targetElement = document.getElementById(item);
+    if (targetElement) {
+      gsap.to(window, {
+        scrollTo: { y: targetElement, offsetY: 0 },
+        duration: 1,
+        ease: "power2.inOut",
+      });
+    }
   };
 
   const toggleNavbar = () => {
@@ -71,7 +91,7 @@ const Navigation = ({ theme, toggleTheme }) => {
   };
 
   useEffect(() => {
-    //calculate if on mobile or not
+    // Calculate if on mobile or not
     const isMobile = window.innerWidth < 768;
 
     const toggleButton = document.querySelector("button");
@@ -96,7 +116,7 @@ const Navigation = ({ theme, toggleTheme }) => {
   }, [theme, isCollapsed]);
 
   useEffect(() => {
-    //calculate if on mobile or not
+    // Calculate if on mobile or not
     const isMobile = window.innerWidth < 768;
 
     const navigation = document.querySelector("#navigation");
@@ -107,7 +127,7 @@ const Navigation = ({ theme, toggleTheme }) => {
             ? "rgba(0, 0, 0, 0)"
             : "rgba(0, 0, 0, 0.9)"
           : isCollapsed && isMobile
-          ? "rgba(255, 255, 255, 0.)"
+          ? "rgba(255, 255, 255, 0)"
           : "rgba(255, 255, 255, 0.9)",
       duration: 1,
       ease: "power2.inOut",
@@ -117,7 +137,7 @@ const Navigation = ({ theme, toggleTheme }) => {
   return (
     <nav
       id="navigation"
-      className={`sticky top-0 w-full p-4  z-20 ${
+      className={`sticky top-0 w-full p-4 z-20 ${
         theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
       }`}
     >
@@ -147,7 +167,6 @@ const Navigation = ({ theme, toggleTheme }) => {
         <ThemeSwitch theme={theme} toggleTheme={toggleTheme} />
       </div>
 
-      {/* <div className="flex md:flex-row justify-between items-center"> */}
       <ul
         className={`flex flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-32 font-extrabold transition-all duration-300 ease-in-out ${
           isCollapsed ? "hidden md:flex" : "flex"
@@ -182,7 +201,6 @@ const Navigation = ({ theme, toggleTheme }) => {
           <AudioPlayer theme={theme} />
         </div>
       </ul>
-      {/* </div> */}
     </nav>
   );
 };
