@@ -1,15 +1,78 @@
 import { useEffect, useRef } from "react";
 import jawFane_logo from "@public/jawfane_logo.webp";
+import { gsap } from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import propTypes from "prop-types";
 
-const CanvasLogo = () => {
+gsap.registerPlugin(ScrollToPlugin);
+
+const CanvasLogo = ({ theme }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const isUserInteracting = useRef(false);
+  const debounceTimeout = useRef(null);
+
+  const colorChangeSpeed = 2000; // Duration in milliseconds for the color change
+  const interval = colorChangeSpeed; // Interval between color changes
 
   useEffect(() => {
+    const heroSection = document.getElementById("canvasLogo");
+
+    const snapIntoView = (entries) => {
+      if (isUserInteracting.current) return;
+
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          gsap.to(window, {
+            duration: 1, // Increased duration for a more pronounced effect
+            scrollTo: { y: heroSection, offsetY: 0 },
+            ease: "power2.inOut(1, 1)", // Elastic easing for a bounce effect
+          });
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(snapIntoView, {
+      threshold: 0.4, // Adjust this value as needed
+    });
+
+    observer.observe(heroSection);
+
+    const handleUserInteractionStart = () => {
+      isUserInteracting.current = true;
+      clearTimeout(debounceTimeout.current);
+    };
+
+    const handleUserInteractionEnd = () => {
+      debounceTimeout.current = setTimeout(() => {
+        isUserInteracting.current = false;
+      }, 100); // Debounce timeout to prevent immediate re-triggering
+    };
+
+    window.addEventListener("scroll", handleUserInteractionStart);
+    window.addEventListener("mousedown", handleUserInteractionStart);
+    window.addEventListener("mouseup", handleUserInteractionEnd);
+    window.addEventListener("touchstart", handleUserInteractionStart);
+    window.addEventListener("touchend", handleUserInteractionEnd);
+
+    return () => {
+      observer.disconnect(); // Ensure cleanup by disconnecting the observer
+      window.removeEventListener("scroll", handleUserInteractionStart);
+      window.removeEventListener("mousedown", handleUserInteractionStart);
+      window.removeEventListener("mouseup", handleUserInteractionEnd);
+      window.removeEventListener("touchstart", handleUserInteractionStart);
+      window.removeEventListener("touchend", handleUserInteractionEnd);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Smoothly fade between background colors when the theme changes
+    const newColor = theme === "dark" ? "#000000" : "#FFFFFF";
+    gsap.to(document.body, { backgroundColor: newColor, duration: 1 });
+
     const colors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33"];
     let currentColorIndex = 0;
-    const interval = 2000;
-    const duration = interval / 1.5;
+    const duration = colorChangeSpeed;
 
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d", { willReadFrequently: true });
@@ -33,7 +96,12 @@ const CanvasLogo = () => {
       const now = performance.now();
       const elapsed = now - startTime;
       const factor = Math.min(elapsed / duration, 1);
-      const nextColorIndex = (currentColorIndex + 1) % colors.length;
+      let nextColorIndex = (currentColorIndex + 1) % colors.length;
+
+      // Ensure the same color doesn't repeat
+      while (nextColorIndex === currentColorIndex) {
+        nextColorIndex = (nextColorIndex + 1) % colors.length;
+      }
 
       const currentColor = colors[currentColorIndex];
       const nextColor = colors[nextColorIndex];
@@ -79,7 +147,7 @@ const CanvasLogo = () => {
         const aspectRatio = imageWidth / imageHeight;
         const canvasWidth = window.innerWidth;
         const newCanvasHeight =
-          canvasWidth / aspectRatio - (window.innerWidth < 768 ? 100 : 1000);
+          canvasWidth / aspectRatio - (window.innerWidth < 768 ? 200 : 400);
 
         canvas.width = canvasWidth;
         canvas.height = newCanvasHeight;
@@ -115,22 +183,23 @@ const CanvasLogo = () => {
       window.removeEventListener("scroll", handleScroll);
       clearInterval(changeColor);
     };
-  }, []);
+  }, [colorChangeSpeed, interval, theme]);
 
   return (
-    <div
-      className="flex justify-center items-center mt-8overflow-hidden relative"
-      ref={containerRef}
-      style={{ height: "40vh", zIndex: -1 }}
-    >
-      <canvas
-        id="jawfane-bg-logo"
-        style={{ width: "100%" }}
-        ref={canvasRef}
-        className="max-w-full"
-      ></canvas>
+    <div id="canvasLogo" className="h-screen flex justify-center items-center">
+      <div
+        className="flex justify-center items-center overflow-hidden relative"
+        ref={containerRef}
+        style={{ height: "40vh", zIndex: -1 }}
+      >
+        <canvas id="jawfane-bg-logo" ref={canvasRef}></canvas>
+      </div>
     </div>
   );
+};
+
+CanvasLogo.propTypes = {
+  theme: propTypes.string.isRequired,
 };
 
 export default CanvasLogo;

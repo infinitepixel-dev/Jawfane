@@ -1,7 +1,4 @@
 #root {
-  height: 100dvh;
+  max-height: 100dvh;
   max-width: 100dvw;
-  margin: 0 auto;
-  /* padding: 2rem; */
-  text-align: center;
 }

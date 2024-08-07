@@ -10,11 +10,8 @@ import MusicVideos from "./MusicVideos";
 function Home({ theme }) {
   return (
     <>
-      <div id="home" className={`container mx-auto ${theme}`}></div>
-      <div className=" h-screen">
-        {" "}
-        <CanvasLogo theme={theme} />
-      </div>
+      <CanvasLogo theme={theme} />
+
       <Hero theme={theme} />
       <MusicVideos theme={theme} />
     </>

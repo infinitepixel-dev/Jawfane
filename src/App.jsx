@@ -4,6 +4,7 @@ import Navigation from "./components/sub-components/Navigation";
 import Home from "./components/pages/Home";
 
 import BackToTop from "./components/sub-components/BackToTop";
+
 import "./App.css";
 
 const App = () => {
@@ -31,10 +32,9 @@ const App = () => {
 
   return (
     <Router>
-      <div className={`app-container ${theme}`}>
-        <div>
-          <Navigation theme={theme} toggleTheme={toggleTheme} />
-        </div>
+      <div id="main-app" className={`app-container ${theme}`}>
+        <Navigation theme={theme} toggleTheme={toggleTheme} />
+        <div></div>
         <Routes>
           <Route path="/" element={<Home theme={theme} />} />
         </Routes>
