@@ -1,25 +1,25 @@
-import propTypes from "prop-types";
+import propTypes from 'prop-types'
 
-import "./Home.css";
+import './Home.css'
 // import AudioPlayer from "../sub-components/AudioPlayer";
-import CanvasLogo from "../sub-components/CanvasLogo";
+import CanvasLogo from '../sub-components/CanvasLogo'
 
-import Hero from "./Hero";
-import MusicVideos from "./MusicVideos";
+// import Hero from "./Hero";
+import MusicVideos from './MusicVideos'
 
-function Home({ theme }) {
+function Home ({ theme }) {
   return (
-    <div id="home">
+    <div id='main-app'>
       <CanvasLogo theme={theme} />
 
-      <Hero theme={theme} />
+      {/* <Hero theme={theme} /> */}
       <MusicVideos theme={theme} />
     </div>
-  );
+  )
 }
 
 Home.propTypes = {
-  theme: propTypes.string.isRequired,
-};
+  theme: propTypes.string.isRequired
+}
 
-export default Home;
+export default Home
