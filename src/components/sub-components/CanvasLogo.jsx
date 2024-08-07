@@ -184,7 +184,7 @@ const CanvasLogo = ({ theme }) => {
           <img
             src={hero_bg}
             alt='Hero BG'
-            style={{ display: 'block', margin: '0 auto', maxWidth: '100%' }}
+            style={{ display: 'block', margin: '0 auto', width: '100dvw' }}
           />
         </div>
       </div>

@@ -187,7 +187,16 @@ const Navigation = ({ theme, toggleTheme }) => {
                 : theme === 'dark'
                 ? 'hover:bg-blue-800 text-white rounded-full'
                 : 'hover:bg-gray-500 text-black rounded-full'
-            }`}
+            }
+            // if it === merch disable it
+          ${item === 'merch' ? 'pointer-events-none line-through' : ''}
+               ${item === 'tour' ? 'pointer-events-none line-through' : ''}
+                    ${
+                      item === 'booking'
+                        ? 'pointer-events-none line-through'
+                        : ''
+                    }
+            `}
             onClick={() => handleItemClick(item)}
           >
             <a href={`#${item}`}>

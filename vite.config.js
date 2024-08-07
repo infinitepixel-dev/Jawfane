@@ -9,6 +9,7 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
+  base: "/Jawfane/",
   server: {
     host: "0.0.0.0", // Listen on all network interfaces
     port: 5173,
