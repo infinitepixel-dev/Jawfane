@@ -3,9 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { gsap } from "gsap";
 
-import propTypes from "prop-types";
-
-const BackToTop = ({ closeNavbar }) => {
+const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [showNextButton, setShowNextButton] = useState(true);
   const buttonRef = useRef(null);
@@ -31,7 +29,7 @@ const BackToTop = ({ closeNavbar }) => {
 
       // Collapse the navbar on manual scroll
       if (scrollPosition > 0) {
-        closeNavbar(); // Call the passed-in closeNavbar function
+        // closeNavbar(); // Call the passed-in closeNavbar function
       }
     };
 
@@ -40,7 +38,7 @@ const BackToTop = ({ closeNavbar }) => {
     return () => {
       window.removeEventListener("scroll", toggleVisibility);
     };
-  }, [closeNavbar]);
+  }, []);
 
   useEffect(() => {
     const animateButton = (ref, visible) => {
@@ -66,9 +64,6 @@ const BackToTop = ({ closeNavbar }) => {
       ease: "power2.out",
     });
     setCurrentSectionIndex(0); // Reset to the first section
-
-    // Collapse the navbar when scrolling to top
-    closeNavbar();
   };
 
   const scrollToNextSection = () => {
@@ -87,9 +82,6 @@ const BackToTop = ({ closeNavbar }) => {
         setCurrentSectionIndex(nextSectionIndex);
       }
     }
-
-    // Collapse the navbar when clicking next section button
-    closeNavbar();
   };
 
   return (
@@ -119,10 +111,6 @@ const BackToTop = ({ closeNavbar }) => {
       </button>
     </div>
   );
-};
-
-BackToTop.propTypes = {
-  closeNavbar: propTypes.func.isRequired,
 };
 
 export default BackToTop;
