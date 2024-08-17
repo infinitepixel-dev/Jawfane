@@ -1,19 +1,19 @@
-import { useEffect, useRef } from "react"
-import { gsap } from "gsap"
-import { ScrollToPlugin } from "gsap/ScrollToPlugin"
-import propTypes from "prop-types"
-// import heroImage from "@public/heroImage.jpg";
-gsap.registerPlugin(ScrollToPlugin)
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+gsap.registerPlugin(ScrollToPlugin);
+
+import propTypes from "prop-types";
 
 const MusicVideos = ({ theme }) => {
-  const isUserInteracting = useRef(false)
-  const debounceTimeout = useRef(null)
+  const isUserInteracting = useRef(false);
+  const debounceTimeout = useRef(null);
 
   useEffect(() => {
-    const heroSection = document.getElementById("music")
+    const heroSection = document.getElementById("music");
 
     const snapIntoView = (entries) => {
-      if (isUserInteracting.current) return
+      if (isUserInteracting.current) return;
 
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -21,43 +21,43 @@ const MusicVideos = ({ theme }) => {
             duration: 1.5, // Increased duration for a more pronounced effect
             scrollTo: { y: heroSection, offsetY: 0 },
             ease: "elastic.out(1, 1)", // Elastic easing for a bounce effect
-          })
+          });
         }
-      })
-    }
+      });
+    };
 
     const observer = new IntersectionObserver(snapIntoView, {
       threshold: 0.4, // Adjust this value as needed
-    })
+    });
 
-    observer.observe(heroSection)
+    observer.observe(heroSection);
 
     const handleUserInteractionStart = () => {
-      isUserInteracting.current = true
-      clearTimeout(debounceTimeout.current)
-    }
+      isUserInteracting.current = true;
+      clearTimeout(debounceTimeout.current);
+    };
 
     const handleUserInteractionEnd = () => {
       debounceTimeout.current = setTimeout(() => {
-        isUserInteracting.current = false
-      }, 100) // Debounce timeout to prevent immediate re-triggering
-    }
+        isUserInteracting.current = false;
+      }, 100); // Debounce timeout to prevent immediate re-triggering
+    };
 
-    window.addEventListener("scroll", handleUserInteractionStart)
-    window.addEventListener("mousedown", handleUserInteractionStart)
-    window.addEventListener("mouseup", handleUserInteractionEnd)
-    window.addEventListener("touchstart", handleUserInteractionStart)
-    window.addEventListener("touchend", handleUserInteractionEnd)
+    window.addEventListener("scroll", handleUserInteractionStart);
+    window.addEventListener("mousedown", handleUserInteractionStart);
+    window.addEventListener("mouseup", handleUserInteractionEnd);
+    window.addEventListener("touchstart", handleUserInteractionStart);
+    window.addEventListener("touchend", handleUserInteractionEnd);
 
     return () => {
-      observer.disconnect() // Ensure cleanup by disconnecting the observer
-      window.removeEventListener("scroll", handleUserInteractionStart)
-      window.removeEventListener("mousedown", handleUserInteractionStart)
-      window.removeEventListener("mouseup", handleUserInteractionEnd)
-      window.removeEventListener("touchstart", handleUserInteractionStart)
-      window.removeEventListener("touchend", handleUserInteractionEnd)
-    }
-  }, [])
+      observer.disconnect(); // Ensure cleanup by disconnecting the observer
+      window.removeEventListener("scroll", handleUserInteractionStart);
+      window.removeEventListener("mousedown", handleUserInteractionStart);
+      window.removeEventListener("mouseup", handleUserInteractionEnd);
+      window.removeEventListener("touchstart", handleUserInteractionStart);
+      window.removeEventListener("touchend", handleUserInteractionEnd);
+    };
+  }, []);
 
   return (
     <>
@@ -69,7 +69,7 @@ const MusicVideos = ({ theme }) => {
         }}
       >
         <div
-          className={`flexitems-centerjustify-centerh-full ${
+          className={`flex items-center justify-center h-full ${
             theme === "dark" ? "bg-black" : "bg-slate-300"
           }`}
         >
@@ -112,11 +112,11 @@ const MusicVideos = ({ theme }) => {
         </div>
       </section>
     </>
-  )
-}
+  );
+};
 
 MusicVideos.propTypes = {
   theme: propTypes.string.isRequired,
-}
+};
 
-export default MusicVideos
+export default MusicVideos;
