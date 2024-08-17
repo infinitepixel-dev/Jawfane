@@ -5,49 +5,49 @@ const merch = [
     id: 1,
     imgSrc: "https://placehold.co/250x250",
     teaser: "This is an awesome product!",
-    link: "#",
+    link: "",
   },
   {
     id: 2,
     imgSrc: "https://placehold.co/250x250",
     teaser: "Another great product!",
-    link: "#",
+    link: "",
   },
   {
     id: 3,
     imgSrc: "https://placehold.co/250x250",
     teaser: "You need this product!",
-    link: "#",
+    link: "",
   },
   {
     id: 4,
-    imgSrc: "https://placehold.co/250x250", // Fixed the typo "hhttps" to "https"
+    imgSrc: "https://placehold.co/250x250",
     teaser: "Don't miss this one!",
-    link: "#",
+    link: "",
   },
   {
     id: 5,
     imgSrc: "https://placehold.co/250x250",
     teaser: "This is an awesome product!",
-    link: "#",
+    link: "",
   },
   {
     id: 6,
     imgSrc: "https://placehold.co/250x250",
     teaser: "This is an awesome product!",
-    link: "#",
+    link: "",
   },
   {
     id: 7,
     imgSrc: "https://placehold.co/250x250",
     teaser: "This is an awesome product!",
-    link: "#",
+    link: "",
   },
   {
     id: 8,
     imgSrc: "https://placehold.co/250x250",
     teaser: "This is an awesome product!",
-    link: "#",
+    link: "",
   },
 ]
 
