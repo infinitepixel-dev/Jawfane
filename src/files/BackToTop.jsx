@@ -3,9 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { gsap } from "gsap";
 
-import propTypes from "prop-types";
-
-const BackToTop = ({ closeNavbar }) => {
+const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [showNextButton, setShowNextButton] = useState(true);
   const buttonRef = useRef(null);
@@ -13,6 +11,7 @@ const BackToTop = ({ closeNavbar }) => {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
   const sections = ["home", "music", "merch", "footer"]; // List of sections
+  const sectionScrollChunk = 0.3; // Scroll through 30% of section height at a time
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -28,11 +27,6 @@ const BackToTop = ({ closeNavbar }) => {
       } else {
         setShowNextButton(true);
       }
-
-      // Collapse the navbar on manual scroll
-      if (scrollPosition > 0) {
-        closeNavbar(); // Call the passed-in closeNavbar function
-      }
     };
 
     window.addEventListener("scroll", toggleVisibility);
@@ -40,7 +34,7 @@ const BackToTop = ({ closeNavbar }) => {
     return () => {
       window.removeEventListener("scroll", toggleVisibility);
     };
-  }, [closeNavbar]);
+  }, []);
 
   useEffect(() => {
     const animateButton = (ref, visible) => {
@@ -66,30 +60,40 @@ const BackToTop = ({ closeNavbar }) => {
       ease: "power2.out",
     });
     setCurrentSectionIndex(0); // Reset to the first section
-
-    // Collapse the navbar when scrolling to top
-    closeNavbar();
   };
 
   const scrollToNextSection = () => {
-    const nextSectionIndex = currentSectionIndex + 1;
+    const currentSectionId = sections[currentSectionIndex];
+    const currentSectionElement = document.getElementById(currentSectionId);
 
-    if (nextSectionIndex < sections.length) {
-      const nextSectionId = sections[nextSectionIndex];
-      const nextSectionElement = document.getElementById(nextSectionId);
+    if (currentSectionElement) {
+      const sectionHeight = currentSectionElement.offsetHeight;
+      const currentScrollPos = window.scrollY;
+      const targetScrollPos =
+        currentScrollPos + sectionHeight * sectionScrollChunk;
 
-      if (nextSectionElement) {
+      // Scroll in chunks if more room in the section
+      if (targetScrollPos < currentSectionElement.offsetTop + sectionHeight) {
         gsap.to(window, {
           duration: 1,
-          scrollTo: { y: nextSectionElement.offsetTop },
+          scrollTo: { y: targetScrollPos },
           ease: "power2.out",
         });
-        setCurrentSectionIndex(nextSectionIndex);
+      } else if (currentSectionIndex < sections.length - 1) {
+        // Move to next section if the current section is fully scrolled
+        const nextSectionId = sections[currentSectionIndex + 1];
+        const nextSectionElement = document.getElementById(nextSectionId);
+
+        if (nextSectionElement) {
+          gsap.to(window, {
+            duration: 1,
+            scrollTo: { y: nextSectionElement.offsetTop },
+            ease: "power2.out",
+          });
+          setCurrentSectionIndex(currentSectionIndex + 1);
+        }
       }
     }
-
-    // Collapse the navbar when clicking next section button
-    closeNavbar();
   };
 
   return (
@@ -119,10 +123,6 @@ const BackToTop = ({ closeNavbar }) => {
       </button>
     </div>
   );
-};
-
-BackToTop.propTypes = {
-  closeNavbar: propTypes.func.isRequired,
 };
 
 export default BackToTop;

@@ -68,11 +68,10 @@ const Merch = ({ theme }) => {
 
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          // Don't force scroll; just adjust slightly
           gsap.to(window, {
-            duration: 1,
-            scrollTo: { y: heroSection.offsetTop, offsetY: 50 }, // Small offset to avoid snapping too close
-            ease: "power2.inOut",
+            duration: 1.5,
+            scrollTo: { y: heroSection, offsetY: 0 },
+            ease: "elastic.out(1, 1)",
           });
         }
       });
@@ -112,30 +111,32 @@ const Merch = ({ theme }) => {
   }, []);
 
   return (
-    <section
-      id="merch"
-      className={`container w-full min-h-screen mx-auto px-4 pt-16 ${theme}`}
-    >
-      <h1 className="text-5xl text-center pb-8">Merch Store</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {merchProducts.map((item) => (
-          <div key={item.id} className="p-4 bg-gray-100 rounded-lg shadow-md">
-            <img
-              src={item.imgSrc}
-              alt={`Product ${item.id}`}
-              className="object-cover w-full h-auto mb-2 rounded-md"
-            />
-            <p className="mb-2 text-sm">{item.teaser}</p>
-            <a
-              href={item.link}
-              className="block py-2 text-center text-white transition-colors bg-blue-500 rounded-md hover:bg-blue-600"
-            >
-              Buy Now
-            </a>
-          </div>
-        ))}
-      </div>
-    </section>
+    <>
+      <section
+        id="merch"
+        className={`container w-full min-h-screen mx-auto ${theme}`}
+      >
+        <h1 className="text-5xl text-center p-14">Merch Store</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {merchProducts.map((item) => (
+            <div key={item.id} className="p-4 bg-gray-100 rounded-lg shadow-md">
+              <img
+                src={item.imgSrc}
+                alt={`Product ${item.id}`}
+                className="object-cover w-full h-auto mb-2 rounded-md"
+              />
+              <p className="mb-2 text-sm">{item.teaser}</p>
+              <a
+                href={item.link}
+                className="block py-2 text-center text-white transition-colors bg-blue-500 rounded-md hover:bg-blue-600"
+              >
+                Buy Now
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 };
 

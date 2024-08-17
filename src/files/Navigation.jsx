@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { useLocation } from "react-router-dom";
 import propTypes from "prop-types";
@@ -6,36 +6,19 @@ import AudioPlayer from "./AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
-const Navigation = ({ theme, setToggleNavbar }) => {
+const Navigation = ({ theme /*, toggleTheme*/ }) => {
   const location = useLocation();
   const [selected, setSelected] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const menuRef = useRef(null); // Ref for the menu
-  const navBarRef = useRef(null); // Ref for the navbar
 
   useEffect(() => {
     const handleResize = () => {
-      const isNowMobile = window.innerWidth < 768;
-      setIsMobile(isNowMobile);
-
-      // If resizing from mobile to desktop, always show the menu
-      if (!isNowMobile) {
-        setIsCollapsed(false); // Ensure menu is shown on desktop
-        gsap.set(menuRef.current, {
-          height: "auto",
-          opacity: 1,
-          display: "flex",
-        }); // Force show on larger screens
-      } else {
-        setIsCollapsed(true); // Ensure menu is collapsed initially on mobile
-        gsap.set(menuRef.current, { height: 0, opacity: 0, display: "none" }); // Hide on mobile initially
-      }
+      setIsMobile(window.innerWidth < 768);
+      setIsCollapsed(true); // Reset to collapsed on resize for mobile
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check on load
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -56,7 +39,6 @@ const Navigation = ({ theme, setToggleNavbar }) => {
     }
   }, [location]);
 
-  // Animate navbar items and hover effects
   useEffect(() => {
     const navItems = document.querySelectorAll("nav ul li");
     gsap.fromTo(
@@ -76,48 +58,6 @@ const Navigation = ({ theme, setToggleNavbar }) => {
     });
   }, []);
 
-  // Toggle navbar with GSAP (only for mobile)
-  const toggleNavbar = useCallback(() => {
-    if (isMobile) {
-      if (isCollapsed) {
-        gsap.to(menuRef.current, {
-          height: "auto",
-          opacity: 1,
-          duration: 0.5,
-          ease: "power2.out",
-          display: "flex",
-        });
-        gsap.to(navBarRef.current, {
-          backgroundColor:
-            theme === "dark"
-              ? "rgba(0, 0, 0, 0.9)"
-              : "rgba(255, 255, 255, 0.9)",
-          duration: 0.5,
-        });
-      } else {
-        gsap.to(menuRef.current, {
-          height: 0,
-          opacity: 0,
-          duration: 0.5,
-          ease: "power2.in",
-          display: "none",
-        });
-        gsap.to(navBarRef.current, {
-          backgroundColor: "transparent",
-          duration: 0.5,
-        });
-      }
-      setIsCollapsed(!isCollapsed);
-    }
-  }, [isMobile, isCollapsed, menuRef, navBarRef, theme]);
-
-  // Pass the toggleNavbar function up to the parent component
-  useEffect(() => {
-    if (setToggleNavbar) {
-      setToggleNavbar(() => toggleNavbar); // Pass the function up
-    }
-  }, [setToggleNavbar, isCollapsed, toggleNavbar]);
-
   const handleItemClick = (item) => {
     setSelected(item);
     const targetElement = document.getElementById(item);
@@ -129,40 +69,39 @@ const Navigation = ({ theme, setToggleNavbar }) => {
       });
     }
     if (isMobile) {
-      toggleNavbar(); // Collapse after clicking a link on mobile
+      setIsCollapsed(true); // Collapse after clicking a link on mobile
     }
+  };
+
+  const toggleNavbar = () => {
+    setIsCollapsed(!isCollapsed);
   };
 
   return (
     <nav
-      ref={navBarRef}
       id="navigation"
-      className={`sticky top-0 w-full p-8 z-50 transition-all duration-300 ease-in-out ${
-        isCollapsed && isMobile
-          ? "bg-transparent"
-          : theme === "dark"
-          ? "bg-gray-900 text-white"
-          : "bg-gray-100 text-black"
-      }`}
+      className={`sticky top-0 w-full p-8 z-50 ${
+        theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
+      } transition-all duration-300 ease-in-out`}
+      style={{
+        marginTop: "0rem",
+        marginBottom: "-1rem",
+      }}
     >
-      {/* Hamburger button only for mobile */}
-      {isMobile && (
-        <div className="absolute left-1 top-4">
-          <button
-            onClick={toggleNavbar}
-            className="p-2 text-white bg-blue-500 rounded-lg"
-          >
-            {isCollapsed ? (
-              <FontAwesomeIcon icon={faBars} />
-            ) : (
-              <FontAwesomeIcon icon={faArrowUp} />
-            )}
-          </button>
-        </div>
-      )}
+      <div className="absolute left-1 top-4">
+        <button
+          onClick={toggleNavbar}
+          className="p-2 text-white bg-blue-500 rounded-lg md:hidden"
+        >
+          {isCollapsed ? (
+            <FontAwesomeIcon icon={faBars} />
+          ) : (
+            <FontAwesomeIcon icon={faArrowUp} />
+          )}
+        </button>
+      </div>
 
       <ul
-        ref={menuRef}
         className={`${
           isCollapsed && isMobile ? "hidden" : "flex"
         } flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-32 font-extrabold transition-all duration-300 ease-in-out`}
@@ -202,7 +141,7 @@ const Navigation = ({ theme, setToggleNavbar }) => {
 
 Navigation.propTypes = {
   theme: propTypes.string.isRequired,
-  setToggleNavbar: propTypes.func, // Add prop type
+  toggleTheme: propTypes.func.isRequired,
 };
 
 export default Navigation;
