@@ -11,6 +11,7 @@ const BackToTop = () => {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
   const sections = ["home", "music", "merch", "footer"]; // List of sections
+  const sectionScrollChunk = 0.3; // Scroll through 30% of section height at a time
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -25,11 +26,6 @@ const BackToTop = () => {
         setShowNextButton(false);
       } else {
         setShowNextButton(true);
-      }
-
-      // Collapse the navbar on manual scroll
-      if (scrollPosition > 0) {
-        // closeNavbar(); // Call the passed-in closeNavbar function
       }
     };
 
@@ -67,19 +63,35 @@ const BackToTop = () => {
   };
 
   const scrollToNextSection = () => {
-    const nextSectionIndex = currentSectionIndex + 1;
+    const currentSectionId = sections[currentSectionIndex];
+    const currentSectionElement = document.getElementById(currentSectionId);
 
-    if (nextSectionIndex < sections.length) {
-      const nextSectionId = sections[nextSectionIndex];
-      const nextSectionElement = document.getElementById(nextSectionId);
+    if (currentSectionElement) {
+      const sectionHeight = currentSectionElement.offsetHeight;
+      const currentScrollPos = window.scrollY;
+      const targetScrollPos =
+        currentScrollPos + sectionHeight * sectionScrollChunk;
 
-      if (nextSectionElement) {
+      // Scroll in chunks if more room in the section
+      if (targetScrollPos < currentSectionElement.offsetTop + sectionHeight) {
         gsap.to(window, {
           duration: 1,
-          scrollTo: { y: nextSectionElement.offsetTop },
+          scrollTo: { y: targetScrollPos },
           ease: "power2.out",
         });
-        setCurrentSectionIndex(nextSectionIndex);
+      } else if (currentSectionIndex < sections.length - 1) {
+        // Move to next section if the current section is fully scrolled
+        const nextSectionId = sections[currentSectionIndex + 1];
+        const nextSectionElement = document.getElementById(nextSectionId);
+
+        if (nextSectionElement) {
+          gsap.to(window, {
+            duration: 1,
+            scrollTo: { y: nextSectionElement.offsetTop },
+            ease: "power2.out",
+          });
+          setCurrentSectionIndex(currentSectionIndex + 1);
+        }
       }
     }
   };

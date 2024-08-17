@@ -1,0 +1,38 @@
+/* Custom styles for range input */
+input[type="range"] {
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none; /* Define standard property for compatibility */
+  width: 100%; /* Full width */
+  height: 8px; /* Adjust height */
+  background: #d3d3d3; /* Track background color */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Adjust track opacity */
+  transition: opacity 0.2s; /* Transition for hover effect */
+}
+
+input[type="range"]:hover {
+  opacity: 1; /* Full opacity on hover */
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none; /* Remove default styling */
+  width: 20px; /* Thumb width */
+  height: 20px; /* Thumb height */
+  background: #f48037; /* Thumb background color */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 50%; /* Round thumb */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px; /* Thumb width */
+  height: 20px; /* Thumb height */
+  background: #f48037; /* Thumb background color */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 50%; /* Round thumb */
+}
+
+/*volume bar */
+input#audioPlayer-volume {
+  background-color: #d3d3d3 !important;
+}

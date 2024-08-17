@@ -63,7 +63,7 @@ const MusicVideos = ({ theme }) => {
     <>
       <section
         id="music"
-        className={`w-full min-h-screen bg-cover bg-center pt-16 ${theme} clear-both z-40`}
+        className={`w-full min-h-screen bg-cover bg-center ${theme} clear-both z-40`}
         style={{
           backgroundImage: `url({heroImage})`,
         }}
@@ -82,7 +82,7 @@ const MusicVideos = ({ theme }) => {
             theme === "dark" ? "bg-black" : "bg-slate-300"
           }`}
         >
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 px-4 max-w-7xl w-full">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 p-4 max-w-7xl w-full">
             {/* Responsive Video 1 */}
             <div
               className="relative w-full"
