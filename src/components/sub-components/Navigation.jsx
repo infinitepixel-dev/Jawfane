@@ -15,6 +15,7 @@ const Navigation = ({ theme, setToggleNavbar }) => {
   const navBarRef = useRef(null); // Ref for the navbar (menu items)
   const navRef = useRef(null); // Ref for the entire nav element to animate bg color/opacity
   const timeoutRef = useRef(null); // Ref for the auto-close timeout
+  const hamburgerRef = useRef(null); // Ref for the hamburger button
 
   // Handle resize to detect mobile vs desktop
   useEffect(() => {
@@ -23,10 +24,10 @@ const Navigation = ({ theme, setToggleNavbar }) => {
       setIsMobile(isNowMobile);
 
       if (!isNowMobile && !isUserClosed) {
-        // Hide the navbar on non-mobile by default, unless the user manually closed it
+        // Hide the menu on non-mobile by default, unless the user manually closed it
         gsap.set(navBarRef.current, { opacity: 0 });
       } else {
-        // Always show the navbar on mobile
+        // Always show the menu on mobile
         gsap.set(navBarRef.current, { opacity: 1 });
       }
     };
@@ -54,7 +55,7 @@ const Navigation = ({ theme, setToggleNavbar }) => {
     }
   }, [location]);
 
-  // Show the navbar on scroll and hide after inactivity (only if user didn't manually close it)
+  // Show the navbar on scroll and hide after inactivity (only on desktop, not mobile)
   useEffect(() => {
     const resetFade = () => {
       if (timeoutRef.current) {
@@ -62,24 +63,25 @@ const Navigation = ({ theme, setToggleNavbar }) => {
       }
 
       if (!isMobile && !isUserClosed) {
-        // Show the navbar on scroll only if the user didn't manually close it
+        // Show the menu and background when the user scrolls
         gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
         gsap.to(navRef.current, {
           opacity: 1,
           backgroundColor: "rgba(0, 0, 0, 0.6)",
           duration: 0.5,
-        }); // Show background and opacity
-        setIsCollapsed(false); // Ensure the arrow icon is displayed when the menu fades in
+        });
 
-        // Fade out the navbar after 5 seconds of no scrolling
+        setIsCollapsed(false); // Set the menu as open
+
+        // Hide the menu after 5 seconds of inactivity (desktop only)
         timeoutRef.current = setTimeout(() => {
           gsap.to(navBarRef.current, { opacity: 0, duration: 1 });
           gsap.to(navRef.current, {
             opacity: 0,
             backgroundColor: "transparent",
             duration: 1,
-          }); // Hide background and opacity
-          setIsCollapsed(true); // Collapse the menu and show hamburger icon
+          });
+          setIsCollapsed(true); // Collapse the menu but keep the hamburger icon visible
         }, 5000);
       }
     };
@@ -91,7 +93,7 @@ const Navigation = ({ theme, setToggleNavbar }) => {
     };
   }, [isMobile, isUserClosed]);
 
-  // Toggle navbar with GSAP (for mobile and desktop) with auto-close after a few seconds
+  // Toggle navbar with GSAP (for mobile and desktop)
   const toggleNavbar = useCallback(() => {
     if (isCollapsed) {
       // Show the menu when collapsed is true (icon is hamburger)
@@ -108,27 +110,10 @@ const Navigation = ({ theme, setToggleNavbar }) => {
         duration: 0.5,
       });
       setIsUserClosed(false); // Reset manual close state when menu is opened
-
-      // Automatically close the menu after 1.5 seconds
-      timeoutRef.current = setTimeout(() => {
-        gsap.to(navBarRef.current, {
-          opacity: isMobile ? 1 : 0, // Keep it visible on mobile
-          duration: 0.25,
-          ease: "power2.in",
-          height: 0, // Collapse the menu
-          display: "none", // Ensure it's hidden
-        });
-        gsap.to(navRef.current, {
-          backgroundColor: "transparent", // Hide background color
-          opacity: 0,
-          duration: 0.25,
-        });
-        setIsCollapsed(true); // Close the menu and update icon after the timeout
-      }, 250); // Adjust this time (3000ms = 3 seconds) as needed
     } else {
       // Hide the menu when it's expanded (icon is arrow up)
       gsap.to(navBarRef.current, {
-        opacity: isMobile ? 1 : 0, // Keep it visible on mobile
+        opacity: isMobile ? 1 : 0, // Keep the menu visible on mobile
         duration: 0.5,
         ease: "power2.in",
         height: 0, // Collapse the menu
@@ -136,7 +121,7 @@ const Navigation = ({ theme, setToggleNavbar }) => {
       });
       gsap.to(navRef.current, {
         backgroundColor: "transparent", // Hide background color
-        opacity: 0,
+        opacity: isMobile ? 1 : 0, // Keep opacity only on mobile
         duration: 0.5,
       });
       setIsUserClosed(true); // Mark the menu as manually closed by the user
@@ -168,15 +153,15 @@ const Navigation = ({ theme, setToggleNavbar }) => {
   };
 
   return (
-    <nav
-      ref={navRef} // Ref for the nav to handle background color and opacity
-      id="navigation"
-      className={`sticky top-0 w-full bg-black bg-opacity-60 z-50 transition-all duration-300 ease-in-out ${
-        theme === "dark" ? " text-white" : "bg-gray-100 text-black"
-      }`}
-    >
+    <>
       {/* Hamburger button should always be visible */}
-      <div className="absolute left-4 top-4">
+      <div
+        ref={hamburgerRef}
+        className="sticky pl-4 top-4"
+        style={{
+          zIndex: 1000,
+        }}
+      >
         <button
           onClick={toggleNavbar}
           className="p-2 text-white bg-blue-500 rounded-lg"
@@ -189,44 +174,53 @@ const Navigation = ({ theme, setToggleNavbar }) => {
           )}
         </button>
       </div>
-
-      {/* Menu items that will fade based on scroll */}
-      <ul
-        ref={navBarRef} // Menu will fade in/out based on scroll
-        className={`px-8 ${
-          isCollapsed && isMobile ? "hidden" : "flex"
-        } pt-4 flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
+      <nav
+        ref={navRef} // Ref for the nav to handle background color and opacity
+        id="navigation"
+        className={`sticky top-0 w-full z-50 transition-all duration-300 ease-in-out ${
+          !isCollapsed && !isMobile
+            ? "bg-black bg-opacity-60"
+            : "bg-transparent"
+        } ${theme === "dark" ? " text-white" : "bg-gray-100 text-black"}`}
       >
-        {["home", "merch", "music", "tour", "booking"].map((item) => (
-          <li
-            key={item}
-            className={`p-2 rounded transition-transform cursor-pointer ${
-              selected === item
-                ? `bg-blue-500 ${
-                    theme === "dark" ? "text-black" : "text-white"
-                  } rounded-full`
-                : theme === "dark"
-                ? "hover:bg-blue-800 text-white rounded-full"
-                : "hover:bg-gray-500 text-black rounded-full"
-            }
+        {/* Menu items that will fade based on scroll */}
+        <ul
+          ref={navBarRef} // Menu will fade in/out based on scroll
+          className={`px-8 ${
+            isCollapsed && isMobile ? "hidden" : "flex"
+          } pt-4 flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
+        >
+          {["home", "merch", "music", "tour", "booking"].map((item) => (
+            <li
+              key={item}
+              className={`p-2 rounded transition-transform cursor-pointer ${
+                selected === item
+                  ? `bg-blue-500 ${
+                      theme === "dark" ? "text-black" : "text-white"
+                    } rounded-full`
+                  : theme === "dark"
+                  ? "hover:bg-blue-800 text-white rounded-full"
+                  : "hover:bg-gray-500 text-black rounded-full"
+              }
             ${
               item === "merch" || item === "tour" || item === "booking"
                 ? "pointer-events-none line-through"
                 : ""
             }`}
-            onClick={() => handleItemClick(item)}
-          >
-            <a href={`#${item}`}>
-              {item.charAt(0).toUpperCase() + item.slice(1)}
-            </a>
-          </li>
-        ))}
+              onClick={() => handleItemClick(item)}
+            >
+              <a href={`#${item}`}>
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </a>
+            </li>
+          ))}
 
-        <div className="relative top-[-1rem] mx-auto">
-          <AudioPlayer theme={theme} />
-        </div>
-      </ul>
-    </nav>
+          <div className="relative top-[-1rem] mx-auto">
+            <AudioPlayer theme={theme} />
+          </div>
+        </ul>
+      </nav>
+    </>
   );
 };
 
