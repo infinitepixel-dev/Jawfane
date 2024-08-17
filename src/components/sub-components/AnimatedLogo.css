@@ -1,10 +1,15 @@
 /* styles.css */
 
 /* Base styles */
+
+svg.absolute.top-0.transform.-translate-x-1\/2.left-1\/2 {
+  top: -44em;
+}
+
 #jawfane-bg-logo {
   display: block;
   margin: 0 auto;
-  margin-top: -17rem;
+  margin-top: -22rem;
   margin-bottom: -20rem;
   max-width: 100%;
   height: auto;
