@@ -71,7 +71,7 @@ const Navigation = ({ theme, setToggleNavbar }) => {
         gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
         gsap.to(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 32, 97, 1)",
+          backgroundColor: "rgba(0, 32, 97, 0.97)",
           duration: 0.5,
         })
 
@@ -107,7 +107,7 @@ const Navigation = ({ theme, setToggleNavbar }) => {
         display: "flex",
       })
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(0, 32, 97, 1)",
+        backgroundColor: "rgba(0, 32, 97, 0.8)",
         opacity: 1,
         duration: 0.5,
       })
