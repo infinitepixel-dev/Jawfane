@@ -1,191 +1,194 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { gsap } from "gsap";
-import { useLocation } from "react-router-dom";
-import propTypes from "prop-types";
-import AudioPlayer from "./AudioPlayer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState, useRef, useCallback } from "react"
+import { gsap } from "gsap"
+import { useLocation } from "react-router-dom"
+import propTypes from "prop-types"
+import AudioPlayer from "./AudioPlayer"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 
 const Navigation = ({ theme, setToggleNavbar }) => {
-  const location = useLocation();
-  const [selected, setSelected] = useState("");
-  const [isCollapsed, setIsCollapsed] = useState(true); // Controls menu state and icon
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [isUserClosed, setIsUserClosed] = useState(false); // Track if the user manually closed the menu
-  const navBarRef = useRef(null); // Ref for the navbar (menu items)
-  const navRef = useRef(null); // Ref for the entire nav element to animate bg color/opacity
-  const timeoutRef = useRef(null); // Ref for the auto-close timeout
-  const hamburgerRef = useRef(null); // Ref for the hamburger button
+  const location = useLocation()
+  const [selected, setSelected] = useState("")
+  const [isCollapsed, setIsCollapsed] = useState(true)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  const [isUserClosed, setIsUserClosed] = useState(false)
+  const navBarRef = useRef(null)
+  const navRef = useRef(null)
+  const timeoutRef = useRef(null)
+  const hamburgerRef = useRef(null)
 
   // Handle resize to detect mobile vs desktop
   useEffect(() => {
     const handleResize = () => {
-      const isNowMobile = window.innerWidth < 768;
-      setIsMobile(isNowMobile);
+      const isNowMobile = window.innerWidth < 768
+      setIsMobile(isNowMobile)
 
-      if (!isNowMobile && !isUserClosed) {
-        // Hide the menu on non-mobile by default, unless the user manually closed it
-        gsap.set(navBarRef.current, { opacity: 0 });
+      if (!isNowMobile) {
+        // Ensure the menu is always visible on desktop
+        gsap.set(navBarRef.current, { opacity: 1 })
+        gsap.set(navRef.current, {
+          opacity: 1,
+          backgroundColor: "rgba(0, 32, 97, 1)",
+        })
       } else {
-        // Always show the menu on mobile
-        gsap.set(navBarRef.current, { opacity: 1 });
+        // Ensure the menu is always visible on mobile
+        gsap.set(navBarRef.current, { opacity: 1 })
       }
-    };
+    }
 
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check on load
+    window.addEventListener("resize", handleResize)
+    handleResize() // Initial check on load
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, [isUserClosed]);
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   // Handle URL hash scrolling on initial load
   useEffect(() => {
-    const hash = location.hash.substring(1);
-    setSelected(hash ? hash : "home");
+    const hash = location.hash.substring(1)
+    setSelected(hash ? hash : "home")
 
     if (hash) {
-      const targetElement = document.getElementById(hash);
+      const targetElement = document.getElementById(hash)
       if (targetElement) {
         gsap.to(window, {
           scrollTo: { y: targetElement, offsetY: 0 },
           duration: 1,
           ease: "power2.inOut",
-        });
+        })
       }
     }
-  }, [location]);
+  }, [location])
 
-  // Show the navbar on scroll and hide after inactivity (only on desktop, not mobile)
+  // Handle navbar visibility and fade on scroll (for desktop)
   useEffect(() => {
     const resetFade = () => {
       if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current); // Clear the previous timer
+        clearTimeout(timeoutRef.current)
       }
 
       if (!isMobile && !isUserClosed) {
-        // Show the menu and background when the user scrolls
-        gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
+        // Keep the menu visible and handle fade-out after 5 seconds
+        gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
         gsap.to(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backgroundColor: "rgba(0, 32, 97, 1)",
           duration: 0.5,
-        });
+        })
 
-        setIsCollapsed(false); // Set the menu as open
+        setIsCollapsed(false)
 
-        // Hide the menu after 5 seconds of inactivity (desktop only)
         timeoutRef.current = setTimeout(() => {
-          gsap.to(navBarRef.current, { opacity: 0, duration: 1 });
+          gsap.to(navBarRef.current, { opacity: 0, duration: 1 })
           gsap.to(navRef.current, {
             opacity: 0,
             backgroundColor: "transparent",
             duration: 1,
-          });
-          setIsCollapsed(true); // Collapse the menu but keep the hamburger icon visible
-        }, 5000);
+          })
+          setIsCollapsed(true)
+        }, 5000)
       }
-    };
+    }
 
-    window.addEventListener("scroll", resetFade);
+    window.addEventListener("scroll", resetFade)
 
     return () => {
-      window.removeEventListener("scroll", resetFade);
-    };
-  }, [isMobile, isUserClosed]);
+      window.removeEventListener("scroll", resetFade)
+    }
+  }, [isMobile, isUserClosed])
 
   // Toggle navbar with GSAP (for mobile and desktop)
   const toggleNavbar = useCallback(() => {
     if (isCollapsed) {
-      // Show the menu when collapsed is true (icon is hamburger)
       gsap.to(navBarRef.current, {
         opacity: 1,
         height: "auto",
         duration: 0.5,
         ease: "power2.out",
-        display: "flex", // Ensure menu is displayed
-      });
+        display: "flex",
+      })
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(0, 0, 0, 0.6)", // Add background color
+        backgroundColor: "rgba(0, 32, 97, 1)",
         opacity: 1,
         duration: 0.5,
-      });
-      setIsUserClosed(false); // Reset manual close state when menu is opened
+      })
+      setIsUserClosed(false)
     } else {
-      // Hide the menu when it's expanded (icon is arrow up)
       gsap.to(navBarRef.current, {
-        opacity: isMobile ? 1 : 0, // Keep the menu visible on mobile
+        opacity: isMobile ? 1 : 0,
         duration: 0.5,
         ease: "power2.in",
-        height: 0, // Collapse the menu
-        display: "none", // Ensure it's hidden
-      });
+        height: 0,
+        display: "none",
+      })
       gsap.to(navRef.current, {
-        backgroundColor: "transparent", // Hide background color
-        opacity: isMobile ? 1 : 0, // Keep opacity only on mobile
+        backgroundColor: "transparent",
+        opacity: isMobile ? 1 : 0,
         duration: 0.5,
-      });
-      setIsUserClosed(true); // Mark the menu as manually closed by the user
+      })
+      setIsUserClosed(true)
     }
 
-    setIsCollapsed(!isCollapsed); // Toggle the collapsed state and icon
-  }, [isCollapsed, isMobile]);
+    setIsCollapsed(!isCollapsed)
+  }, [isCollapsed, isMobile])
 
-  // Pass the toggleNavbar function up to the parent component
   useEffect(() => {
     if (setToggleNavbar) {
-      setToggleNavbar(() => toggleNavbar); // Pass the function up
+      setToggleNavbar(() => toggleNavbar)
     }
-  }, [setToggleNavbar, toggleNavbar]);
+  }, [setToggleNavbar, toggleNavbar])
 
   const handleItemClick = (item) => {
-    setSelected(item);
-    const targetElement = document.getElementById(item);
+    setSelected(item)
+    const targetElement = document.getElementById(item)
     if (targetElement) {
       gsap.to(window, {
         scrollTo: { y: targetElement, offsetY: 0 },
         duration: 1,
         ease: "power2.inOut",
-      });
+      })
     }
     if (isMobile) {
-      toggleNavbar(); // Collapse after clicking a link on mobile
+      toggleNavbar()
     }
-  };
+  }
 
   return (
     <>
-      {/* Hamburger button should always be visible */}
-      <div
-        ref={hamburgerRef}
-        className="sticky pl-4 top-4"
-        style={{
-          zIndex: 1000,
-        }}
-      >
-        <button
-          onClick={toggleNavbar}
-          className="p-2 text-white bg-blue-500 rounded-lg"
+      {/* Hamburger button: Only visible on mobile */}
+      {isMobile && (
+        <div
+          ref={hamburgerRef}
+          className="sticky pl-4 top-4"
+          style={{
+            zIndex: 1000,
+          }}
         >
-          {/* Icon dynamically changes based on isCollapsed */}
-          {isCollapsed ? (
-            <FontAwesomeIcon icon={faBars} />
-          ) : (
-            <FontAwesomeIcon icon={faArrowUp} />
-          )}
-        </button>
-      </div>
+          <button
+            onClick={toggleNavbar}
+            className="p-2 text-white bg-blue-500 rounded-lg"
+          >
+            {isCollapsed ? (
+              <FontAwesomeIcon icon={faBars} />
+            ) : (
+              <FontAwesomeIcon icon={faArrowUp} />
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Navigation Bar */}
       <nav
-        ref={navRef} // Ref for the nav to handle background color and opacity
+        ref={navRef}
         id="navigation"
         className={`sticky top-0 w-full z-50 transition-all duration-300 ease-in-out ${
           !isCollapsed && !isMobile
             ? "bg-black bg-opacity-60"
             : "bg-transparent"
         } ${theme === "dark" ? " text-white" : "bg-gray-100 text-black"}`}
+        style={{ opacity: 1 }} // Ensure initial opacity is set to 1
       >
-        {/* Menu items that will fade based on scroll */}
         <ul
-          ref={navBarRef} // Menu will fade in/out based on scroll
+          ref={navBarRef}
           className={`px-8 ${
             isCollapsed && isMobile ? "hidden" : "flex"
           } pt-4 flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
@@ -221,12 +224,12 @@ const Navigation = ({ theme, setToggleNavbar }) => {
         </ul>
       </nav>
     </>
-  );
-};
+  )
+}
 
 Navigation.propTypes = {
   theme: propTypes.string.isRequired,
-  setToggleNavbar: propTypes.func, // Add prop type
-};
+  setToggleNavbar: propTypes.func,
+}
 
-export default Navigation;
+export default Navigation
