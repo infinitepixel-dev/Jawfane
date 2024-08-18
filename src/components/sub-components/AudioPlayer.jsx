@@ -8,6 +8,8 @@ import "./AudioPlayer.module.css";
 
 const AudioPlayer = ({ theme }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const minVolume = "0.01";
+  const maxVolume = "0.09";
 
   useEffect(() => {
     const audioPlayer = document.getElementById("audioPlayer");
@@ -91,8 +93,8 @@ const AudioPlayer = ({ theme }) => {
         <input
           id="audioPlayer-volume"
           type="range"
-          min="0.01"
-          max="0.05"
+          min={minVolume}
+          max={maxVolume}
           step="0.001"
           className="w-full max-w-xs"
         />

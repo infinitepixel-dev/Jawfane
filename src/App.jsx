@@ -12,6 +12,7 @@ import "./App.css";
 
 const App = () => {
   const [theme, setTheme] = useState("dark");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   //INFO theme settings
   useEffect(() => {
@@ -36,10 +37,21 @@ const App = () => {
   return (
     <Router>
       <div id="home" className={`app-container ${theme}`}>
-        <Navigation theme={theme} toggleTheme={toggleTheme} />
+        <Navigation
+          theme={theme}
+          toggleTheme={toggleTheme}
+          isMobile={isMobile}
+          setIsMobile={setIsMobile}
+        />
         <Routes>
-          <Route path="/" element={<Home theme={theme} />} />
-          <Route path="/home" element={<Home theme={theme} />} />
+          <Route
+            path="/"
+            element={<Home theme={theme} isMobile={isMobile} />}
+          />
+          <Route
+            path="/home"
+            element={<Home theme={theme} isMobile={isMobile} />}
+          />
           <Route path="/music" element={<Music theme={theme} />} />
           <Route path="/merch" element={<Merch theme={theme} />} />
           {/* <Route path='/tour' element={<Tour theme={theme} />} /> */}
