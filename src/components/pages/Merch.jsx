@@ -9,49 +9,49 @@ const merchProducts = [
   {
     id: 1,
     imgSrc: "public/sampleShirt.png",
-    teaser: "This is an awesome product!",
+    teaser: "$25",
     link: "",
   },
   {
     id: 2,
     imgSrc: "public/sampleShirt.png",
-    teaser: "Another great product!",
+    teaser: "$25",
     link: "",
   },
   {
     id: 3,
     imgSrc: "public/sampleShirt.png",
-    teaser: "You need this product!",
+    teaser: "$25",
     link: "",
   },
   {
     id: 4,
     imgSrc: "public/sampleShirt.png",
-    teaser: "Don't miss this one!",
+    teaser: "$25",
     link: "",
   },
   {
     id: 5,
     imgSrc: "public/sampleShirt.png",
-    teaser: "This is an awesome product!",
+    teaser: "$25",
     link: "",
   },
   {
     id: 6,
     imgSrc: "public/sampleShirt.png",
-    teaser: "This is an awesome product!",
+    teaser: "$25",
     link: "",
   },
   {
     id: 7,
     imgSrc: "public/sampleShirt.png",
-    teaser: "This is an awesome product!",
+    teaser: "$25",
     link: "",
   },
   {
     id: 8,
     imgSrc: "public/sampleShirt.png",
-    teaser: "This is an awesome product!",
+    teaser: "$25",
     link: "",
   },
 ]
@@ -125,7 +125,9 @@ const Merch = ({ theme }) => {
               alt={`Product ${item.id}`}
               className="object-cover w-full h-auto mb-2 rounded-md"
             />
-            <p className="mb-2 text-sm">{item.teaser}</p>
+            <p className="mb-2 font-semibold text-center text-md text-sky-800">
+              {item.teaser}
+            </p>
             <a
               href={item.link}
               className="block py-2 text-center text-white transition-colors bg-blue-500 rounded-md hover:bg-blue-600"
