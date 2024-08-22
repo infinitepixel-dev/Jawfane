@@ -3,10 +3,11 @@ import { gsap } from "gsap";
 import propTypes from "prop-types";
 
 import hero_bg from "@public/hero_bg.webp";
+import hero_bg_mobile from "@public/hero_bg_mobile.webp";
 
 import "./AnimatedLogo.css";
 
-const AnimatedLogo = ({ theme }) => {
+const AnimatedLogo = ({ theme, isMobile }) => {
   const logoRef = useRef(null);
 
   const colorChangeSpeed = 2000; // Duration in milliseconds for the color change
@@ -16,7 +17,20 @@ const AnimatedLogo = ({ theme }) => {
     const newColor = theme === "dark" ? "#000000" : "#FFFFFF";
     gsap.to(document.body, { backgroundColor: newColor, duration: 1 });
 
-    const colors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33"];
+    //TODO adjust colors and set theme of the site
+    const colors = [
+      "#1d7d7b",
+      "#4caf50 ",
+      "#fdd835",
+      "#e53935",
+      "#81c784 ",
+      "#fff176 ",
+      "#ff7043 ",
+      "#ff8a80 ",
+      "#f06292",
+      "#ab47bc ",
+    ];
+
     let currentColorIndex = 0;
 
     const changeColor = () => {
@@ -43,19 +57,34 @@ const AnimatedLogo = ({ theme }) => {
   return (
     <div
       id="animatedLogo"
-      className="relative flex items-center justify-center w-full h-screen"
+      className="relative flex items-center justify-center w-full min-h-screen"
     >
-      <img
-        src={hero_bg}
-        alt="Hero BG"
-        className="block w-full"
-        style={{ display: "block", margin: "0 auto" }}
-      />
+      {isMobile === true ? (
+        <img
+          src={hero_bg_mobile}
+          alt="Hero Background"
+          className="absolute min-h-screen w-full "
+          style={{
+            margin: "0 auto",
+            top: -50,
+            // image constrast and brightness
+            filter: "contrast(1.2) brightness(0.27)",
+          }}
+        />
+      ) : (
+        <img
+          src={hero_bg}
+          alt="Hero Background"
+          className="block w-full"
+          style={{ display: "block", margin: "0 auto" }}
+        />
+      )}
+
       <svg
         ref={logoRef}
         version="1.1"
         viewBox="0 0 2048 2048"
-        width="50%"
+        width={isMobile ? "100%" : "50%"}
         height="100%"
         xmlns="http://www.w3.org/2000/svg"
         className="absolute top-0 transform -translate-x-1/2 left-1/2"
@@ -163,6 +192,7 @@ const AnimatedLogo = ({ theme }) => {
 
 AnimatedLogo.propTypes = {
   theme: propTypes.string.isRequired,
+  isMobile: propTypes.bool.isRequired,
 };
 
 export default AnimatedLogo;
