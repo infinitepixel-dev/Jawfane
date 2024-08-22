@@ -17,7 +17,7 @@ const AnimatedLogo = ({ theme, isMobile }) => {
     const newColor = theme === "dark" ? "#000000" : "#FFFFFF";
     gsap.to(document.body, { backgroundColor: newColor, duration: 1 });
 
-    //TODO add main colors
+    //TODO adjust colors and set theme of the site
     const colors = [
       "#1d7d7b",
       "#4caf50 ",
