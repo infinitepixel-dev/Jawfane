@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 
 const BandsInTownEvents = ({ artistName }) => {
   const [events, setEvents] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [eventDates, setEventDates] = useState([]);
   const eventListRef = useRef(null);
 
@@ -28,7 +29,6 @@ const BandsInTownEvents = ({ artistName }) => {
   }, [artistName]);
 
   useEffect(() => {
-    // GSAP animation only when the event list enters the viewport
     if (events.length > 0) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -38,7 +38,7 @@ const BandsInTownEvents = ({ artistName }) => {
               { opacity: 0, y: 50 },
               { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 }
             );
-            observer.unobserve(entry.target); // Stop observing after animation
+            observer.unobserve(entry.target);
           }
         });
       });
@@ -55,7 +55,7 @@ const BandsInTownEvents = ({ artistName }) => {
 
   return (
     <div className="min-h-screen bg-gray-900 px-4 py-10 text-white">
-      <h1 className="mb-8 text-center text-4xl font-bold">
+      <h1 className="mb-8 text-center text-3xl font-bold md:text-4xl">
         Events for {artistName}
       </h1>
       <div className="mx-auto max-w-4xl">
@@ -64,30 +64,49 @@ const BandsInTownEvents = ({ artistName }) => {
             events.map((event) => (
               <li
                 key={event.id}
-                className="relative mb-6 rounded-lg bg-gray-800 p-6 shadow-lg"
+                className="relative mb-6 rounded-lg bg-gray-800 p-4 shadow-lg md:p-6"
               >
-                <p className="text-xl font-semibold">
-                  {event.venue.name} -{" "}
-                  {new Date(event.datetime).toLocaleDateString()}
-                </p>
-                <p className="text-lg">
-                  {event.venue.city}, {event.venue.country}
-                </p>
-                {/* RSVP Button */}
-                <a
-                  href={event.url} // RSVP link provided by the event object
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rsvp-button absolute right-6 top-6 inline-block transform rounded-lg bg-green-500 px-4 py-2 font-bold text-white transition duration-300 hover:scale-105 hover:bg-green-600"
-                >
-                  RSVP
-                </a>
+                <div className="md:flex md:justify-between">
+                  <div className="mb-4 md:mb-0">
+                    <p className="text-lg font-semibold md:text-xl">
+                      {event.venue.name} -{" "}
+                      {new Date(event.datetime).toLocaleDateString()}
+                    </p>
+                    <p className="text-base md:text-lg">
+                      {event.venue.city}, {event.venue.country}
+                    </p>
+                  </div>
+                  {/* RSVP Button */}
+                  <a
+                    href={event.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rsvp-button inline-block transform rounded-lg bg-green-500 px-3 py-2 text-sm font-bold text-white transition duration-300 hover:scale-105 hover:bg-green-600 md:px-4 md:py-2 md:text-base"
+                  >
+                    RSVP
+                  </a>
+                </div>
               </li>
             ))
           ) : (
             <p className="text-center text-xl">No upcoming events found.</p>
           )}
         </ul>
+
+        {/* Example of Event Dates */}
+        {/* <h2 className="mb-4 mt-10 text-center text-2xl font-semibold">
+          Event Dates
+        </h2>
+        <ul className="flex flex-wrap justify-center gap-4">
+          {eventDates.map((date, index) => (
+            <li
+              key={index}
+              className="rounded-lg bg-indigo-500 px-4 py-2 text-lg font-medium"
+            >
+              {date.toLocaleDateString()}
+            </li>
+          ))}
+        </ul> */}
       </div>
     </div>
   );
