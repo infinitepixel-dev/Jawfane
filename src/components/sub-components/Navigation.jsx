@@ -206,7 +206,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
                   : "hover:bg-gray-500 text-black rounded-full"
               }
             ${
-              item === "merch" || item === "tour" || item === "booking"
+              item === "merch" || item === "booking"
                 ? "pointer-events-none line-through"
                 : ""
             }`}

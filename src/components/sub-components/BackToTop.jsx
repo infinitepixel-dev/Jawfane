@@ -10,7 +10,7 @@ const BackToTop = () => {
   const nextButtonRef = useRef(null);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
-  const sections = ["home", "music", "merch", "footer"]; // List of sections
+  const sections = ["home", "tour", "merch", "music", "footer"]; // List of sections
 
   useEffect(() => {
     const toggleVisibility = () => {
