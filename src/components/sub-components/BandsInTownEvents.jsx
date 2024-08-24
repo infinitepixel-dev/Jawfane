@@ -54,7 +54,7 @@ const BandsInTownEvents = ({ artistName }) => {
   }, [events])
 
   return (
-    <div className="min-h-screen px-4 py-10 text-white bg-gray-900">
+    <div className="min-h-screen px-4 py-10 text-gray-600 bg-gray-200">
       <h1 className="mb-8 text-3xl font-bold text-center md:text-4xl">
         {artistName} Tour Dates
       </h1>
@@ -64,7 +64,7 @@ const BandsInTownEvents = ({ artistName }) => {
             events.map((event) => (
               <li
                 key={event.id}
-                className="relative p-4 mb-6 bg-gray-800 rounded-lg shadow-lg md:p-6"
+                className="relative p-4 mb-6 bg-gray-400 rounded-lg shadow-lg md:p-6"
               >
                 <div className="md:flex md:justify-between">
                   <div className="mb-4 md:mb-0">
@@ -81,7 +81,7 @@ const BandsInTownEvents = ({ artistName }) => {
                     href={event.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block px-3 py-2 text-sm font-bold text-white transition duration-300 transform bg-green-500 rounded-lg rsvp-button hover:scale-105 hover:bg-green-600 md:px-4 md:py-2 md:text-base"
+                    className="inline-block px-3 py-2 text-sm font-bold text-white transition duration-300 transform rounded-lg bg-sky-800 rsvp-button hover:scale-105 hover:bg-sky-900 md:px-4 md:py-2 md:text-base"
                   >
                     RSVP
                   </a>
