@@ -70,7 +70,12 @@ const BandsInTownEvents = ({ artistName }) => {
                   <div className="mb-4 md:mb-0">
                     <p className="text-lg font-semibold md:text-xl">
                       {event.venue.name} -{" "}
-                      {new Date(event.datetime).toLocaleDateString()}
+                      {new Date(event.datetime).toLocaleDateString()} @{" "}
+                      {new Date(event.datetime).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        timeZoneName: "short",
+                      })}
                     </p>
                     <p className="text-base md:text-lg">
                       {event.venue.city}, {event.venue.country}
@@ -92,21 +97,6 @@ const BandsInTownEvents = ({ artistName }) => {
             <p className="text-xl text-center">No upcoming events found.</p>
           )}
         </ul>
-
-        {/* Example of Event Dates */}
-        {/* <h2 className="mt-10 mb-4 text-2xl font-semibold text-center">
-          Event Dates
-        </h2>
-        <ul className="flex flex-wrap justify-center gap-4">
-          {eventDates.map((date, index) => (
-            <li
-              key={index}
-              className="px-4 py-2 text-lg font-medium bg-indigo-500 rounded-lg"
-            >
-              {date.toLocaleDateString()}
-            </li>
-          ))}
-        </ul> */}
       </div>
     </div>
   )
