@@ -69,13 +69,18 @@ const BandsInTownEvents = ({ artistName }) => {
                 <div className="md:flex md:justify-between">
                   <div className="mb-4 md:mb-0">
                     <p className="text-lg font-semibold md:text-xl">
-                      {event.venue.name} -{" "}
-                      {new Date(event.datetime).toLocaleDateString()} @{" "}
+                      {new Date(event.datetime).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                      })}{" "}
+                      @{" "}
                       {new Date(event.datetime).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                         timeZoneName: "short",
-                      })}
+                      })}{" "}
+                      - {event.venue.name}
                     </p>
                     <p className="text-base md:text-lg">
                       {event.venue.city}, {event.venue.country}
@@ -86,7 +91,7 @@ const BandsInTownEvents = ({ artistName }) => {
                     href={event.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block px-3 py-2 text-sm font-bold text-white transition duration-300 transform rounded-lg bg-sky-800 rsvp-button hover:scale-105 hover:bg-sky-900 md:px-4 md:py-2 md:text-base"
+                    className="flex items-center justify-center px-3 py-2 text-sm font-bold text-black transition-colors duration-300 ease-in-out bg-transparent border border-black rounded-lg hover:bg-gray-500 md:px-4 md:py-2 md:text-base"
                   >
                     RSVP
                   </a>
