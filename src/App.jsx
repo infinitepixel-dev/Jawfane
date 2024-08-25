@@ -1,47 +1,47 @@
-import { useState, useEffect } from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react"
+import { HashRouter as Router, Routes, Route } from "react-router-dom"
 
 //INFO Pages imports
-import Home from "./components/pages/Home";
-import Tour from "./components/pages/Tour";
-import Merch from "./components/pages/Merch";
-import Music from "./components/pages/MusicVideos";
+import Home from "./components/pages/Home"
+import Tour from "./components/pages/Tour"
+import Merch from "./components/pages/Merch"
+import Music from "./components/pages/MusicVideos"
 
 //INFO Sub-components imports
-import Navigation from "./components/sub-components/Navigation";
-import BackToTop from "./components/sub-components/BackToTop";
+import Navigation from "./components/sub-components/Navigation"
+import BackToTop from "./components/sub-components/BackToTop"
 
 // import Booking from './components/pages/Booking'
 
-import "./App.css";
+import "./App.css"
 
 const App = () => {
-  const [theme, setTheme] = useState("dark");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [theme, setTheme] = useState("dark")
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
   //INFO theme settings
   useEffect(() => {
-    const localTheme = localStorage.getItem("theme");
+    const localTheme = localStorage.getItem("theme")
     if (localTheme) {
-      setTheme(localTheme);
-      document.documentElement.classList.add(localTheme);
+      setTheme(localTheme)
+      document.documentElement.classList.add(localTheme)
     } else {
-      document.documentElement.classList.add(theme);
+      document.documentElement.classList.add(theme)
     }
-  }, [theme]);
+  }, [theme])
 
   //INFO toggles the theme and locally stores it
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    document.documentElement.classList.remove(theme);
-    document.documentElement.classList.add(newTheme);
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
+    const newTheme = theme === "light" ? "dark" : "light"
+    document.documentElement.classList.remove(theme)
+    document.documentElement.classList.add(newTheme)
+    setTheme(newTheme)
+    localStorage.setItem("theme", newTheme)
+  }
 
   return (
     <Router>
-      <div id="home" className={`app-container ${theme}`}>
+      <div id="home" className={`app-container ${theme} overflow-hidden`}>
         <Navigation
           theme={theme}
           toggleTheme={toggleTheme}
@@ -66,7 +66,7 @@ const App = () => {
         <BackToTop />
       </div>
     </Router>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -99,7 +99,9 @@ const BandsInTownEvents = ({ artistName }) => {
               </li>
             ))
           ) : (
-            <p className="text-xl text-center">No upcoming events found.</p>
+            <p className="text-xl text-center">
+              No upcoming events found, please check back later.
+            </p>
           )}
         </ul>
       </div>
