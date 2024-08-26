@@ -1,32 +1,32 @@
-import { useState, useEffect, useRef } from "react"
-import propTypes from "prop-types"
-import axios from "axios"
-import { gsap } from "gsap"
+import { useState, useEffect, useRef } from "react";
+import propTypes from "prop-types";
+import axios from "axios";
+import { gsap } from "gsap";
 
 const BandsInTownEvents = ({ artistName }) => {
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [eventDates, setEventDates] = useState([])
-  const eventListRef = useRef(null)
+  const [eventDates, setEventDates] = useState([]);
+  const eventListRef = useRef(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const appId = "YOUR_APP_ID" // Replace with your Bandsintown App ID
+        const appId = "YOUR_APP_ID"; // Replace with your Bandsintown App ID
         const response = await axios.get(
           `https://rest.bandsintown.com/artists/${artistName}/events?app_id=${appId}`
-        )
+        );
 
-        setEvents(response.data)
-        const dates = response.data.map((event) => new Date(event.datetime))
-        setEventDates(dates)
+        setEvents(response.data);
+        const dates = response.data.map((event) => new Date(event.datetime));
+        setEventDates(dates);
       } catch (error) {
-        console.error("Error fetching events:", error)
+        console.error("Error fetching events:", error);
       }
-    }
+    };
 
-    fetchEvents()
-  }, [artistName])
+    fetchEvents();
+  }, [artistName]);
 
   useEffect(() => {
     if (events.length > 0) {
@@ -37,21 +37,23 @@ const BandsInTownEvents = ({ artistName }) => {
               entry.target.children,
               { opacity: 0, y: 50 },
               { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 }
-            )
-            observer.unobserve(entry.target)
+            );
+            observer.unobserve(entry.target);
           }
-        })
-      })
+        });
+      });
 
       if (eventListRef.current) {
-        observer.observe(eventListRef.current)
+        observer.observe(eventListRef.current);
       }
 
       return () => {
-        if (eventListRef.current) observer.unobserve(eventListRef.current)
-      }
+        if (eventListRef.current) observer.unobserve(eventListRef.current);
+      };
     }
-  }, [events])
+  }, [events]);
+
+  console.log("Events:", events);
 
   return (
     <div className="min-h-screen px-4 py-10 text-gray-600 bg-gray-200">
@@ -83,7 +85,8 @@ const BandsInTownEvents = ({ artistName }) => {
                       - {event.venue.name}
                     </p>
                     <p className="text-base md:text-lg">
-                      {event.venue.city}, {event.venue.country}
+                      {event.venue.country}: {event.venue.location},{" "}
+                      {event.venue.street_address}, {event.venue.postal_code}
                     </p>
                   </div>
                   {/* RSVP Button */}
@@ -106,11 +109,11 @@ const BandsInTownEvents = ({ artistName }) => {
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
 BandsInTownEvents.propTypes = {
   artistName: propTypes.string.isRequired,
-}
+};
 
-export default BandsInTownEvents
+export default BandsInTownEvents;
