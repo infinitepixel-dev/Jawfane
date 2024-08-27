@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import bgMusic from "@public/DamagedGoods.wav";
+import bgMusic from "@assets/audio/DamagedGoods.wav";
 import { gsap } from "gsap";
 import propTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

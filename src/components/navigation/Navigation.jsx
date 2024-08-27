@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { useLocation } from "react-router-dom";
 import propTypes from "prop-types";
-import AudioPlayer from "./AudioPlayer";
+import AudioPlayer from "@components/sub-components/AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
