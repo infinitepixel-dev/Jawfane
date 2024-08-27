@@ -28,7 +28,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.set(navBarRef.current, { opacity: 1 });
         gsap.set(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 32, 97, 1)",
+          backgroundColor: "rgba(101, 163, 13, 0.8)",
         });
       } else {
         // Ensure the menu is always visible on mobile
@@ -71,7 +71,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
         gsap.to(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 32, 97, 0.97)",
+          backgroundColor: "rgba(101, 163, 13, 0.8)",
           duration: 0.5,
         });
 
@@ -107,7 +107,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         display: "flex",
       });
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(0, 32, 97, 0.8)",
+        backgroundColor: "rgba(101, 163, 13, 0.8)",
         opacity: 1,
         duration: 0.5,
       });
@@ -165,7 +165,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         >
           <button
             onClick={toggleNavbar}
-            className="p-2 text-white bg-blue-500 rounded-lg"
+            className="p-2 text-white rounded-lg bg-lime-600"
           >
             {isCollapsed ? (
               <FontAwesomeIcon icon={faBars} />
@@ -198,11 +198,11 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
               key={item}
               className={`p-2 rounded transition-transform cursor-pointer ${
                 selected === item
-                  ? `bg-blue-500 ${
+                  ? `bg-lime-500 ${
                       theme === "dark" ? "text-black" : "text-white"
                     } rounded-full`
                   : theme === "dark"
-                  ? "hover:bg-blue-800 text-white rounded-full"
+                  ? "hover:bg-lime-800 text-white rounded-full"
                   : "hover:bg-gray-500 text-black rounded-full"
               }
             ${

@@ -1,44 +1,44 @@
-import { useState, useEffect, useRef } from "react";
-import propTypes from "prop-types";
-import { gsap } from "gsap";
+import { useState, useEffect, useRef } from "react"
+import propTypes from "prop-types"
+import { gsap } from "gsap"
 
 // INFO: cartItems passes into CartPopOut
 // eslint-disable-next-line no-unused-vars
 function Merch({ addToCart, cartItems }) {
-  const [products, setProducts] = useState([]);
-  const [confirmationMessage, setConfirmationMessage] = useState("");
-  const [messagePosition, setMessagePosition] = useState({ top: 0, left: 0 });
-  const [activeCardIndex, setActiveCardIndex] = useState(null);
-  const [isAnimating, setIsAnimating] = useState([]); // Track animation status for each card
-  const [isInViewport, setIsInViewport] = useState([]); // Track viewport status for each card
+  const [products, setProducts] = useState([])
+  const [confirmationMessage, setConfirmationMessage] = useState("")
+  const [messagePosition, setMessagePosition] = useState({ top: 0, left: 0 })
+  const [activeCardIndex, setActiveCardIndex] = useState(null)
+  const [isAnimating, setIsAnimating] = useState([]) // Track animation status for each card
+  const [isInViewport, setIsInViewport] = useState([]) // Track viewport status for each card
 
   // GSAP Ref for the confirmation message
-  const confirmRef = useRef(null);
-  const cardRefs = useRef([]);
+  const confirmRef = useRef(null)
+  const cardRefs = useRef([])
 
-  const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`;
+  const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`
 
   const convertBlobToBase64 = (blob) => {
-    if (!blob) return null;
+    if (!blob) return null
 
-    const byteArray = new Uint8Array(blob.data);
+    const byteArray = new Uint8Array(blob.data)
     const base64String = btoa(
       byteArray.reduce((data, byte) => data + String.fromCharCode(byte), "")
-    );
+    )
 
-    return `data:image/jpeg;base64,${base64String}`;
-  };
+    return `data:image/jpeg;base64,${base64String}`
+  }
 
   useEffect(() => {
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
+        setProducts(data)
         // Initialize isAnimating and isInViewport arrays to false for each card
-        setIsAnimating(new Array(data.length).fill(false));
-        setIsInViewport(new Array(data.length).fill(false));
+        setIsAnimating(new Array(data.length).fill(false))
+        setIsInViewport(new Array(data.length).fill(false))
         // Reset cardRefs after products have been fetched
-        cardRefs.current = Array(data.length).fill(null);
+        cardRefs.current = Array(data.length).fill(null)
       })
       .catch((err) => {
         //INFO - remove this once the db/server is setup
@@ -124,51 +124,51 @@ function Merch({ addToCart, cartItems }) {
             price: 8.0,
             quantity: 1,
           },
-        ]);
+        ])
 
-        setIsAnimating(new Array(8).fill(false));
-        setIsInViewport(new Array(8).fill(false));
-        cardRefs.current = Array(8).fill(null);
+        setIsAnimating(new Array(8).fill(false))
+        setIsInViewport(new Array(8).fill(false))
+        cardRefs.current = Array(8).fill(null)
 
-        return console.error("Uh oh! Error!!!", err);
-      });
-  }, [apiUrl]);
+        return console.error("Uh oh! Error!!!", err)
+      })
+  }, [apiUrl])
 
   useEffect(() => {
     if (products.length > 0) {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            const index = cardRefs.current.indexOf(entry.target);
+            const index = cardRefs.current.indexOf(entry.target)
             if (entry.isIntersecting && !isInViewport[index]) {
               setIsInViewport((prev) => {
-                const updated = [...prev];
-                updated[index] = true;
-                return updated;
-              });
+                const updated = [...prev]
+                updated[index] = true
+                return updated
+              })
             }
-          });
+          })
         },
         { threshold: 0.5 } // Trigger when 50% of the card is in the viewport
-      );
+      )
 
       cardRefs.current.forEach((ref) => {
-        if (ref) observer.observe(ref);
-      });
+        if (ref) observer.observe(ref)
+      })
 
       return () => {
         if (observer) {
-          observer.disconnect();
+          observer.disconnect()
         }
-      };
+      }
     }
-  }, [products, isInViewport]);
+  }, [products, isInViewport])
 
   useEffect(() => {
     if (products.length > 0) {
       const validRefs = cardRefs.current.filter(
         (ref, index) => ref !== null && isInViewport[index]
-      );
+      )
       if (validRefs.length > 0) {
         gsap.fromTo(
           validRefs,
@@ -180,35 +180,35 @@ function Merch({ addToCart, cartItems }) {
             duration: 1,
             ease: "power3.out",
           }
-        );
+        )
       }
     }
-  }, [isInViewport, products]);
+  }, [isInViewport, products])
 
   useEffect(() => {
     if (confirmationMessage && activeCardIndex !== null) {
       const tl = gsap.timeline({
         onComplete: () => {
           setIsAnimating((prev) => {
-            const updated = [...prev];
-            updated[activeCardIndex] = false;
-            return updated;
-          });
+            const updated = [...prev]
+            updated[activeCardIndex] = false
+            return updated
+          })
         },
-      });
+      })
 
       // Dim the card by reducing its opacity slightly
       tl.to(cardRefs.current[activeCardIndex], {
         opacity: 0.5,
         duration: 0.2,
         ease: "power2.out",
-      });
+      })
       // Animate the confirmation message
       tl.fromTo(
         confirmRef.current,
         { opacity: 0, y: -20 },
         { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
-      );
+      )
       // Hide the confirmation and restore the card opacity
       tl.to(confirmRef.current, {
         opacity: 0,
@@ -216,61 +216,61 @@ function Merch({ addToCart, cartItems }) {
         duration: 0.5,
         ease: "power2.out",
         delay: 1.5, // Delay before fading out
-      });
+      })
       tl.to(cardRefs.current[activeCardIndex], {
         opacity: 1,
         duration: 0.2,
         ease: "power2.out",
-      });
+      })
     }
-  }, [confirmationMessage, activeCardIndex]);
+  }, [confirmationMessage, activeCardIndex])
 
   const handleAddToCart = (product, index) => {
-    if (isAnimating[index]) return; // Block clicks if animation is running on this card
+    if (isAnimating[index]) return // Block clicks if animation is running on this card
 
     setIsAnimating((prev) => {
-      const updated = [...prev];
-      updated[index] = true;
-      return updated;
-    }); // Set animation flag for this specific card
+      const updated = [...prev]
+      updated[index] = true
+      return updated
+    }) // Set animation flag for this specific card
 
-    addToCart(product);
+    addToCart(product)
 
     // Reset the message to force re-triggering the animation
-    setConfirmationMessage("");
+    setConfirmationMessage("")
 
     setTimeout(() => {
-      setConfirmationMessage(`${product.title} added to cart!`);
-    }, 0); // Delay to ensure the state change is applied
+      setConfirmationMessage(`${product.title} added to cart!`)
+    }, 0) // Delay to ensure the state change is applied
 
-    setActiveCardIndex(index);
+    setActiveCardIndex(index)
 
-    const card = cardRefs.current[index];
+    const card = cardRefs.current[index]
     if (card) {
-      const rect = card.getBoundingClientRect();
+      const rect = card.getBoundingClientRect()
 
       // Calculate the center of the card
-      const cardCenterX = rect.left + rect.width / 2;
-      const cardCenterY = rect.top + rect.height / 2;
+      const cardCenterX = rect.left + rect.width / 2
+      const cardCenterY = rect.top + rect.height / 2
 
       // Set the confirmation message position to the card's center
       setMessagePosition({
         top: cardCenterY + window.scrollY,
         left: cardCenterX + window.scrollX,
-      });
+      })
     }
-  };
+  }
 
   return (
-    <div id="merch" className="container z-10 mx-auto p-4">
+    <div id="merch" className="container z-10 p-4 mx-auto">
       {/* TODO: Implement popout */}
       {/* <CartPopOut cartItems={cartItems} /> */}
-      <h1 className="mb-8 text-center text-4xl font-bold">Merch</h1>
+      <h1 className="mb-8 text-4xl font-bold text-center">Merch</h1>
 
       {/* Confirmation message */}
       <div
         ref={confirmRef}
-        className="absolute z-50 rounded bg-green-500 p-2 text-center text-white shadow-lg"
+        className="absolute z-50 p-2 text-center text-white bg-green-500 rounded shadow-lg"
         style={{
           top: `${messagePosition.top}px`,
           left: `${messagePosition.left}px`,
@@ -295,14 +295,14 @@ function Merch({ addToCart, cartItems }) {
             </h2>
             {product.image_url ? (
               <img
-                className="mb-4  w-full rounded-lg object-cover"
+                className="object-cover w-full mb-4 rounded-lg"
                 src={product.image_url}
                 alt={product.title}
               />
             ) : (
               product.image && (
                 <img
-                  className="mb-4 h-48 w-full rounded-lg object-cover"
+                  className="object-cover w-full h-48 mb-4 rounded-lg"
                   src={convertBlobToBase64(product.image)}
                   alt={product.title}
                 />
@@ -314,7 +314,7 @@ function Merch({ addToCart, cartItems }) {
             </p>
             <button
               onClick={() => handleAddToCart(product, index)}
-              className={`w-full rounded bg-blue-500 py-2 text-white transition-colors hover:bg-blue-600 ${
+              className={`w-full rounded bg-lime-600 py-2 text-white transition-colors hover:bg-lime-500 ${
                 isAnimating[index] ? "cursor-not-allowed opacity-50" : ""
               }`}
               disabled={isAnimating[index]} // Disable button during animation for this specific card
@@ -325,13 +325,13 @@ function Merch({ addToCart, cartItems }) {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 //INFO - re-enable once the db/server is setup
 Merch.propTypes = {
   addToCart: propTypes.func.isRequired,
   cartItems: propTypes.array.isRequired,
-};
+}
 
-export default Merch;
+export default Merch

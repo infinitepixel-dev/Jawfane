@@ -81,7 +81,7 @@ const AudioPlayer = ({ theme }) => {
       <div className="flex justify-center md:justify-end">
         <button
           id="playPauseBtn"
-          className="p-2 text-white bg-blue-500 rounded-full shadow-lg audio-button flex items-center justify-center w-12 h-12"
+          className="flex items-center justify-center w-12 h-12 p-2 text-white rounded-full shadow-lg bg-lime-500 audio-button"
         >
           <FontAwesomeIcon
             icon={isPlaying ? faPause : faPlay}
@@ -89,7 +89,7 @@ const AudioPlayer = ({ theme }) => {
           />
         </button>
       </div>
-      <div className="flex justify-center md:justify-start items-center">
+      <div className="flex items-center justify-center md:justify-start">
         <input
           id="audioPlayer-volume"
           type="range"
