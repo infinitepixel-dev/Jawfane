@@ -158,7 +158,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
       {isMobile && (
         <div
           ref={hamburgerRef}
-          className="sticky pl-4 top-4"
+          className="fixed pl-4 top-4"
           style={{
             zIndex: 1000,
           }}
@@ -180,7 +180,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
       <nav
         ref={navRef}
         id="navigation"
-        className={`sticky top-0 w-full z-50 transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ease-in-out ${
           !isCollapsed && !isMobile
             ? "bg-black bg-opacity-60"
             : "bg-transparent"
