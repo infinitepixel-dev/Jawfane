@@ -28,7 +28,8 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.set(navBarRef.current, { opacity: 1 })
         gsap.set(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 32, 97, 1)",
+          backgroundColor: "rgba(101, 163, 13, 0.95)",
+          backdropFilter: "blur(10px)",
         })
       } else {
         // Ensure the menu is always visible on mobile
@@ -71,8 +72,9 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
         gsap.to(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 32, 97, 0.97)",
+          backgroundColor: "rgba(101, 163, 13, 0.95)",
           duration: 0.5,
+          backdropFilter: "blur(10px)",
         })
 
         setIsCollapsed(false)
@@ -107,9 +109,10 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         display: "flex",
       })
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(0, 32, 97, 0.8)",
+        backgroundColor: "rgba(101, 163, 13, 0.95)",
         opacity: 1,
         duration: 0.5,
+        backdropFilter: "blur(10px)",
       })
       setIsUserClosed(false)
     } else {
