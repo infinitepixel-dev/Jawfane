@@ -1,100 +1,102 @@
-import { useEffect, useState, useRef, useCallback } from "react"
-import { gsap } from "gsap"
-import { useLocation } from "react-router-dom"
-import propTypes from "prop-types"
-import AudioPlayer from "./AudioPlayer"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
+import { useEffect, useState, useRef, useCallback } from "react";
+import { gsap } from "gsap";
+import { useLocation } from "react-router-dom";
+import propTypes from "prop-types";
+import AudioPlayer from "@components/sub-components/AudioPlayer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
-  const location = useLocation()
-  const [selected, setSelected] = useState("")
-  const [isCollapsed, setIsCollapsed] = useState(true)
+  const location = useLocation();
+  const [selected, setSelected] = useState("");
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const [isUserClosed, setIsUserClosed] = useState(false)
-  const navBarRef = useRef(null)
-  const navRef = useRef(null)
-  const timeoutRef = useRef(null)
-  const hamburgerRef = useRef(null)
+  const [isUserClosed, setIsUserClosed] = useState(false);
+  const navBarRef = useRef(null);
+  const navRef = useRef(null);
+  const timeoutRef = useRef(null);
+  const hamburgerRef = useRef(null);
 
   // Handle resize to detect mobile vs desktop
   useEffect(() => {
     const handleResize = () => {
-      const isNowMobile = window.innerWidth < 768
-      setIsMobile(isNowMobile)
+      const isNowMobile = window.innerWidth < 768;
+      setIsMobile(isNowMobile);
 
       if (!isNowMobile) {
         // Ensure the menu is always visible on desktop
-        gsap.set(navBarRef.current, { opacity: 1 })
+        gsap.set(navBarRef.current, { opacity: 1 });
         gsap.set(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(101, 163, 13, 0.8)",
-        })
+          backgroundColor: "rgba(101, 163, 13, 0.95)",
+          backdropFilter: "blur(10px)",
+        });
       } else {
         // Ensure the menu is always visible on mobile
-        gsap.set(navBarRef.current, { opacity: 1 })
+        gsap.set(navBarRef.current, { opacity: 1 });
       }
-    }
+    };
 
-    window.addEventListener("resize", handleResize)
-    handleResize() // Initial check on load
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check on load
 
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Handle URL hash scrolling on initial load
   useEffect(() => {
-    const hash = location.hash.substring(1)
-    setSelected(hash ? hash : "home")
+    const hash = location.hash.substring(1);
+    setSelected(hash ? hash : "home");
 
     if (hash) {
-      const targetElement = document.getElementById(hash)
+      const targetElement = document.getElementById(hash);
       if (targetElement) {
         gsap.to(window, {
           scrollTo: { y: targetElement, offsetY: 0 },
           duration: 1,
           ease: "power2.inOut",
-        })
+        });
       }
     }
-  }, [location])
+  }, [location]);
 
   // Handle navbar visibility and fade on scroll (for desktop)
   useEffect(() => {
     const resetFade = () => {
       if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
+        clearTimeout(timeoutRef.current);
       }
 
       if (!isMobile && !isUserClosed) {
         // Keep the menu visible and handle fade-out after 5 seconds
-        gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
+        gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
         gsap.to(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(101, 163, 13, 0.8)",
+          backgroundColor: "rgba(101, 163, 13, 0.95)",
           duration: 0.5,
-        })
+          backdropFilter: "blur(10px)",
+        });
 
-        setIsCollapsed(false)
+        setIsCollapsed(false);
 
         timeoutRef.current = setTimeout(() => {
-          gsap.to(navBarRef.current, { opacity: 0, duration: 1 })
+          gsap.to(navBarRef.current, { opacity: 0, duration: 1 });
           gsap.to(navRef.current, {
             opacity: 0,
             backgroundColor: "transparent",
             duration: 1,
-          })
-          setIsCollapsed(true)
-        }, 5000)
+          });
+          setIsCollapsed(true);
+        }, 5000);
       }
-    }
+    };
 
-    window.addEventListener("scroll", resetFade)
+    window.addEventListener("scroll", resetFade);
 
     return () => {
-      window.removeEventListener("scroll", resetFade)
-    }
-  }, [isMobile, isUserClosed])
+      window.removeEventListener("scroll", resetFade);
+    };
+  }, [isMobile, isUserClosed]);
 
   // Toggle navbar with GSAP (for mobile and desktop)
   const toggleNavbar = useCallback(() => {
@@ -105,13 +107,14 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         duration: 0.5,
         ease: "power2.out",
         display: "flex",
-      })
+      });
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(101, 163, 13, 0.8)",
+        backgroundColor: "rgba(101, 163, 13, 0.95)",
         opacity: 1,
         duration: 0.5,
-      })
-      setIsUserClosed(false)
+        backdropFilter: "blur(10px)",
+      });
+      setIsUserClosed(false);
     } else {
       gsap.to(navBarRef.current, {
         opacity: isMobile ? 1 : 0,
@@ -119,38 +122,38 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         ease: "power2.in",
         height: 0,
         display: "none",
-      })
+      });
       gsap.to(navRef.current, {
         backgroundColor: "transparent",
         opacity: isMobile ? 1 : 0,
         duration: 0.5,
-      })
-      setIsUserClosed(true)
+      });
+      setIsUserClosed(true);
     }
 
-    setIsCollapsed(!isCollapsed)
-  }, [isCollapsed, isMobile])
+    setIsCollapsed(!isCollapsed);
+  }, [isCollapsed, isMobile]);
 
   useEffect(() => {
     if (setToggleNavbar) {
-      setToggleNavbar(() => toggleNavbar)
+      setToggleNavbar(() => toggleNavbar);
     }
-  }, [setToggleNavbar, toggleNavbar])
+  }, [setToggleNavbar, toggleNavbar]);
 
   const handleItemClick = (item) => {
-    setSelected(item)
-    const targetElement = document.getElementById(item)
+    setSelected(item);
+    const targetElement = document.getElementById(item);
     if (targetElement) {
       gsap.to(window, {
         scrollTo: { y: targetElement, offsetY: 0 },
         duration: 1,
         ease: "power2.inOut",
-      })
+      });
     }
     if (isMobile) {
-      toggleNavbar()
+      toggleNavbar();
     }
-  }
+  };
 
   return (
     <>
@@ -158,7 +161,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
       {isMobile && (
         <div
           ref={hamburgerRef}
-          className="sticky pl-4 top-4"
+          className="fixed pl-4 top-4"
           style={{
             zIndex: 1000,
           }}
@@ -180,7 +183,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
       <nav
         ref={navRef}
         id="navigation"
-        className={`sticky top-0 w-full z-50 transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ease-in-out ${
           !isCollapsed && !isMobile
             ? "bg-black bg-opacity-60"
             : "bg-transparent"
@@ -224,14 +227,14 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         </ul>
       </nav>
     </>
-  )
-}
+  );
+};
 
 Navigation.propTypes = {
   theme: propTypes.string.isRequired,
   setToggleNavbar: propTypes.func,
   isMobile: propTypes.bool.isRequired,
   setIsMobile: propTypes.func.isRequired,
-}
+};
 
-export default Navigation
+export default Navigation;

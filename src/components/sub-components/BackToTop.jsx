@@ -84,12 +84,19 @@ const BackToTop = () => {
     }
   };
 
+  const upButtonColor = isVisible
+    ? "border border-slate-500 bg-slate-800 hover:bg-slate-700"
+    : "bg-gray-700";
+  const downButtonColor = showNextButton
+    ? "border border-slate-500 bg-blue-500 hover:bg-blue-700"
+    : "bg-gray-500";
+
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col space-y-2">
       <button
         ref={buttonRef}
         onClick={scrollToTop}
-        className="p-4 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-700 transition"
+        className={`p-4 rounded-full shadow-lg ${upButtonColor} transition`}
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
@@ -101,7 +108,7 @@ const BackToTop = () => {
       <button
         ref={nextButtonRef}
         onClick={scrollToNextSection}
-        className="p-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-700 transition"
+        className={`p-4 ${downButtonColor} rounded-full shadow-lg  transition`}
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",

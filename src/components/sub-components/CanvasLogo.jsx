@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import propTypes from "prop-types";
 
-import hero_bg from "@public/hero_bg.webp";
-import hero_bg_mobile from "@public/hero_bg_mobile.webp";
+import hero_bg from "@assets/images/hero_bg.webp";
+import hero_bg_mobile from "@assets/images/hero_bg_mobile.webp";
 
 import "./AnimatedLogo.css";
 
