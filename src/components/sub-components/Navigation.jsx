@@ -2,20 +2,19 @@ import { useEffect, useState, useRef, useCallback } from "react"
 import { gsap } from "gsap"
 import { useLocation } from "react-router-dom"
 import propTypes from "prop-types"
-<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
-import AudioPlayer from "./AudioPlayer"
-=======
 import AudioPlayer from "@components/sub-components/AudioPlayer"
->>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 
 const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
   const location = useLocation()
   const [selected, setSelected] = useState("")
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
+  const [isUserClosed, setIsUserClosed] = useState(false)
   const navBarRef = useRef(null)
   const navRef = useRef(null)
+  const timeoutRef = useRef(null)
   const hamburgerRef = useRef(null)
 
   // Handle resize to detect mobile vs desktop
@@ -29,12 +28,8 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.set(navBarRef.current, { opacity: 1 })
         gsap.set(navRef.current, {
           opacity: 1,
-<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
-          backgroundColor: "rgba(101, 163, 13, 0.8)",
-=======
           backgroundColor: "rgba(0, 3, 4, 0.98)",
           backdropFilter: "blur(10px)",
->>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
         })
       } else {
         // Ensure the menu is always visible on mobile
@@ -43,10 +38,10 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     }
 
     window.addEventListener("resize", handleResize)
-    handleResize()
+    handleResize() // Initial check on load
 
     return () => window.removeEventListener("resize", handleResize)
-  }, [setIsMobile])
+  }, [])
 
   // Handle URL hash scrolling on initial load
   useEffect(() => {
@@ -65,22 +60,21 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     }
   }, [location])
 
-  const toggleNavbar = useCallback(() => {
-    if (navBarRef.current) {
-      const isNavVisible = navBarRef.current.classList.contains("hidden")
+  // Handle navbar visibility and fade on scroll (for desktop)
+  useEffect(() => {
+    const resetFade = () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
 
-      // If the navbar is currently hidden, show it
-      if (isNavVisible) {
-        gsap.to(navBarRef.current, {
+      if (!isMobile && !isUserClosed) {
+        // Keep the menu visible and handle fade-out after 5 seconds
+        gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
+        gsap.to(navRef.current, {
           opacity: 1,
-<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
-          backgroundColor: "rgba(101, 163, 13, 0.8)",
-          duration: 0.5,
-=======
           backgroundColor: "rgba(0, 3, 4, 0.98)",
           duration: 0.5,
           backdropFilter: "blur(10px)",
->>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
         })
 
         setIsCollapsed(false)
@@ -115,16 +109,10 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         display: "flex",
       })
       gsap.to(navRef.current, {
-<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
-        backgroundColor: "rgba(101, 163, 13, 0.8)",
-        opacity: 1,
-        duration: 0.5,
-=======
         backgroundColor: "rgba(0, 3, 4, 0.98)",
         opacity: 1,
         duration: 0.5,
         backdropFilter: "blur(10px)",
->>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
       })
       setIsUserClosed(false)
     } else {
