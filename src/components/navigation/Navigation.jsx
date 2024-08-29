@@ -28,7 +28,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.set(navBarRef.current, { opacity: 1 })
         gsap.set(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(101, 163, 13, 0.95)",
+          backgroundColor: "rgba(0, 3, 4, 0.95)",
           backdropFilter: "blur(10px)",
         })
       } else {
@@ -72,7 +72,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
         gsap.to(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(101, 163, 13, 0.95)",
+          backgroundColor: "rgba(0, 3, 4, 0.95)",
           duration: 0.5,
           backdropFilter: "blur(10px)",
         })
@@ -109,7 +109,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         display: "flex",
       })
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(101, 163, 13, 0.95)",
+        backgroundColor: "rgba(0, 3, 4, 0.95)",
         opacity: 1,
         duration: 0.5,
         backdropFilter: "blur(10px)",
