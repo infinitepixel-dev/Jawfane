@@ -28,7 +28,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.set(navBarRef.current, { opacity: 1 });
         gsap.set(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 3, 4, 0.98)",
+          backgroundColor: "rgba(101, 163, 13, 0.95)",
           backdropFilter: "blur(10px)",
         });
       } else {
@@ -72,7 +72,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
         gsap.to(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 3, 4, 0.98)",
+          backgroundColor: "rgba(101, 163, 13, 0.95)",
           duration: 0.5,
           backdropFilter: "blur(10px)",
         });
@@ -109,7 +109,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         display: "flex",
       });
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(0, 3, 4, 0.98)",
+        backgroundColor: "rgba(101, 163, 13, 0.95)",
         opacity: 1,
         duration: 0.5,
         backdropFilter: "blur(10px)",
@@ -161,7 +161,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
       {isMobile && (
         <div
           ref={hamburgerRef}
-          className="sticky pl-4 top-4"
+          className="fixed pl-4 top-4"
           style={{
             zIndex: 1000,
           }}
@@ -183,7 +183,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
       <nav
         ref={navRef}
         id="navigation"
-        className={`sticky top-0 w-full z-50 transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ease-in-out ${
           !isCollapsed && !isMobile
             ? "bg-black bg-opacity-60"
             : "bg-transparent"
@@ -199,25 +199,25 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
           {["home", "merch", "music", "tour", "booking"].map((item) => (
             <li
               key={item}
-              className={`p-2 cursor-pointer relative ${
+              className={`p-2 rounded transition-transform cursor-pointer ${
                 selected === item
-                  ? `${theme === "dark" ? "text-lime-600" : "text-black"}`
-                  : `${theme === "dark" ? "text-white" : "text-black"}`
-              } ${
-                item === "merch" || item === "booking"
-                  ? "pointer-events-none line-through"
-                  : ""
-              }`}
+                  ? `bg-lime-500 ${
+                      theme === "dark" ? "text-black" : "text-white"
+                    } rounded-full`
+                  : theme === "dark"
+                  ? "hover:bg-lime-800 text-white rounded-full"
+                  : "hover:bg-gray-500 text-black rounded-full"
+              }
+            ${
+              item === "merch" || item === "booking"
+                ? "pointer-events-none line-through"
+                : ""
+            }`}
               onClick={() => handleItemClick(item)}
             >
-              <a href={`#${item}`} className="no-underline">
+              <a href={`#${item}`}>
                 {item.charAt(0).toUpperCase() + item.slice(1)}
               </a>
-              <span
-                className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
-                  selected === item ? "bg-lime-500" : "bg-transparent"
-                } transition-all duration-300 ease-in-out`}
-              ></span>
             </li>
           ))}
 
