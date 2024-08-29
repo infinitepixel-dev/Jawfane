@@ -2,7 +2,11 @@ import { useEffect, useState, useRef, useCallback } from "react"
 import { gsap } from "gsap"
 import { useLocation } from "react-router-dom"
 import propTypes from "prop-types"
+<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
 import AudioPlayer from "./AudioPlayer"
+=======
+import AudioPlayer from "@components/sub-components/AudioPlayer"
+>>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 
@@ -28,7 +32,12 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.set(navBarRef.current, { opacity: 1 })
         gsap.set(navRef.current, {
           opacity: 1,
+<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
           backgroundColor: "rgba(101, 163, 13, 0.8)",
+=======
+          backgroundColor: "rgba(0, 3, 4, 0.98)",
+          backdropFilter: "blur(10px)",
+>>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
         })
       } else {
         // Ensure the menu is always visible on mobile
@@ -71,8 +80,14 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
         gsap.to(navRef.current, {
           opacity: 1,
+<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
           backgroundColor: "rgba(101, 163, 13, 0.8)",
           duration: 0.5,
+=======
+          backgroundColor: "rgba(0, 3, 4, 0.98)",
+          duration: 0.5,
+          backdropFilter: "blur(10px)",
+>>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
         })
 
         setIsCollapsed(false)
@@ -107,9 +122,16 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         display: "flex",
       })
       gsap.to(navRef.current, {
+<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
         backgroundColor: "rgba(101, 163, 13, 0.8)",
         opacity: 1,
         duration: 0.5,
+=======
+        backgroundColor: "rgba(0, 3, 4, 0.98)",
+        opacity: 1,
+        duration: 0.5,
+        backdropFilter: "blur(10px)",
+>>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
       })
       setIsUserClosed(false)
     } else {
@@ -196,25 +218,25 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
           {["home", "merch", "music", "tour", "booking"].map((item) => (
             <li
               key={item}
-              className={`p-2 rounded transition-transform cursor-pointer ${
+              className={`p-2 cursor-pointer relative ${
                 selected === item
-                  ? `bg-lime-500 ${
-                      theme === "dark" ? "text-black" : "text-white"
-                    } rounded-full`
-                  : theme === "dark"
-                  ? "hover:bg-lime-800 text-white rounded-full"
-                  : "hover:bg-gray-500 text-black rounded-full"
-              }
-            ${
-              item === "merch" || item === "booking"
-                ? "pointer-events-none line-through"
-                : ""
-            }`}
+                  ? `${theme === "dark" ? "text-lime-600" : "text-black"}`
+                  : `${theme === "dark" ? "text-white" : "text-black"}`
+              } ${
+                item === "merch" || item === "booking"
+                  ? "pointer-events-none line-through"
+                  : ""
+              }`}
               onClick={() => handleItemClick(item)}
             >
-              <a href={`#${item}`}>
+              <a href={`#${item}`} className="no-underline">
                 {item.charAt(0).toUpperCase() + item.slice(1)}
               </a>
+              <span
+                className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
+                  selected === item ? "bg-lime-500" : "bg-transparent"
+                } transition-all duration-300 ease-in-out`}
+              ></span>
             </li>
           ))}
 
