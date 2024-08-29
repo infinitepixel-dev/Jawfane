@@ -2,7 +2,11 @@ import { useEffect, useState, useRef, useCallback } from "react"
 import { gsap } from "gsap"
 import { useLocation } from "react-router-dom"
 import propTypes from "prop-types"
+<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
 import AudioPlayer from "./AudioPlayer"
+=======
+import AudioPlayer from "@components/sub-components/AudioPlayer"
+>>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 
@@ -19,6 +23,23 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     const handleResize = () => {
       const isNowMobile = window.innerWidth < 768
       setIsMobile(isNowMobile)
+
+      if (!isNowMobile) {
+        // Ensure the menu is always visible on desktop
+        gsap.set(navBarRef.current, { opacity: 1 })
+        gsap.set(navRef.current, {
+          opacity: 1,
+<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
+          backgroundColor: "rgba(101, 163, 13, 0.8)",
+=======
+          backgroundColor: "rgba(0, 3, 4, 0.98)",
+          backdropFilter: "blur(10px)",
+>>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
+        })
+      } else {
+        // Ensure the menu is always visible on mobile
+        gsap.set(navBarRef.current, { opacity: 1 })
+      }
     }
 
     window.addEventListener("resize", handleResize)
@@ -52,25 +73,84 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
       if (isNavVisible) {
         gsap.to(navBarRef.current, {
           opacity: 1,
-          height: "auto", // Ensure it expands to show the menu items
+<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
+          backgroundColor: "rgba(101, 163, 13, 0.8)",
           duration: 0.5,
-          ease: "power2.out",
-        })
-        navBarRef.current.classList.remove("hidden")
-      } else {
-        // If the navbar is visible, hide it
-        gsap.to(navBarRef.current, {
-          opacity: 0,
-          height: 0, // Collapse the menu
+=======
+          backgroundColor: "rgba(0, 3, 4, 0.98)",
           duration: 0.5,
-          ease: "power2.out",
+          backdropFilter: "blur(10px)",
+>>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
         })
-        navBarRef.current.classList.add("hidden")
+
+        setIsCollapsed(false)
+
+        timeoutRef.current = setTimeout(() => {
+          gsap.to(navBarRef.current, { opacity: 0, duration: 1 })
+          gsap.to(navRef.current, {
+            opacity: 0,
+            backgroundColor: "transparent",
+            duration: 1,
+          })
+          setIsCollapsed(true)
+        }, 5000)
       }
     }
 
-    setToggleNavbar((prev) => !prev) // Toggle the state to control navbar visibility
-  }, [isMobile, setToggleNavbar])
+    window.addEventListener("scroll", resetFade)
+
+    return () => {
+      window.removeEventListener("scroll", resetFade)
+    }
+  }, [isMobile, isUserClosed])
+
+  // Toggle navbar with GSAP (for mobile and desktop)
+  const toggleNavbar = useCallback(() => {
+    if (isCollapsed) {
+      gsap.to(navBarRef.current, {
+        opacity: 1,
+        height: "auto",
+        duration: 0.5,
+        ease: "power2.out",
+        display: "flex",
+      })
+      gsap.to(navRef.current, {
+<<<<<<< Updated upstream:src/components/sub-components/Navigation.jsx
+        backgroundColor: "rgba(101, 163, 13, 0.8)",
+        opacity: 1,
+        duration: 0.5,
+=======
+        backgroundColor: "rgba(0, 3, 4, 0.98)",
+        opacity: 1,
+        duration: 0.5,
+        backdropFilter: "blur(10px)",
+>>>>>>> Stashed changes:src/components/navigation/Navigation.jsx
+      })
+      setIsUserClosed(false)
+    } else {
+      gsap.to(navBarRef.current, {
+        opacity: isMobile ? 1 : 0,
+        duration: 0.5,
+        ease: "power2.in",
+        height: 0,
+        display: "none",
+      })
+      gsap.to(navRef.current, {
+        backgroundColor: "transparent",
+        opacity: isMobile ? 1 : 0,
+        duration: 0.5,
+      })
+      setIsUserClosed(true)
+    }
+
+    setIsCollapsed(!isCollapsed)
+  }, [isCollapsed, isMobile])
+
+  useEffect(() => {
+    if (setToggleNavbar) {
+      setToggleNavbar(() => toggleNavbar)
+    }
+  }, [setToggleNavbar, toggleNavbar])
 
   const handleItemClick = (item) => {
     setSelected(item)
@@ -126,18 +206,25 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
           {["music", "tour", "booking"].map((item) => (
             <li
               key={item}
-              className={`p-2 rounded transition-transform cursor-pointer ${
+              className={`p-2 cursor-pointer relative ${
                 selected === item
-                  ? `bg-sky-500 ${
-                      theme === "dark" ? "text-black" : "text-slate-950"
-                    } rounded-full`
-                  : theme === "dark"
-                  ? "hover:bg-sky-700 text-white rounded-full"
-                  : "hover:bg-gray-500 text-slate-950 rounded-full"
+                  ? `${theme === "dark" ? "text-lime-600" : "text-black"}`
+                  : `${theme === "dark" ? "text-white" : "text-black"}`
+              } ${
+                item === "merch" || item === "booking"
+                  ? "pointer-events-none line-through"
+                  : ""
               }`}
               onClick={() => handleItemClick(item)}
             >
-              <span>{item.charAt(0).toUpperCase() + item.slice(1)}</span>
+              <a href={`#${item}`} className="no-underline">
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </a>
+              <span
+                className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
+                  selected === item ? "bg-lime-500" : "bg-transparent"
+                } transition-all duration-300 ease-in-out`}
+              ></span>
             </li>
           ))}
 
