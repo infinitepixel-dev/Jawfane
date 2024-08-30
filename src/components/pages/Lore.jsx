@@ -1,97 +1,105 @@
-import { useRef, useState, useEffect } from "react"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useRef, useState, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
 function Lore() {
-  const panels = useRef([])
-  const [activeIndex, setActiveIndex] = useState(null)
+  const panels = useRef([]);
+  const [activeIndex, setActiveIndex] = useState(null);
 
   useEffect(() => {
-    panels.current.forEach((panel) => {
-      gsap.fromTo(
-        panel,
-        { opacity: 0, scale: 0.9 },
-        {
-          opacity: 1,
-          scale: 1,
+    panels.current.forEach((panel, index) => {
+      ScrollTrigger.create({
+        trigger: panel,
+        start: "top top",
+        end: "bottom bottom",
+        onEnter: () => setActiveIndex(index),
+        onLeaveBack: () => setActiveIndex(null),
+        snap: {
+          snapTo: 1, // Snap to the nearest panel
           duration: 0.5,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: panel,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      )
-    })
-  }, [])
+          ease: "power2.inOut",
+        },
+        markers: false,
+      });
+    });
+
+    // Handle the last panel specifically
+    ScrollTrigger.create({
+      trigger: panels.current[panels.current.length - 1],
+      start: "top top",
+      end: "bottom+=100% bottom", // Extend the end value to prevent bouncing
+      onEnter: () => setActiveIndex(panels.current.length - 1),
+      onLeaveBack: () => setActiveIndex(null),
+      snap: false, // Disable snapping for the last panel
+    });
+  }, []);
 
   const handleClick = (index) => {
-    const panel = panels.current[index]
-    const bio = panel.querySelector(".bio")
-    const image = panel.querySelector(".bg-image")
+    const panel = panels.current[index];
+    const bio = panel.querySelector(".bio");
+    const image = panel.querySelector(".bg-image");
 
     if (activeIndex === index) {
-      setActiveIndex(null)
+      setActiveIndex(null);
       gsap.to(panel, {
         flex: 1,
         ease: "power2.inOut",
         duration: 0.5,
-      })
+      });
       gsap.to(image, {
         scale: 1,
         y: 0,
         duration: 0.5,
         ease: "power2.inOut",
-      })
+      });
       gsap.to(bio, {
         height: 0,
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => (bio.style.display = "none"),
-      })
+      });
     } else {
       if (activeIndex !== null) {
-        const prevPanel = panels.current[activeIndex]
-        const prevBio = prevPanel.querySelector(".bio")
-        const prevImage = prevPanel.querySelector(".bg-image")
+        const prevPanel = panels.current[activeIndex];
+        const prevBio = prevPanel.querySelector(".bio");
+        const prevImage = prevPanel.querySelector(".bg-image");
         gsap.to(prevPanel, {
           flex: 1,
           ease: "power2.inOut",
           duration: 0.5,
-        })
+        });
         gsap.to(prevImage, {
           scale: 1,
           y: 0,
           duration: 0.5,
           ease: "power2.inOut",
-        })
+        });
         gsap.to(prevBio, {
           height: 0,
           opacity: 0,
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => (prevBio.style.display = "none"),
-        })
+        });
       }
 
-      setActiveIndex(index)
+      setActiveIndex(index);
       gsap.to(panel, {
         flex: 5,
         ease: "power2.inOut",
         duration: 0.5,
-      })
+      });
       gsap.to(image, {
         scale: 1.3,
         y: -50,
         transformOrigin: "center top",
         duration: 0.5,
         ease: "power2.inOut",
-      })
-      bio.style.display = "block"
+      });
+      bio.style.display = "block";
       gsap.fromTo(
         bio,
         { height: 0, opacity: 0 },
@@ -101,9 +109,9 @@ function Lore() {
           duration: 0.5,
           ease: "power2.inOut",
         }
-      )
+      );
     }
-  }
+  };
 
   const handleMouseEnter = (index) => {
     if (activeIndex !== index) {
@@ -111,14 +119,14 @@ function Lore() {
         scale: 1.1,
         duration: 0.3,
         ease: "power2.inOut",
-      })
+      });
       gsap.to(panels.current[index], {
         flex: 2,
         ease: "power2.inOut",
         duration: 0.3,
-      })
+      });
     }
-  }
+  };
 
   const handleMouseLeave = (index) => {
     if (activeIndex !== index) {
@@ -126,14 +134,14 @@ function Lore() {
         scale: 1,
         duration: 0.3,
         ease: "power2.inOut",
-      })
+      });
       gsap.to(panels.current[index], {
         flex: 1,
         ease: "power2.inOut",
         duration: 0.3,
-      })
+      });
     }
-  }
+  };
 
   return (
     <div
@@ -147,7 +155,7 @@ function Lore() {
           onClick={() => handleClick(index)}
           onMouseEnter={() => handleMouseEnter(index)}
           onMouseLeave={() => handleMouseLeave(index)}
-          className={`flex-1 flex flex-col justify-center items-center bg-center bg-cover text-center relative transition-all duration-500 ease-in-out w-full h-60 md:h-full cursor-pointer`}
+          className="flex-1 flex flex-col justify-center items-center bg-center bg-cover text-center relative transition-all duration-500 ease-in-out w-full h-full cursor-pointer"
           role="button"
           tabIndex={0}
           aria-expanded={activeIndex === index}
@@ -175,7 +183,7 @@ function Lore() {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 const bandData = [
@@ -209,6 +217,6 @@ const bandData = [
       "https://townsquare.media/site/366/files/2017/02/Zakk-Wylde-Ozzy-Osbourne.jpg?w=1200&h=0&zc=1&s=0&a=t&q=89",
     bio: "Zakk Wylde is the guitarist and singer of Black Label Society.",
   },
-]
+];
 
-export default Lore
+export default Lore;

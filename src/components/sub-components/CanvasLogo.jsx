@@ -57,16 +57,16 @@ const AnimatedLogo = ({ theme, isMobile }) => {
   return (
     <div
       id="animatedLogo"
-      className="relative flex items-center justify-center w-full min-h-screen"
+      className="relative flex items-center justify-center w-full h-screen overflow-hidden"
     >
       {isMobile === true ? (
         <img
           src={hero_bg_mobile}
           alt="Hero Background"
-          className="absolute min-h-screen w-full "
+          className="absolute h-screen w-full "
           style={{
             margin: "0 auto",
-            top: -50,
+            // top: -50,
             // image constrast and brightness
             filter: "contrast(1.2) brightness(0.27)",
           }}
@@ -76,7 +76,7 @@ const AnimatedLogo = ({ theme, isMobile }) => {
           src={hero_bg}
           alt="Hero Background"
           className="block w-full"
-          style={{ display: "block", margin: "0 auto" }}
+          style={{ margin: "0 auto" }}
         />
       )}
 

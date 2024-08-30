@@ -15,7 +15,8 @@ function Home({ theme, isMobile }) {
   // console.log("Home component rendered");
 
   return (
-    <div id="main-app" className="w-screen">
+    // <div id="main-app" className="w-screen">
+    <div id="main-app" className="w-screen overflow-x-hidden">
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <Tour theme={theme} />
       <Merch theme={theme} />

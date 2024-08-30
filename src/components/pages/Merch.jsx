@@ -29,6 +29,9 @@ function MerchPage({ addToCart, cartItems }) {
   const modalRef = useRef(null); //determins if the image modal is open or not
 
   const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`;
+  //TODO: use product apiURL
+  //REVIEW temp apiUrl
+  // const apiUrl = "http://66.128.253.47:3082/api/products";
 
   const convertBlobToBase64 = (blob) => {
     if (!blob) return null;
@@ -73,9 +76,39 @@ function MerchPage({ addToCart, cartItems }) {
   }, [isModalOpen]);
 
   // Fetch products and set animations for each card
+  //v1
+  // useEffect(() => {
+  //   fetch(apiUrl)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setProducts(data);
+  //       setIsAnimating(new Array(data.length).fill(false)); // Initialize animation status for each product
+  //       cardRefs.current = Array(data.length).fill(null); // Initialize refs for each product card
+
+  //       // Set meta description and keywords based on the first product as an example
+  //       if (data.length > 0) {
+  //         // setMetaDescription(data[0].description || "The best pet ever!");
+  //         // setMetaKeywords(data[0].keywords || "Corgi, Ruler, Bork");
+  //       }
+  //     })
+  //     .catch((err) => console.error(err));
+  // }, [apiUrl]);
+
+  //v2
   useEffect(() => {
-    fetch(apiUrl)
-      .then((res) => res.json())
+    fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Include credentials (cookies, etc.) if needed
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         setProducts(data);
         setIsAnimating(new Array(data.length).fill(false)); // Initialize animation status for each product
@@ -87,7 +120,7 @@ function MerchPage({ addToCart, cartItems }) {
           // setMetaKeywords(data[0].keywords || "Corgi, Ruler, Bork");
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Fetch error:", err));
   }, [apiUrl]);
 
   // GSAP entrance animation for product cards
@@ -215,7 +248,10 @@ function MerchPage({ addToCart, cartItems }) {
   let addToCartButton = "bg-lime-600 hover:bg-lime-500";
 
   return (
-    <div id="merch" className="container z-10 mx-auto p-4">
+    <div
+      id="merch"
+      className="container min-h-screen z-10 mx-auto p-4 overflow-y-auto"
+    >
       {/* <Helmet>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
