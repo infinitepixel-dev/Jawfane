@@ -100,7 +100,7 @@ const Navigation = ({ theme }) => {
           isCollapsed && isMobile ? "hidden" : "flex"
         } flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-32 font-extrabold transition-all duration-300 ease-in-out`}
       >
-        {["home", "merch", "music", "tour", "booking"].map((item) => (
+        {["merch", "tour", "music", "lore", "booking"].map((item) => (
           <li
             key={item}
             className={`p-2 rounded transition-transform cursor-pointer ${
