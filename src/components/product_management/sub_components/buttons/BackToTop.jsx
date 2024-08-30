@@ -21,15 +21,7 @@ const BackToTop = () => {
   const nextButtonRef = useRef(null)
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
 
-  const sections = [
-    "home",
-    "merch",
-    "music",
-    "tour",
-    "lore",
-    "booking",
-    "footer",
-  ] // List of sections
+  const sections = ["home", "tour", "merch", "lore", "music", "footer"] // List of sections
 
   useEffect(() => {
     const toggleVisibility = () => {
