@@ -215,7 +215,10 @@ function MerchPage({ addToCart, cartItems }) {
   let addToCartButton = "bg-lime-600 hover:bg-lime-500";
 
   return (
-    <div id="merch" className="container z-10 mx-auto p-4">
+    <div
+      id="merch"
+      className="container h-min-screen z-10 mx-auto p-4 overflow-hidden"
+    >
       {/* <Helmet>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />

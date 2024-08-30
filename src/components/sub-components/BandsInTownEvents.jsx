@@ -1,29 +1,29 @@
-import { useState, useEffect, useRef } from "react"
-import propTypes from "prop-types"
-import axios from "axios"
-import { gsap } from "gsap"
+import { useState, useEffect, useRef } from "react";
+import propTypes from "prop-types";
+import axios from "axios";
+import { gsap } from "gsap";
 
 const BandsInTownEvents = ({ artistName }) => {
-  const [events, setEvents] = useState([])
-  const eventListRef = useRef(null)
-  const widgetRef = useRef(null) // Ref for the BandsInTown widget
+  const [events, setEvents] = useState([]);
+  const eventListRef = useRef(null);
+  const widgetRef = useRef(null); // Ref for the BandsInTown widget
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const appId = "YOUR_APP_ID" // Replace with your Bandsintown App ID
+        const appId = "YOUR_APP_ID"; // Replace with your Bandsintown App ID
         const response = await axios.get(
           `https://rest.bandsintown.com/artists/${artistName}/events?app_id=${appId}`
-        )
+        );
 
-        setEvents(response.data)
+        setEvents(response.data);
       } catch (error) {
-        console.error("Error fetching events:", error)
+        console.error("Error fetching events:", error);
       }
-    }
+    };
 
-    fetchEvents()
-  }, [artistName])
+    fetchEvents();
+  }, [artistName]);
 
   // Animation for the events list
   useEffect(() => {
@@ -35,27 +35,27 @@ const BandsInTownEvents = ({ artistName }) => {
               entry.target.children,
               { opacity: 0, y: 50 },
               { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 }
-            )
-            observer.unobserve(entry.target)
+            );
+            observer.unobserve(entry.target);
           }
-        })
-      })
+        });
+      });
 
-      const currentRef = eventListRef.current
+      const currentRef = eventListRef.current;
 
       if (currentRef) {
-        observer.observe(currentRef)
+        observer.observe(currentRef);
       }
 
       return () => {
-        if (currentRef) observer.unobserve(currentRef)
-      }
+        if (currentRef) observer.unobserve(currentRef);
+      };
     }
-  }, [events])
+  }, [events]);
 
   // GSAP animation for the widget
   useEffect(() => {
-    const widgetElement = widgetRef.current
+    const widgetElement = widgetRef.current;
 
     if (widgetElement) {
       const observer = new IntersectionObserver((entries) => {
@@ -65,34 +65,34 @@ const BandsInTownEvents = ({ artistName }) => {
               entry.target,
               { opacity: 0, scale: 0.8 },
               { opacity: 1, scale: 1, duration: 1 }
-            )
-            observer.unobserve(entry.target)
+            );
+            observer.unobserve(entry.target);
           }
-        })
-      })
+        });
+      });
 
-      observer.observe(widgetElement)
+      observer.observe(widgetElement);
 
       return () => {
-        if (widgetElement) observer.unobserve(widgetElement)
-      }
+        if (widgetElement) observer.unobserve(widgetElement);
+      };
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    const script = document.createElement("script")
-    script.src = "https://widgetv3.bandsintown.com/main.min.js"
-    script.charset = "utf-8"
-    script.async = true
-    document.body.appendChild(script)
+    const script = document.createElement("script");
+    script.src = "https://widgetv3.bandsintown.com/main.min.js";
+    script.charset = "utf-8";
+    script.async = true;
+    document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
+      document.body.removeChild(script);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen px-4 py-10 text-gray-600 bg-gray-200">
+    <div className="px-4 py-10 text-gray-600 bg-gray-200">
       <h1 className="mb-8 text-3xl font-bold text-center md:text-4xl">
         {artistName} Tour Dates
       </h1>
@@ -179,11 +179,11 @@ const BandsInTownEvents = ({ artistName }) => {
         ></a>
       </div>
     </div>
-  )
-}
+  );
+};
 
 BandsInTownEvents.propTypes = {
   artistName: propTypes.string.isRequired,
-}
+};
 
-export default BandsInTownEvents
+export default BandsInTownEvents;
