@@ -10,7 +10,7 @@ const BackToTop = () => {
   const nextButtonRef = useRef(null);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
-  const sections = ["home", "tour", "merch", "music", "footer"]; // List of sections
+  const sections = ["home", "tour", "merch", "lore", "music", "footer"]; // List of sections
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -85,14 +85,14 @@ const BackToTop = () => {
   };
 
   const upButtonColor = isVisible
-    ? "border border-slate-500 bg-slate-800 hover:bg-slate-700"
-    : "bg-gray-700";
+    ? "border border-slate-500 bg-lime-700 hover:bg-lime-500"
+    : "bg-lime-600";
   const downButtonColor = showNextButton
-    ? "border border-slate-500 bg-blue-500 hover:bg-blue-700"
-    : "bg-gray-500";
+    ? "border border-slate-500 bg-lime-700 hover:bg-lime-600"
+    : "bg-lime-600";
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col space-y-2">
+    <div className="fixed bottom-6 right-4 z-50 flex flex-col space-y-2">
       <button
         ref={buttonRef}
         onClick={scrollToTop}

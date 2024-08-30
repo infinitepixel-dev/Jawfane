@@ -1,109 +1,116 @@
-import { useEffect, useState, useRef, useCallback } from "react"
-import { gsap } from "gsap"
-import { useLocation } from "react-router-dom"
-import propTypes from "prop-types"
-import AudioPlayer from "@components/sub-components/AudioPlayer"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
+import { useEffect, useState, useRef, useCallback } from "react";
+import { gsap } from "gsap";
+import { useLocation } from "react-router-dom";
+import propTypes from "prop-types";
+import AudioPlayer from "@components/sub-components/AudioPlayer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
-  const location = useLocation()
-  const [selected, setSelected] = useState("")
-  const [isCollapsed, setIsCollapsed] = useState(true)
-  const [isUserClosed, setIsUserClosed] = useState(false)
-  const navBarRef = useRef(null)
-  const navRef = useRef(null)
-  const timeoutRef = useRef(null)
-  const lastScrollTopRef = useRef(0)
-  const inactivityTimeoutRef = useRef(null)
-  const hamburgerRef = useRef(null)
+  const location = useLocation();
+  const [selected, setSelected] = useState("");
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isUserClosed, setIsUserClosed] = useState(false);
+  const navBarRef = useRef(null);
+  const navRef = useRef(null);
+  // const timeoutRef = useRef(null);
+  const lastScrollTopRef = useRef(0);
+  const inactivityTimeoutRef = useRef(null);
+  const hamburgerRef = useRef(null);
+
+  // if mobile start the menu closed
+  useEffect(() => {
+    if (isMobile) {
+      setIsCollapsed(true);
+    }
+  }, [isMobile]);
 
   // Handle resize to detect mobile vs desktop
   useEffect(() => {
     const handleResize = () => {
-      const isNowMobile = window.innerWidth < 768
-      setIsMobile(isNowMobile)
+      const isNowMobile = window.innerWidth < 768;
+      setIsMobile(isNowMobile);
 
       if (!isNowMobile) {
         // Ensure the menu is always visible on desktop
-        gsap.set(navBarRef.current, { opacity: 1 })
+        gsap.set(navBarRef.current, { opacity: 1 });
         gsap.set(navRef.current, {
           opacity: 1,
           backgroundColor: "rgba(0, 3, 4, 0.95)",
           backdropFilter: "blur(10px)",
-        })
+        });
       } else {
         // Ensure the menu is always visible on mobile
-        gsap.set(navBarRef.current, { opacity: 1 })
+        gsap.set(navBarRef.current, { opacity: 1 });
       }
-    }
+    };
 
-    window.addEventListener("resize", handleResize)
-    handleResize() // Initial check on load
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check on load
 
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Handle URL hash scrolling on initial load
   useEffect(() => {
-    const hash = location.hash.substring(1)
-    setSelected(hash ? hash : "home")
+    const hash = location.hash.substring(1);
+    setSelected(hash ? hash : "home");
 
     if (hash) {
-      const targetElement = document.getElementById(hash)
+      const targetElement = document.getElementById(hash);
       if (targetElement) {
         gsap.to(window, {
           scrollTo: { y: targetElement, offsetY: 0 },
           duration: 1,
           ease: "power2.inOut",
-        })
+        });
       }
     }
-  }, [location])
+  }, [location]);
 
   // Handle navbar visibility and fade on scroll
   useEffect(() => {
     const handleScroll = () => {
       // Reset inactivity timeout
       if (inactivityTimeoutRef.current) {
-        clearTimeout(inactivityTimeoutRef.current)
+        clearTimeout(inactivityTimeoutRef.current);
       }
 
       // Show menu when scrolling
-      gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
+      gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
       gsap.to(navRef.current, {
         opacity: 1,
         backgroundColor: "rgba(0, 3, 4, 0.95)",
         duration: 0.5,
         backdropFilter: "blur(10px)",
-      })
-      setIsCollapsed(false)
+      });
+      // setIsCollapsed(false);
 
       // Set timeout to hide navigation if user is inactive for 2 seconds
       inactivityTimeoutRef.current = setTimeout(() => {
         if (!isMobile && !isUserClosed) {
-          gsap.to(navBarRef.current, { opacity: 0, duration: 0.5 })
+          gsap.to(navBarRef.current, { opacity: 0, duration: 0.5 });
           gsap.to(navRef.current, {
             opacity: 0,
             backgroundColor: "transparent",
             duration: 0.5,
-          })
-          setIsCollapsed(true)
+          });
+          setIsCollapsed(true);
         }
-      }, 5000) // 2-second delay
+      }, 5000); // 2-second delay
 
-      lastScrollTopRef.current = window.scrollY
-    }
+      lastScrollTopRef.current = window.scrollY;
+    };
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("scroll", handleScroll);
       if (inactivityTimeoutRef.current) {
-        clearTimeout(inactivityTimeoutRef.current)
+        clearTimeout(inactivityTimeoutRef.current);
       }
-    }
-  }, [isMobile, isUserClosed])
+    };
+  }, [isMobile, isUserClosed]);
 
   // Toggle navbar with GSAP (for mobile and desktop)
   const toggleNavbar = useCallback(() => {
@@ -114,14 +121,14 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         duration: 0.5,
         ease: "power2.out",
         display: "flex",
-      })
+      });
       gsap.to(navRef.current, {
         backgroundColor: "rgba(0, 3, 4, 0.95)",
         opacity: 1,
         duration: 0.5,
         backdropFilter: "blur(10px)",
-      })
-      setIsUserClosed(false)
+      });
+      setIsUserClosed(false);
     } else {
       gsap.to(navBarRef.current, {
         opacity: isMobile ? 1 : 0,
@@ -129,38 +136,38 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         ease: "power2.in",
         height: 0,
         display: "none",
-      })
+      });
       gsap.to(navRef.current, {
         backgroundColor: "transparent",
         opacity: isMobile ? 1 : 0,
         duration: 0.5,
-      })
-      setIsUserClosed(true)
+      });
+      setIsUserClosed(true);
     }
 
-    setIsCollapsed(!isCollapsed)
-  }, [isCollapsed, isMobile])
+    setIsCollapsed(!isCollapsed);
+  }, [isCollapsed, isMobile]);
 
   useEffect(() => {
     if (setToggleNavbar) {
-      setToggleNavbar(() => toggleNavbar)
+      setToggleNavbar(() => toggleNavbar);
     }
-  }, [setToggleNavbar, toggleNavbar])
+  }, [setToggleNavbar, toggleNavbar]);
 
   const handleItemClick = (item) => {
-    setSelected(item)
-    const targetElement = document.getElementById(item)
+    setSelected(item);
+    const targetElement = document.getElementById(item);
     if (targetElement) {
       gsap.to(window, {
         scrollTo: { y: targetElement, offsetY: 0 },
         duration: 1,
         ease: "power2.inOut",
-      })
+      });
     }
     if (isMobile) {
-      toggleNavbar()
+      toggleNavbar();
     }
-  }
+  };
 
   return (
     <>
@@ -211,10 +218,9 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
                   ? `${theme === "dark" ? "text-lime-500" : "text-black"}`
                   : `${theme === "dark" ? "text-white" : "text-black"}`
               } ${
-                item === "merch" || item === "booking"
-                  ? "pointer-events-none line-through"
-                  : ""
+                item === "booking" ? "pointer-events-none line-through" : ""
               }`}
+              // items above will prevent the click event from firing
               onClick={() => handleItemClick(item)}
             >
               <a href={`#${item}`} className="no-underline">
@@ -233,14 +239,14 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         </ul>
       </nav>
     </>
-  )
-}
+  );
+};
 
 Navigation.propTypes = {
   theme: propTypes.string.isRequired,
   setToggleNavbar: propTypes.func,
   isMobile: propTypes.bool.isRequired,
   setIsMobile: propTypes.func.isRequired,
-}
+};
 
-export default Navigation
+export default Navigation;

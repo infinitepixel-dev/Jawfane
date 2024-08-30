@@ -6,16 +6,20 @@ import Tour from "./Tour";
 import Merch from "./Merch";
 import MusicVideos from "./MusicVideos";
 import Footer from "../sub-components/Footer";
+import Lore from "./Lore";
 
 //INFO Sub-components imports
 import CanvasLogo from "../sub-components/CanvasLogo";
 
 function Home({ theme, isMobile }) {
+  // console.log("Home component rendered");
+
   return (
     <div id="main-app" className="w-screen">
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <Tour theme={theme} />
       <Merch theme={theme} />
+      <Lore theme={theme} />
       <MusicVideos theme={theme} />
       <Footer theme={theme} />
     </div>
