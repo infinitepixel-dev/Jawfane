@@ -96,11 +96,11 @@ const BackToTop = () => {
   }
 
   const upButtonColor = isVisible
-    ? "border border-slate-500 bg-slate-800 hover:bg-slate-700"
-    : "bg-gray-700"
+    ? "border border-slate-500 bg-lime-700 hover:bg-lime-500"
+    : "bg-lime-600"
   const downButtonColor = showNextButton
-    ? "border border-slate-500 bg-blue-500 hover:bg-blue-700"
-    : "bg-gray-500"
+    ? "border border-slate-500 bg-lime-700 hover:bg-lime-600"
+    : "bg-lime-600"
 
   return (
     <div className="fixed z-50 flex flex-col space-y-2 bottom-6 right-4">
