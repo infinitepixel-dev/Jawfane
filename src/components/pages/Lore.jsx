@@ -1,184 +1,173 @@
-import { useRef, useState, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState, useEffect } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
-// Register the ScrollTrigger plugin with GSAP
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger)
 
 function Lore() {
-  // Create a reference to hold the panels (cards) elements
-  const panels = useRef([]);
-  // State to keep track of the currently active (expanded) panel
-  const [activeIndex, setActiveIndex] = useState(null);
+  const panels = useRef([])
+  const [activeIndex, setActiveIndex] = useState(null)
 
-  // useEffect to animate panels when they enter the viewport
   useEffect(() => {
     panels.current.forEach((panel) => {
       gsap.fromTo(
         panel,
-        { opacity: 0, scale: 0.9 }, // Initial state: slightly smaller and transparent
+        { opacity: 0, scale: 0.9 },
         {
           opacity: 1,
           scale: 1,
           duration: 0.5,
           ease: "power2.out",
           scrollTrigger: {
-            trigger: panel, // Trigger animation when this panel enters the viewport
+            trigger: panel,
             start: "top 80%",
-            toggleActions: "play none none reverse", // Play the animation when in view, reverse when out
+            toggleActions: "play none none reverse",
           },
         }
-      );
-    });
-  }, []);
+      )
+    })
+  }, [])
 
-  // Function to handle clicks on a panel
   const handleClick = (index) => {
-    const panel = panels.current[index]; // Get the clicked panel
-    const bio = panel.querySelector(".bio"); // Get the bio section inside the panel
-    const image = panel.querySelector(".bg-image"); // Get the background image element
+    const panel = panels.current[index]
+    const bio = panel.querySelector(".bio")
+    const image = panel.querySelector(".bg-image")
 
-    // If the clicked panel is already active, collapse it
     if (activeIndex === index) {
-      setActiveIndex(null); // Reset the active index
+      setActiveIndex(null)
       gsap.to(panel, {
-        flex: 1, // Reduce the panel back to its original size
+        flex: 1,
         ease: "power2.inOut",
         duration: 0.5,
-      });
+      })
       gsap.to(image, {
-        scale: 1, // Reset the zoom on the image
-        y: 0, // Reset the vertical position
+        scale: 1,
+        y: 0,
         duration: 0.5,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(bio, {
-        height: 0, // Collapse the bio section
-        opacity: 0, // Fade out the bio section
+        height: 0,
+        opacity: 0,
         duration: 0.5,
         ease: "power2.inOut",
-        onComplete: () => (bio.style.display = "none"), // Hide the bio after animation completes
-      });
+        onComplete: () => (bio.style.display = "none"),
+      })
     } else {
-      // If another panel is active, collapse it first
       if (activeIndex !== null) {
-        const prevPanel = panels.current[activeIndex]; // Get the previously active panel
-        const prevBio = prevPanel.querySelector(".bio"); // Get the bio section of the previous panel
-        const prevImage = prevPanel.querySelector(".bg-image"); // Get the previous image element
+        const prevPanel = panels.current[activeIndex]
+        const prevBio = prevPanel.querySelector(".bio")
+        const prevImage = prevPanel.querySelector(".bg-image")
         gsap.to(prevPanel, {
-          flex: 1, // Reduce the previous panel back to its original size
+          flex: 1,
           ease: "power2.inOut",
           duration: 0.5,
-        });
+        })
         gsap.to(prevImage, {
-          scale: 1, // Reset the zoom on the previous image
-          y: 0, // Reset the vertical position
+          scale: 1,
+          y: 0,
           duration: 0.5,
           ease: "power2.inOut",
-        });
+        })
         gsap.to(prevBio, {
-          height: 0, // Collapse the previous bio section
-          opacity: 0, // Fade out the previous bio section
+          height: 0,
+          opacity: 0,
           duration: 0.5,
           ease: "power2.inOut",
-          onComplete: () => (prevBio.style.display = "none"), // Hide the previous bio after animation completes
-        });
+          onComplete: () => (prevBio.style.display = "none"),
+        })
       }
 
-      // Expand the clicked panel
-      setActiveIndex(index); // Set the clicked panel as active
+      setActiveIndex(index)
       gsap.to(panel, {
-        flex: 5, // Expand the clicked panel
+        flex: 5,
         ease: "power2.inOut",
         duration: 0.5,
-      });
+      })
       gsap.to(image, {
-        scale: 1.3, // Zoom in on the image more toward the face
-        y: -50, // Smoothly move the image upward
-        transformOrigin: "center top", // Adjust the zoom origin to focus more on the face
+        scale: 1.3,
+        y: -50,
+        transformOrigin: "center top",
         duration: 0.5,
         ease: "power2.inOut",
-      });
-      bio.style.display = "block"; // Make the bio section visible
+      })
+      bio.style.display = "block"
       gsap.fromTo(
         bio,
-        { height: 0, opacity: 0 }, // Initial state: collapsed and transparent
+        { height: 0, opacity: 0 },
         {
           height: "auto",
           opacity: 1,
           duration: 0.5,
           ease: "power2.inOut",
         }
-      );
+      )
     }
-  };
+  }
 
-  // Function to handle hover effect
   const handleMouseEnter = (index) => {
     if (activeIndex !== index) {
       gsap.to(panels.current[index].querySelector(".bg-image"), {
-        scale: 1.1, // Slightly zoom in on hover
+        scale: 1.1,
         duration: 0.3,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(panels.current[index], {
-        flex: 2, // Slightly expand the panel on hover
+        flex: 2,
         ease: "power2.inOut",
         duration: 0.3,
-      });
+      })
     }
-  };
+  }
 
   const handleMouseLeave = (index) => {
     if (activeIndex !== index) {
       gsap.to(panels.current[index].querySelector(".bg-image"), {
-        scale: 1, // Reset the zoom on hover out
+        scale: 1,
         duration: 0.3,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(panels.current[index], {
-        flex: 1, // Return to original size when not hovered
+        flex: 1,
         ease: "power2.inOut",
         duration: 0.3,
-      });
+      })
     }
-  };
+  }
 
   return (
     <div
       id="lore"
-      className="flex flex-wrap h-screen bg-gray-900 text-white overflow-hidden"
+      className="flex flex-col h-screen overflow-hidden text-white bg-gray-900 md:flex-row"
     >
       {bandData.map((band, index) => (
         <div
           key={index}
-          ref={(el) => (panels.current[index] = el)} // Assign the panel element to the ref array
-          onClick={() => handleClick(index)} // Attach click handler
-          onMouseEnter={() => handleMouseEnter(index)} // Attach hover effect
-          onMouseLeave={() => handleMouseLeave(index)} // Remove hover effect
-          className={`flex-1 flex flex-col justify-center items-center bg-center bg-cover text-center relative transition-all duration-500 ease-in-out w-full md:w-1/5 h-80 md:h-full cursor-pointer`}
+          ref={(el) => (panels.current[index] = el)}
+          onClick={() => handleClick(index)}
+          onMouseEnter={() => handleMouseEnter(index)}
+          onMouseLeave={() => handleMouseLeave(index)}
+          className={`flex-1 flex flex-col justify-center items-center bg-center bg-cover text-center relative transition-all duration-500 ease-in-out w-full h-60 md:h-full cursor-pointer`}
           role="button"
           tabIndex={0}
-          aria-expanded={activeIndex === index} // ARIA attribute for accessibility
-          aria-label={`Learn more about ${band.member}`} // ARIA label for screen readers
+          aria-expanded={activeIndex === index}
+          aria-label={`Learn more about ${band.member}`}
           style={{
-            minWidth: 0, // Ensure the panels do not cause overflow
-            padding: "0 2px", // Add some padding to prevent content from being cut off
+            minWidth: 0,
+            padding: "0 2px",
           }}
         >
           <div
-            className="bg-image absolute inset-0 bg-no-repeat bg-center bg-cover transition-transform duration-500 ease-in-out"
+            className="absolute inset-0 transition-transform duration-500 ease-in-out bg-center bg-no-repeat bg-cover bg-image"
             style={{ backgroundImage: `url(${band.imageUrl})` }}
           ></div>
-          {/* Overlay and Text Content */}
-          <div className="relative z-10 w-full bg-black bg-opacity-50 p-4 flex flex-col justify-center items-center">
-            <p className="uppercase font-light text-lg md:text-xl text-shadow-sm">
+          <div className="relative z-10 flex flex-col items-center justify-center w-full p-4 bg-black bg-opacity-50">
+            <p className="text-lg font-light uppercase md:text-xl text-shadow-sm">
               {band.member}
             </p>
           </div>
-          {/* Bio section that is initially hidden */}
           <div
-            className="bio relative z-10 w-full bg-black bg-opacity-90 text-white p-6 text-center text-lg md:text-xl"
+            className="relative z-10 w-full p-6 text-lg text-center text-white bg-black bio bg-opacity-90 md:text-xl"
             style={{ display: "none" }}
           >
             <p>{band.bio}</p>
@@ -186,10 +175,9 @@ function Lore() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
-// Data for each band member
 const bandData = [
   {
     member: "Cory Pack",
@@ -221,6 +209,6 @@ const bandData = [
       "https://townsquare.media/site/366/files/2017/02/Zakk-Wylde-Ozzy-Osbourne.jpg?w=1200&h=0&zc=1&s=0&a=t&q=89",
     bio: "Zakk Wylde is the guitarist and singer of Black Label Society.",
   },
-];
+]
 
-export default Lore;
+export default Lore
