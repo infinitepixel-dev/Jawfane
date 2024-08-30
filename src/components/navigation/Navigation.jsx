@@ -10,11 +10,12 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
   const location = useLocation()
   const [selected, setSelected] = useState("")
   const [isCollapsed, setIsCollapsed] = useState(true)
-
   const [isUserClosed, setIsUserClosed] = useState(false)
   const navBarRef = useRef(null)
   const navRef = useRef(null)
   const timeoutRef = useRef(null)
+  const lastScrollTopRef = useRef(0)
+  const inactivityTimeoutRef = useRef(null)
   const hamburgerRef = useRef(null)
 
   // Handle resize to detect mobile vs desktop
@@ -60,41 +61,47 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     }
   }, [location])
 
-  // Handle navbar visibility and fade on scroll (for desktop)
+  // Handle navbar visibility and fade on scroll
   useEffect(() => {
-    const resetFade = () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
+    const handleScroll = () => {
+      // Reset inactivity timeout
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current)
       }
 
-      if (!isMobile && !isUserClosed) {
-        // Keep the menu visible and handle fade-out after 5 seconds
-        gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
-        gsap.to(navRef.current, {
-          opacity: 1,
-          backgroundColor: "rgba(0, 3, 4, 0.95)",
-          duration: 0.5,
-          backdropFilter: "blur(10px)",
-        })
+      // Show menu when scrolling
+      gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
+      gsap.to(navRef.current, {
+        opacity: 1,
+        backgroundColor: "rgba(0, 3, 4, 0.95)",
+        duration: 0.5,
+        backdropFilter: "blur(10px)",
+      })
+      setIsCollapsed(false)
 
-        setIsCollapsed(false)
-
-        timeoutRef.current = setTimeout(() => {
-          gsap.to(navBarRef.current, { opacity: 0, duration: 1 })
+      // Set timeout to hide navigation if user is inactive for 2 seconds
+      inactivityTimeoutRef.current = setTimeout(() => {
+        if (!isMobile && !isUserClosed) {
+          gsap.to(navBarRef.current, { opacity: 0, duration: 0.5 })
           gsap.to(navRef.current, {
             opacity: 0,
             backgroundColor: "transparent",
-            duration: 1,
+            duration: 0.5,
           })
           setIsCollapsed(true)
-        }, 5000)
-      }
+        }
+      }, 5000) // 2-second delay
+
+      lastScrollTopRef.current = window.scrollY
     }
 
-    window.addEventListener("scroll", resetFade)
+    window.addEventListener("scroll", handleScroll)
 
     return () => {
-      window.removeEventListener("scroll", resetFade)
+      window.removeEventListener("scroll", handleScroll)
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current)
+      }
     }
   }, [isMobile, isUserClosed])
 
@@ -183,7 +190,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
       <nav
         ref={navRef}
         id="navigation"
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 w-full border-b-2 shadow-lg shadow-border-bottom border-lime-600 z-50 transition-all duration-300 ease-in-out ${
           !isCollapsed && !isMobile
             ? "bg-black bg-opacity-60"
             : "bg-transparent"
