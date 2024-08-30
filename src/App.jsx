@@ -41,7 +41,7 @@ const App = () => {
   };
 
   return (
-    <Router>
+    <Router basename="/dev">
       <div id="home" className={`app-container ${theme} overflow-hidden`}>
         <Navigation
           theme={theme}
