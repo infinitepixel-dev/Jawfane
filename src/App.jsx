@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 //INFO Pages imports
 import Home from "@components/pages/Home";
 import Tour from "@components/pages/Tour";
 import Merch from "@components/pages/Merch";
 import Music from "@components/pages/MusicVideos";
+import Lore from "@components/pages/Lore";
 
 //INFO Sub-components imports
 import Navigation from "@components/navigation/Navigation";
@@ -60,6 +61,14 @@ const App = () => {
           <Route path="/tour" element={<Tour theme={theme} />} />
           <Route path="/merch" element={<Merch theme={theme} />} />
           <Route path="/music" element={<Music theme={theme} />} />
+          <Route
+            path="/Jawfane"
+            element={<Home theme={theme} isMobile={isMobile} />}
+          />
+          <Route
+            path="lore"
+            element={<Lore theme={theme} isMobile={isMobile} />}
+          />
 
           {/* <Route path='/booking' element={<Booking theme={theme} />} /> */}
         </Routes>
