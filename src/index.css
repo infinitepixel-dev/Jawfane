@@ -1,6 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Anton+SC&display=swap");
+
+body {
+  font-family: "Anton SC", sans-serif;
+}
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
