@@ -1,44 +1,44 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import propTypes from "prop-types";
+import { useEffect, useRef } from "react"
+import { gsap } from "gsap"
+import propTypes from "prop-types"
 
-import hero_bg from "@public/hero_bg.webp";
+import hero_bg from "@public/hero_bg.webp"
 
-import "./AnimatedLogo.css";
+import "./AnimatedLogo.css"
 
 const AnimatedLogo = ({ theme }) => {
-  const logoRef = useRef(null);
+  const logoRef = useRef(null)
 
-  const colorChangeSpeed = 2000; // Duration in milliseconds for the color change
-  const interval = colorChangeSpeed; // Interval between color changes
+  const colorChangeSpeed = 2000 // Duration in milliseconds for the color change
+  const interval = colorChangeSpeed // Interval between color changes
 
   useEffect(() => {
-    const newColor = theme === "dark" ? "#000000" : "#FFFFFF";
-    gsap.to(document.body, { backgroundColor: newColor, duration: 1 });
+    const newColor = theme === "dark" ? "#000000" : "#FFFFFF"
+    gsap.to(document.body, { backgroundColor: newColor, duration: 1 })
 
-    const colors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33"];
-    let currentColorIndex = 0;
+    const colors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33"]
+    let currentColorIndex = 0
 
     const changeColor = () => {
-      const nextColorIndex = (currentColorIndex + 1) % colors.length;
-      const nextColor = colors[nextColorIndex];
+      const nextColorIndex = (currentColorIndex + 1) % colors.length
+      const nextColor = colors[nextColorIndex]
 
       gsap.to(logoRef.current.querySelectorAll("path"), {
         duration: colorChangeSpeed / 1000,
         fill: nextColor,
         onComplete: () => {
-          currentColorIndex = nextColorIndex;
-          setTimeout(changeColor, interval);
+          currentColorIndex = nextColorIndex
+          setTimeout(changeColor, interval)
         },
-      });
-    };
+      })
+    }
 
-    changeColor();
+    changeColor()
 
     return () => {
-      window.removeEventListener("resize", changeColor);
-    };
-  }, [colorChangeSpeed, interval, theme]);
+      window.removeEventListener("resize", changeColor)
+    }
+  }, [colorChangeSpeed, interval, theme])
 
   return (
     <div
@@ -158,11 +158,11 @@ const AnimatedLogo = ({ theme }) => {
         <path transform="translate(428,1228)" d="m0 0" fill="#00000D" />
       </svg>
     </div>
-  );
-};
+  )
+}
 
 AnimatedLogo.propTypes = {
   theme: propTypes.string.isRequired,
-};
+}
 
-export default AnimatedLogo;
+export default AnimatedLogo
