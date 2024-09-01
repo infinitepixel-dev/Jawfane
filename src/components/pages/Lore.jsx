@@ -155,7 +155,7 @@ function Lore() {
           onClick={() => handleClick(index)}
           onMouseEnter={() => handleMouseEnter(index)}
           onMouseLeave={() => handleMouseLeave(index)}
-          className="flex-1 flex flex-col justify-center items-center bg-center bg-cover text-center relative transition-all duration-500 ease-in-out w-full h-full cursor-pointer"
+          className="flex-1 flex flex-col justify-center items-center bg-center bg-cover text-center relative transition-all duration-500 ease-in-out w-full h-full cursor-pointer overflow-hidden"
           role="button"
           tabIndex={0}
           aria-expanded={activeIndex === index}
