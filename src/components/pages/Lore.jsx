@@ -1,12 +1,12 @@
-import { useRef, useState, useEffect } from "react"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useRef, useState, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
 function Lore() {
-  const panels = useRef([])
-  const [activeIndex, setActiveIndex] = useState(null)
+  const panels = useRef([]);
+  const [activeIndex, setActiveIndex] = useState(null);
 
   useEffect(() => {
     panels.current.forEach((panel, index) => {
@@ -22,8 +22,8 @@ function Lore() {
           ease: "power2.inOut",
         },
         markers: false,
-      })
-    })
+      });
+    });
 
     // Handle the last panel specifically
     ScrollTrigger.create({
@@ -33,73 +33,73 @@ function Lore() {
       onEnter: () => setActiveIndex(panels.current.length - 1),
       onLeaveBack: () => setActiveIndex(null),
       snap: false, // Disable snapping for the last panel
-    })
-  }, [])
+    });
+  }, []);
 
   const handleClick = (index) => {
-    const panel = panels.current[index]
-    const bio = panel.querySelector(".bio")
-    const image = panel.querySelector(".bg-image")
+    const panel = panels.current[index];
+    const bio = panel.querySelector(".bio");
+    const image = panel.querySelector(".bg-image");
 
     if (activeIndex === index) {
-      setActiveIndex(null)
+      setActiveIndex(null);
       gsap.to(panel, {
         flex: 1,
         ease: "power2.inOut",
         duration: 0.5,
-      })
+      });
       gsap.to(image, {
         scale: 1,
         y: 0,
         duration: 0.5,
         ease: "power2.inOut",
-      })
+      });
       gsap.to(bio, {
         height: 0,
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => (bio.style.display = "none"),
-      })
+      });
     } else {
       if (activeIndex !== null) {
-        const prevPanel = panels.current[activeIndex]
-        const prevBio = prevPanel.querySelector(".bio")
-        const prevImage = prevPanel.querySelector(".bg-image")
+        const prevPanel = panels.current[activeIndex];
+        const prevBio = prevPanel.querySelector(".bio");
+        const prevImage = prevPanel.querySelector(".bg-image");
         gsap.to(prevPanel, {
           flex: 1,
           ease: "power2.inOut",
           duration: 0.5,
-        })
+        });
         gsap.to(prevImage, {
           scale: 1,
           y: 0,
           duration: 0.5,
           ease: "power2.inOut",
-        })
+        });
         gsap.to(prevBio, {
           height: 0,
           opacity: 0,
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => (prevBio.style.display = "none"),
-        })
+        });
       }
 
-      setActiveIndex(index)
+      setActiveIndex(index);
       gsap.to(panel, {
         flex: 5,
         ease: "power2.inOut",
         duration: 0.5,
-      })
+      });
       gsap.to(image, {
         scale: 1.3,
         y: -50,
         transformOrigin: "center top",
         duration: 0.5,
         ease: "power2.inOut",
-      })
-      bio.style.display = "block"
+      });
+      bio.style.display = "block";
       gsap.fromTo(
         bio,
         { height: 0, opacity: 0 },
@@ -109,9 +109,9 @@ function Lore() {
           duration: 0.5,
           ease: "power2.inOut",
         }
-      )
+      );
     }
-  }
+  };
 
   const handleMouseEnter = (index) => {
     if (activeIndex !== index) {
@@ -119,14 +119,14 @@ function Lore() {
         scale: 1.1,
         duration: 0.3,
         ease: "power2.inOut",
-      })
+      });
       gsap.to(panels.current[index], {
         flex: 2,
         ease: "power2.inOut",
         duration: 0.3,
-      })
+      });
     }
-  }
+  };
 
   const handleMouseLeave = (index) => {
     if (activeIndex !== index) {
@@ -134,14 +134,14 @@ function Lore() {
         scale: 1,
         duration: 0.3,
         ease: "power2.inOut",
-      })
+      });
       gsap.to(panels.current[index], {
         flex: 1,
         ease: "power2.inOut",
         duration: 0.3,
-      })
+      });
     }
-  }
+  };
 
   return (
     <div
@@ -183,7 +183,7 @@ function Lore() {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 const bandData = [
@@ -212,6 +212,6 @@ const bandData = [
     imageUrl: "public/images/jesse-marquez.jpg",
     bio: "Jesse Marquez brings melodic depth to Jawfane's sound with his skillful work on the keys.",
   },
-]
+];
 
-export default Lore
+export default Lore;

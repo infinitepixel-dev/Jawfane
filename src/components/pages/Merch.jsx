@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 // import { Link } from "react-router-dom";
-// import propTypes from "prop-types";
+import propTypes from "prop-types";
 import { gsap } from "gsap";
 // import { Helmet } from "react-helmet-async"; // Import Helmet for meta tags
-// import CartPopOut from "./CartPopOut";
+import CartPopOut from "@sub-menus_product_management/CartPopOut";
 
 import noImage from "@assets/images/no-image.webp";
 
-// eslint-disable-next-line react/prop-types, no-unused-vars
 function MerchPage({ addToCart, cartItems }) {
   const [products, setProducts] = useState([]);
   const [confirmationMessage, setConfirmationMessage] = useState("");
@@ -258,7 +257,7 @@ function MerchPage({ addToCart, cartItems }) {
         <meta name="keywords" content={metaKeywords} />
       </Helmet> */}
 
-      {/* <CartPopOut cartItems={cartItems} /> */}
+      <CartPopOut cartItems={cartItems} />
       <h1 className="mb-8 text-center text-4xl font-bold">Merch</h1>
 
       {/* Confirmation Message Popup */}
@@ -387,9 +386,9 @@ function MerchPage({ addToCart, cartItems }) {
   );
 }
 
-// MerchPage.propTypes = {
-// addToCart: propTypes.func.isRequired,
-// cartItems: propTypes.array.isRequired,
-// };
+MerchPage.propTypes = {
+  addToCart: propTypes.func.isRequired,
+  cartItems: propTypes.array.isRequired,
+};
 
 export default MerchPage;
