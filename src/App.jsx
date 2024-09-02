@@ -96,7 +96,7 @@ const App = () => {
 
   return (
     <Router basename="/dev">
-      <div id="home" className={`app-container ${theme} overflow-hidden`}>
+      <div id="main-app" className={`app-container ${theme} overflow-hidden`}>
         <Navigation
           DevMode={DevMode}
           base={base}
