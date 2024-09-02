@@ -17,7 +17,7 @@ function Home({ theme, isMobile, cartItems, addToCart }) {
 
   return (
     // <div id="main-app" className="w-screen">
-    <div id="main-app" className="w-screen overflow-x-hidden">
+    <div id="home" className="w-screen overflow-x-hidden">
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <Merch theme={theme} cartItems={cartItems} addToCart={addToCart} />
       <MusicVideos theme={theme} />

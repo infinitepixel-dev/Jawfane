@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Dev apps
+node-apps
+
+# Credentials
+.env
+**/.env
+**/.htaccess

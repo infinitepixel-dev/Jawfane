@@ -189,27 +189,27 @@ function Lore() {
 const bandData = [
   {
     member: "Cory Pack",
-    imageUrl: "public/images/cory-pack.jpg",
+    imageUrl: "images/cory-pack.jpg",
     bio: "Cory Pack is the guitarist for Jawfane, bringing his dynamic energy and creativity to the band's powerful sound.",
   },
   {
     member: "Chase Schumann",
-    imageUrl: "public/images/chase-schumann.jpg",
+    imageUrl: "images/chase-schumann.jpg",
     bio: "Chase Schumann lays down the heavy bass lines that drive Jawfane's music with deep, resonant rhythms.",
   },
   {
     member: "Austin Heipp",
-    imageUrl: "public/images/austin-heipp.jpg",
+    imageUrl: "images/austin-heipp.jpg",
     bio: "Austin Heipp is the commanding voice of Jawfane, delivering powerful vocals that define the band's sound.",
   },
   {
     member: "Zach Cenate",
-    imageUrl: "public/images/zach-cenate.jpg",
+    imageUrl: "images/zach-cenate.jpg",
     bio: "Zach Cenate anchors Jawfane's sound with his precise and thunderous drumming.",
   },
   {
     member: "Jesse Marquez",
-    imageUrl: "public/images/jesse-marquez.jpg",
+    imageUrl: "images/jesse-marquez.jpg",
     bio: "Jesse Marquez brings melodic depth to Jawfane's sound with his skillful work on the keys.",
   },
 ];
