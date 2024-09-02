@@ -155,7 +155,7 @@ function Lore() {
           onClick={() => handleClick(index)}
           onMouseEnter={() => handleMouseEnter(index)}
           onMouseLeave={() => handleMouseLeave(index)}
-          className="flex-1 flex flex-col justify-center items-center bg-center bg-cover text-center relative transition-all duration-500 ease-in-out w-full h-full cursor-pointer overflow-hidden"
+          className="relative flex flex-col items-center justify-center flex-1 w-full h-full overflow-hidden text-center transition-all duration-500 ease-in-out bg-center bg-cover cursor-pointer"
           role="button"
           tabIndex={0}
           aria-expanded={activeIndex === index}
@@ -189,33 +189,28 @@ function Lore() {
 const bandData = [
   {
     member: "Cory Pack",
-    imageUrl:
-      "https://www.wallpaperflare.com/static/454/254/349/rock-stars-concerts-guitar-mark-tremonti-wallpaper.jpg",
-    bio: "Mark Tremonti is the lead guitarist of Alterbridge.",
+    imageUrl: "public/images/cory-pack.jpg",
+    bio: "Cory Pack is the guitarist for Jawfane, bringing his dynamic energy and creativity to the band's powerful sound.",
   },
   {
     member: "Chase Schumann",
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/d/df/Dreamtheater_-_Wacken_Open_Air_2015-1619_%28cropped%29.jpg",
-    bio: "John Petrucci is the guitarist and founding member of Dream Theater.",
+    imageUrl: "public/images/chase-schumann.jpg",
+    bio: "Chase Schumann lays down the heavy bass lines that drive Jawfane's music with deep, resonant rhythms.",
   },
   {
     member: "Austin Heipp",
-    imageUrl:
-      "https://townsquare.media/site/366/files/2023/06/attachment-pantera_dimebag_darrell.jpg?w=1080&q=75",
-    bio: "Dimebag Darrell was the iconic guitarist of Pantera.",
+    imageUrl: "public/images/austin-heipp.jpg",
+    bio: "Austin Heipp is the commanding voice of Jawfane, delivering powerful vocals that define the band's sound.",
   },
   {
     member: "Zach Cenate",
-    imageUrl:
-      "https://cdn-p.smehost.net/sites/7f9737f2506941499994d771a29ad47a/wp-content/uploads/2020/02/JCB_Periphery_2757.jpg",
-    bio: "Misha Mansoor is the lead guitarist of Periphery.",
+    imageUrl: "public/images/zach-cenate.jpg",
+    bio: "Zach Cenate anchors Jawfane's sound with his precise and thunderous drumming.",
   },
   {
     member: "Jesse Marquez",
-    imageUrl:
-      "https://townsquare.media/site/366/files/2017/02/Zakk-Wylde-Ozzy-Osbourne.jpg?w=1200&h=0&zc=1&s=0&a=t&q=89",
-    bio: "Zakk Wylde is the guitarist and singer of Black Label Society.",
+    imageUrl: "public/images/jesse-marquez.jpg",
+    bio: "Jesse Marquez brings melodic depth to Jawfane's sound with his skillful work on the keys.",
   },
 ];
 
