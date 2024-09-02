@@ -1,12 +1,22 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { gsap } from "gsap";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import propTypes from "prop-types";
 import AudioPlayer from "@components/sub-components/AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
-const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
+const Navigation = ({
+  DevMode,
+  base,
+  theme,
+  setToggleNavbar,
+  isMobile,
+  setIsMobile,
+}) => {
+  console.log("Base: ", base);
+
+  const navigate = useNavigate();
   const location = useLocation();
   const [selected, setSelected] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -49,7 +59,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     handleResize(); // Initial check on load
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [setIsMobile]); //REVIEW may cause an infinite loop - possibly solved??
 
   // Handle URL hash scrolling on initial load
   useEffect(() => {
@@ -154,16 +164,74 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     }
   }, [setToggleNavbar, toggleNavbar]);
 
+  //v1
+  // const handleItemClick = (item) => {
+  //   setSelected(item);
+  //   const targetElement = document.getElementById(item);
+  //   if (targetElement) {
+  //     gsap.to(window, {
+  //       scrollTo: { y: targetElement, offsetY: 0 },
+  //       duration: 1,
+  //       ease: "power2.inOut",
+  //     });
+  //   }
+  //   if (isMobile) {
+  //     toggleNavbar();
+  //   }
+  // };
+
+  //v2
+  // const handleItemClick = (item) => {
+  //   setSelected(item);
+  //   const targetElement = document.getElementById(item);
+
+  //   // Check if the current path is not the root and navigate to root with hash
+  //   if (location.pathname !== "/") {
+  //     navigate(`/#${item}`, { replace: true });
+  //   }
+
+  //   if (targetElement) {
+  //     gsap.to(window, {
+  //       scrollTo: { y: targetElement, offsetY: 0 },
+  //       duration: 1,
+  //       ease: "power2.inOut",
+  //     });
+  //   }
+
+  //   if (isMobile) {
+  //     toggleNavbar();
+  //   }
+  // };
+
+  //v3
   const handleItemClick = (item) => {
     setSelected(item);
+
     const targetElement = document.getElementById(item);
+
     if (targetElement) {
+      // If already on the correct page, just scroll to the section
       gsap.to(window, {
         scrollTo: { y: targetElement, offsetY: 0 },
         duration: 1,
         ease: "power2.inOut",
       });
+    } else {
+      // Navigate to the root with the hash, but use the scroll behavior to avoid reloading
+      navigate(`/#${item}`, { replace: true });
+      setTimeout(() => {
+        const target = document.getElementById(item);
+        if (target) {
+          gsap.to(window, {
+            scrollTo: { y: target, offsetY: 0 },
+            duration: 1,
+            ease: "power2.inOut",
+          });
+        }
+      }, 0);
     }
+
+    // Collapse navbar on mobile after clicking a link
     if (isMobile) {
       toggleNavbar();
     }
@@ -220,12 +288,11 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
               } ${
                 item === "booking" ? "pointer-events-none line-through" : ""
               }`}
-              // items above will prevent the click event from firing
               onClick={() => handleItemClick(item)}
             >
-              <a href={`#${item}`} className="no-underline">
+              <span className="no-underline">
                 {item.charAt(0).toUpperCase() + item.slice(1)}
-              </a>
+              </span>
               <span
                 className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
                   selected === item ? "bg-lime-500" : "bg-transparent"
@@ -233,9 +300,30 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
               ></span>
             </li>
           ))}
+
           <div className="relative top-[-1rem] mx-auto">
             <AudioPlayer theme={theme} />
           </div>
+          {/* If DevMode is enable display the Dashboard in the navigation */}
+          {DevMode && (
+            <li
+              className={`p-2 cursor-pointer relative ${
+                selected === "dev" ? "text-lime-500" : "text-white"
+              }`}
+              onClick={() => handleItemClick("dev")}
+            >
+              <a href={`${base}/dashboard`} className="no-underline">
+                <span className="text-rose-700">(DevMode Enabled)</span>
+                <br />
+                Admin Dashboard
+              </a>
+              <span
+                className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
+                  selected === "dev" ? "bg-lime-500" : "bg-transparent"
+                } transition-all duration-300 ease-in-out`}
+              ></span>
+            </li>
+          )}
         </ul>
       </nav>
     </>
@@ -243,6 +331,8 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
 };
 
 Navigation.propTypes = {
+  DevMode: propTypes.bool,
+  base: propTypes.string,
   theme: propTypes.string.isRequired,
   setToggleNavbar: propTypes.func,
   isMobile: propTypes.bool.isRequired,

@@ -1,3 +1,6 @@
+const DevMode = true;
+//Be sure to change the base in vite.config.js to the correct path
+
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -12,13 +15,64 @@ import Lore from "@components/pages/Lore";
 import Navigation from "@components/navigation/Navigation";
 import BackToTop from "@components/sub-components/BackToTop";
 
+//ANCHOR Product Management Components
+//INFO Admin Pages
+import Dashboard from "@admin_product_management/Dashboard.jsx";
+import UsersManager from "@admin_product_management/UsersManager";
+import AddProductForm from "@admin_product_management/AddProductForm";
+
+//INFO Pages
+import CartPage from "@pages_product_management/CartPage";
+import CheckoutPage from "@pages_product_management/Checkout";
+
+// INFO Sub-components
+// import CartPopOut from "@sub-menus_product_management/CartPopOut";
+
 // import Booking from './components/pages/Booking'
 
 import "./App.css";
 
 const App = () => {
+  //import the base from vite config
+  const [base, setBase] = useState("");
   const [theme, setTheme] = useState("dark");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  // Cart Items
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    if (DevMode) {
+      console.log("Infinite Pixel Development Mode Enabled");
+      setBase("/dev");
+    }
+  }, []);
+
+  const addToCart = (product) => {
+    const existingProduct = cartItems.find((item) => item.id === product.id);
+    if (existingProduct) {
+      setCartItems(
+        cartItems.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
+    } else {
+      setCartItems([...cartItems, { ...product, quantity: 1 }]);
+    }
+  };
+
+  const removeFromCart = (id) => {
+    setCartItems(cartItems.filter((item) => item.id !== id));
+  };
+
+  const updateQuantity = (id, quantity) => {
+    setCartItems(
+      cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
+      )
+    );
+  };
 
   //INFO theme settings
   useEffect(() => {
@@ -44,6 +98,8 @@ const App = () => {
     <Router basename="/dev">
       <div id="home" className={`app-container ${theme} overflow-hidden`}>
         <Navigation
+          DevMode={DevMode}
+          base={base}
           theme={theme}
           toggleTheme={toggleTheme}
           isMobile={isMobile}
@@ -52,25 +108,86 @@ const App = () => {
         <Routes>
           <Route
             path="/"
-            element={<Home theme={theme} isMobile={isMobile} />}
+            element={
+              <Home
+                theme={theme}
+                isMobile={isMobile}
+                cartItems={cartItems}
+                addToCart={addToCart}
+              />
+            }
           />
           <Route
             path="/home"
-            element={<Home theme={theme} isMobile={isMobile} />}
+            element={
+              <Home
+                theme={theme}
+                isMobile={isMobile}
+                cartItems={cartItems}
+                addToCart={addToCart}
+              />
+            }
           />
-          <Route path="/tour" element={<Tour theme={theme} />} />
-          <Route path="/merch" element={<Merch theme={theme} />} />
-          <Route path="/music" element={<Music theme={theme} />} />
           <Route
             path="/Jawfane"
-            element={<Home theme={theme} isMobile={isMobile} />}
+            element={
+              <Home
+                theme={theme}
+                isMobile={isMobile}
+                cartItems={cartItems}
+                addToCart={addToCart}
+              />
+            }
           />
+          <Route path="/tour" element={<Tour theme={theme} />} />
+          <Route
+            path="/merch"
+            element={
+              <Merch
+                theme={theme}
+                cartItems={cartItems}
+                addToCart={addToCart}
+              />
+            }
+          />
+          <Route path="/music" element={<Music theme={theme} />} />
+
           <Route
             path="lore"
             element={<Lore theme={theme} isMobile={isMobile} />}
           />
-
           {/* <Route path='/booking' element={<Booking theme={theme} />} /> */}
+          {/* Product Management Routes */}
+
+          {/* Admin Pages */}
+          <Route path={`${base}/dashboard`} element={<Dashboard />} />
+          <Route path={`/dashboard`} element={<Dashboard />} />
+          <Route path={`/add-product`} element={<AddProductForm />} />
+          {/* import Dashboard from "@admin_product_management/Dashboard.jsx";
+          import UsersManager from "@admin_product_management/UsersManager";
+          import AddProductForm from "@admin_product_management/AddProductForm";
+          //INFO Pages import CartPage from
+          "@pages_product_management/CartPage"; import CheckoutPage from
+          "@pages_product_management/Checkout"; // INFO Sub-components import
+          CartPopOut from "@sub-menus_product_management/CartPopOut"; */}
+          <Route path={`/users-manager`} element={<UsersManager />} />
+
+          {/* Cart Page */}
+          <Route
+            path="/cart"
+            element={
+              <CartPage
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                removeFromCart={removeFromCart}
+                updateQuantity={updateQuantity}
+              />
+            }
+          />
+          <Route
+            path={`/checkout`}
+            element={<CheckoutPage cartItems={cartItems} />}
+          />
         </Routes>
         <BackToTop />
       </div>
