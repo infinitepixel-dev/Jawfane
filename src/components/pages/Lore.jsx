@@ -1,12 +1,12 @@
-import { useRef, useState, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState, useEffect } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger)
 
 function Lore() {
-  const panels = useRef([]);
-  const [activeIndex, setActiveIndex] = useState(null);
+  const panels = useRef([])
+  const [activeIndex, setActiveIndex] = useState(null)
 
   useEffect(() => {
     panels.current.forEach((panel, index) => {
@@ -22,8 +22,8 @@ function Lore() {
           ease: "power2.inOut",
         },
         markers: false,
-      });
-    });
+      })
+    })
 
     // Handle the last panel specifically
     ScrollTrigger.create({
@@ -33,73 +33,73 @@ function Lore() {
       onEnter: () => setActiveIndex(panels.current.length - 1),
       onLeaveBack: () => setActiveIndex(null),
       snap: false, // Disable snapping for the last panel
-    });
-  }, []);
+    })
+  }, [])
 
   const handleClick = (index) => {
-    const panel = panels.current[index];
-    const bio = panel.querySelector(".bio");
-    const image = panel.querySelector(".bg-image");
+    const panel = panels.current[index]
+    const bio = panel.querySelector(".bio")
+    const image = panel.querySelector(".bg-image")
 
     if (activeIndex === index) {
-      setActiveIndex(null);
+      setActiveIndex(null)
       gsap.to(panel, {
         flex: 1,
         ease: "power2.inOut",
         duration: 0.5,
-      });
+      })
       gsap.to(image, {
         scale: 1,
         y: 0,
         duration: 0.5,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(bio, {
         height: 0,
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => (bio.style.display = "none"),
-      });
+      })
     } else {
       if (activeIndex !== null) {
-        const prevPanel = panels.current[activeIndex];
-        const prevBio = prevPanel.querySelector(".bio");
-        const prevImage = prevPanel.querySelector(".bg-image");
+        const prevPanel = panels.current[activeIndex]
+        const prevBio = prevPanel.querySelector(".bio")
+        const prevImage = prevPanel.querySelector(".bg-image")
         gsap.to(prevPanel, {
           flex: 1,
           ease: "power2.inOut",
           duration: 0.5,
-        });
+        })
         gsap.to(prevImage, {
           scale: 1,
           y: 0,
           duration: 0.5,
           ease: "power2.inOut",
-        });
+        })
         gsap.to(prevBio, {
           height: 0,
           opacity: 0,
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => (prevBio.style.display = "none"),
-        });
+        })
       }
 
-      setActiveIndex(index);
+      setActiveIndex(index)
       gsap.to(panel, {
         flex: 5,
         ease: "power2.inOut",
         duration: 0.5,
-      });
+      })
       gsap.to(image, {
         scale: 1.3,
         y: -50,
         transformOrigin: "center top",
         duration: 0.5,
         ease: "power2.inOut",
-      });
-      bio.style.display = "block";
+      })
+      bio.style.display = "block"
       gsap.fromTo(
         bio,
         { height: 0, opacity: 0 },
@@ -109,9 +109,9 @@ function Lore() {
           duration: 0.5,
           ease: "power2.inOut",
         }
-      );
+      )
     }
-  };
+  }
 
   const handleMouseEnter = (index) => {
     if (activeIndex !== index) {
@@ -119,14 +119,14 @@ function Lore() {
         scale: 1.1,
         duration: 0.3,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(panels.current[index], {
         flex: 2,
         ease: "power2.inOut",
         duration: 0.3,
-      });
+      })
     }
-  };
+  }
 
   const handleMouseLeave = (index) => {
     if (activeIndex !== index) {
@@ -134,14 +134,14 @@ function Lore() {
         scale: 1,
         duration: 0.3,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(panels.current[index], {
         flex: 1,
         ease: "power2.inOut",
         duration: 0.3,
-      });
+      })
     }
-  };
+  }
 
   return (
     <div
@@ -155,7 +155,7 @@ function Lore() {
           onClick={() => handleClick(index)}
           onMouseEnter={() => handleMouseEnter(index)}
           onMouseLeave={() => handleMouseLeave(index)}
-          className="flex-1 flex flex-col justify-center items-center bg-center bg-cover text-center relative transition-all duration-500 ease-in-out w-full h-full cursor-pointer"
+          className="relative flex flex-col items-center justify-center flex-1 w-full h-full overflow-hidden text-center transition-all duration-500 ease-in-out bg-center bg-cover cursor-pointer"
           role="button"
           tabIndex={0}
           aria-expanded={activeIndex === index}
@@ -183,40 +183,35 @@ function Lore() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 const bandData = [
   {
     member: "Cory Pack",
-    imageUrl:
-      "https://www.wallpaperflare.com/static/454/254/349/rock-stars-concerts-guitar-mark-tremonti-wallpaper.jpg",
-    bio: "Mark Tremonti is the lead guitarist of Alterbridge.",
+    imageUrl: "public/images/cory-pack.jpg",
+    bio: "Cory Pack is the guitarist for Jawfane, bringing his dynamic energy and creativity to the band's powerful sound.",
   },
   {
     member: "Chase Schumann",
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/d/df/Dreamtheater_-_Wacken_Open_Air_2015-1619_%28cropped%29.jpg",
-    bio: "John Petrucci is the guitarist and founding member of Dream Theater.",
+    imageUrl: "public/images/chase-schumann.jpg",
+    bio: "Chase Schumann lays down the heavy bass lines that drive Jawfane's music with deep, resonant rhythms.",
   },
   {
     member: "Austin Heipp",
-    imageUrl:
-      "https://townsquare.media/site/366/files/2023/06/attachment-pantera_dimebag_darrell.jpg?w=1080&q=75",
-    bio: "Dimebag Darrell was the iconic guitarist of Pantera.",
+    imageUrl: "public/images/austin-heipp.jpg",
+    bio: "Austin Heipp is the commanding voice of Jawfane, delivering powerful vocals that define the band's sound.",
   },
   {
     member: "Zach Cenate",
-    imageUrl:
-      "https://cdn-p.smehost.net/sites/7f9737f2506941499994d771a29ad47a/wp-content/uploads/2020/02/JCB_Periphery_2757.jpg",
-    bio: "Misha Mansoor is the lead guitarist of Periphery.",
+    imageUrl: "public/images/zach-cenate.jpg",
+    bio: "Zach Cenate anchors Jawfane's sound with his precise and thunderous drumming.",
   },
   {
     member: "Jesse Marquez",
-    imageUrl:
-      "https://townsquare.media/site/366/files/2017/02/Zakk-Wylde-Ozzy-Osbourne.jpg?w=1200&h=0&zc=1&s=0&a=t&q=89",
-    bio: "Zakk Wylde is the guitarist and singer of Black Label Society.",
+    imageUrl: "public/images/jesse-marquez.jpg",
+    bio: "Jesse Marquez brings melodic depth to Jawfane's sound with his skillful work on the keys.",
   },
-];
+]
 
-export default Lore;
+export default Lore
