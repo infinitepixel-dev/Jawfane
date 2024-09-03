@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import CartPopOut from "@sub-menus_product_management/CartPopOut";
 
 import noImage from "@assets/images/no-image.webp";
+import Variants from "../product_management/sub_components/widgets/Variants";
 
 function MerchPage({ addToCart, cartItems }) {
   const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`;
@@ -274,7 +275,7 @@ function MerchPage({ addToCart, cartItems }) {
   return (
     <div
       id="merch"
-      className="container min-h-screen z-10 mx-auto p-4 overflow-y-auto"
+      className="container z-10 min-h-screen p-4 mx-auto overflow-y-auto"
     >
       {/* <Helmet>
         <title>{metaTitle}</title>
@@ -291,7 +292,7 @@ function MerchPage({ addToCart, cartItems }) {
       {/* Confirmation Message Popup */}
       <div
         ref={confirmRef}
-        className="absolute z-50 rounded bg-green-500 p-2 text-center text-white shadow-lg"
+        className="absolute z-50 p-2 text-center text-white bg-green-500 rounded shadow-lg"
         style={{
           top: `${messagePosition.top}px`,
           left: `${messagePosition.left}px`,
@@ -305,7 +306,7 @@ function MerchPage({ addToCart, cartItems }) {
       </div>
 
       {/* Product Grid */}
-      <div className="grid auto-rows-min grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 auto-rows-min sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product, index) => (
           <div
             key={product.id}
@@ -325,29 +326,34 @@ function MerchPage({ addToCart, cartItems }) {
             >
               {product.title}
             </h2>
+
             {product.image_url ? (
               <img
-                className="mb-4 h-48 w-full rounded-lg object-cover shadow-sm transition-all duration-200 hover:shadow-md"
+                className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
                 src={product.image_url}
                 alt={`${product.title} product image`}
                 onClick={() => handleImageClick(product)}
               />
             ) : product.image ? (
               <img
-                className="mb-4 h-48 w-full rounded-lg object-cover shadow-sm transition-all duration-200 hover:shadow-md"
+                className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
                 src={convertBlobToBase64(product.image)}
                 alt={`${product.title} product image`}
                 onClick={() => handleImageClick(product)}
               />
             ) : (
               <img
-                className="mb-4 h-48 w-full rounded-lg object-cover shadow-sm transition-all duration-200 hover:shadow-md"
+                className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
                 src={noImage}
                 alt="No image available"
               />
             )}
+            <Variants />
             <p className="mb-4 text-sm leading-relaxed text-gray-700">
-              {product.description}
+              {/* only show a portion of the description and show ... */}
+              {product.description.length > 20
+                ? product.description.substring(0, 30) + "..."
+                : product.description}
             </p>
             <p className="mb-4 text-lg font-bold text-gray-900">
               Price: ${product.price}
@@ -376,19 +382,19 @@ function MerchPage({ addToCart, cartItems }) {
           aria-labelledby="modal-title"
         >
           <div
-            className="relative mx-auto max-h-screen w-full max-w-lg overflow-y-auto rounded-lg bg-white p-4 text-black shadow-lg md:p-6"
+            className="relative w-full max-w-lg max-h-screen p-4 mx-auto overflow-y-auto text-black bg-white rounded-lg shadow-lg md:p-6"
             ref={modalRef}
             role="document"
           >
             <button
               onClick={handleCloseModal}
-              className="absolute right-4 top-4 p-2 text-2xl font-bold md:text-lg"
+              className="absolute p-2 text-2xl font-bold right-4 top-4 md:text-lg"
               aria-label="Close modal"
             >
               &times;
             </button>
             <img
-              className="h-60 w-full object-contain md:h-96"
+              className="object-contain w-full h-60 md:h-96"
               src={
                 selectedProduct.image_url ||
                 convertBlobToBase64(selectedProduct.image)
@@ -397,14 +403,14 @@ function MerchPage({ addToCart, cartItems }) {
             />
             <h2
               id="modal-title"
-              className="mt-4 text-center text-xl font-semibold md:text-2xl"
+              className="mt-4 text-xl font-semibold text-center md:text-2xl"
             >
               {selectedProduct.title}
             </h2>
-            <p className="mt-2 text-center text-sm md:text-base">
+            <p className="mt-2 text-sm text-center md:text-base">
               {selectedProduct.description}
             </p>
-            <p className="mt-2 text-center text-lg font-bold">
+            <p className="mt-2 text-lg font-bold text-center">
               Price: ${selectedProduct.price}
             </p>
           </div>
