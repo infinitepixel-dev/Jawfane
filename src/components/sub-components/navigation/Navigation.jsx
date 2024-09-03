@@ -95,22 +95,32 @@ const Navigation = ({
       }
 
       // Show the menu when scrolling
-      gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
+      gsap.to(navBarRef.current, {
+        opacity: 1,
+        duration: 0.5,
+        pointerEvents: "auto",
+      });
       gsap.to(navRef.current, {
         opacity: 1,
         backgroundColor: "rgba(0, 3, 4, 0.95)",
         duration: 0.5,
         backdropFilter: "blur(10px)",
+        pointerEvents: "auto", // Enable pointer events when navbar is visible
       });
 
       // Set timeout to hide navigation if user is inactive for 5 seconds
       inactivityTimeoutRef.current = setTimeout(() => {
         if (!isMobile && !isUserClosed) {
-          gsap.to(navBarRef.current, { opacity: 0, duration: 0.5 });
+          gsap.to(navBarRef.current, {
+            opacity: 0,
+            duration: 0.5,
+            pointerEvents: "none",
+          });
           gsap.to(navRef.current, {
             opacity: 0,
             backgroundColor: "transparent",
             duration: 0.5,
+            pointerEvents: "none", // Disable pointer events when navbar is hidden
           });
           setIsCollapsed(true);
         }
@@ -136,12 +146,14 @@ const Navigation = ({
         duration: 0.5,
         ease: "power2.out",
         display: "flex",
+        pointerEvents: "auto", // Enable pointer events when navbar is visible
       });
       gsap.to(navRef.current, {
         backgroundColor: "rgba(0, 3, 4, 0.95)",
         opacity: 1,
         duration: 0.5,
         backdropFilter: "blur(10px)",
+        pointerEvents: "auto", // Enable pointer events when navbar is visible
       });
       setIsUserClosed(false);
     } else {
@@ -151,11 +163,13 @@ const Navigation = ({
         ease: "power2.in",
         height: 0,
         display: "none",
+        pointerEvents: "none", // Disable pointer events when navbar is hidden
       });
       gsap.to(navRef.current, {
         backgroundColor: "transparent",
         opacity: isMobile ? 1 : 0,
         duration: 0.5,
+        pointerEvents: "none", // Disable pointer events when navbar is hidden
       });
       setIsUserClosed(true);
     }
