@@ -1,8 +1,21 @@
+//Navigation.jsx
+
+/*
+A navigation bar to traverse website pages
+*/
+
+//INFO React Libraries
 import { useEffect, useState, useRef, useCallback } from "react";
-import { gsap } from "gsap";
-import { useLocation, useNavigate } from "react-router-dom";
 import propTypes from "prop-types";
+import { useLocation, useNavigate } from "react-router-dom";
+
+//INFO Animation Libraries
+import { gsap } from "gsap";
+
+//INFO Sub-components
 import AudioPlayer from "@components/sub-components/AudioPlayer";
+
+//INFO Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -14,24 +27,21 @@ const Navigation = ({
   isMobile,
   setIsMobile,
 }) => {
-  console.log("Base: ", base);
-
   const navigate = useNavigate();
   const location = useLocation();
-  const [selected, setSelected] = useState("");
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [isUserClosed, setIsUserClosed] = useState(false);
-  const navBarRef = useRef(null);
-  const navRef = useRef(null);
-  // const timeoutRef = useRef(null);
-  const lastScrollTopRef = useRef(0);
-  const inactivityTimeoutRef = useRef(null);
-  const hamburgerRef = useRef(null);
+  const [selected, setSelected] = useState(""); // Tracks the currently selected menu item
+  const [isCollapsed, setIsCollapsed] = useState(true); // Tracks the state of the navbar (collapsed/expanded)
+  const [isUserClosed, setIsUserClosed] = useState(false); // Tracks if the user manually closed the navbar
+  const navBarRef = useRef(null); // Ref for the navbar element
+  const navRef = useRef(null); // Ref for the navigation container element
+  const inactivityTimeoutRef = useRef(null); // Ref to manage the inactivity timeout
+  const hamburgerRef = useRef(null); // Ref for the mobile hamburger button
+  const toggleArrowRef = useRef(null); // Ref for the desktop toggle arrow
 
-  // if mobile start the menu closed
+  // Adjusts navbar state based on screen size
   useEffect(() => {
     if (isMobile) {
-      setIsCollapsed(true);
+      setIsCollapsed(true); // Collapse the navbar when switching to mobile view
     }
   }, [isMobile]);
 
@@ -50,7 +60,6 @@ const Navigation = ({
           backdropFilter: "blur(10px)",
         });
       } else {
-        // Ensure the menu is always visible on mobile
         gsap.set(navBarRef.current, { opacity: 1 });
       }
     };
@@ -59,7 +68,7 @@ const Navigation = ({
     handleResize(); // Initial check on load
 
     return () => window.removeEventListener("resize", handleResize);
-  }, [setIsMobile]); //REVIEW may cause an infinite loop - possibly solved??
+  }, [setIsMobile]);
 
   // Handle URL hash scrolling on initial load
   useEffect(() => {
@@ -78,15 +87,14 @@ const Navigation = ({
     }
   }, [location]);
 
-  // Handle navbar visibility and fade on scroll
+  // Handle navbar visibility and fade on scroll or inactivity
   useEffect(() => {
     const handleScroll = () => {
-      // Reset inactivity timeout
       if (inactivityTimeoutRef.current) {
         clearTimeout(inactivityTimeoutRef.current);
       }
 
-      // Show menu when scrolling
+      // Show the menu when scrolling
       gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
       gsap.to(navRef.current, {
         opacity: 1,
@@ -94,9 +102,8 @@ const Navigation = ({
         duration: 0.5,
         backdropFilter: "blur(10px)",
       });
-      // setIsCollapsed(false);
 
-      // Set timeout to hide navigation if user is inactive for 2 seconds
+      // Set timeout to hide navigation if user is inactive for 5 seconds
       inactivityTimeoutRef.current = setTimeout(() => {
         if (!isMobile && !isUserClosed) {
           gsap.to(navBarRef.current, { opacity: 0, duration: 0.5 });
@@ -107,9 +114,7 @@ const Navigation = ({
           });
           setIsCollapsed(true);
         }
-      }, 5000); // 2-second delay
-
-      lastScrollTopRef.current = window.scrollY;
+      }, 5000); // 5-second delay
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -155,69 +160,28 @@ const Navigation = ({
       setIsUserClosed(true);
     }
 
-    setIsCollapsed(!isCollapsed);
+    setIsCollapsed(!isCollapsed); // Toggle the state between collapsed and expanded
   }, [isCollapsed, isMobile]);
 
   useEffect(() => {
     if (setToggleNavbar) {
-      setToggleNavbar(() => toggleNavbar);
+      setToggleNavbar(() => toggleNavbar); // Pass the toggleNavbar function to the parent component if needed
     }
   }, [setToggleNavbar, toggleNavbar]);
 
-  //v1
-  // const handleItemClick = (item) => {
-  //   setSelected(item);
-  //   const targetElement = document.getElementById(item);
-  //   if (targetElement) {
-  //     gsap.to(window, {
-  //       scrollTo: { y: targetElement, offsetY: 0 },
-  //       duration: 1,
-  //       ease: "power2.inOut",
-  //     });
-  //   }
-  //   if (isMobile) {
-  //     toggleNavbar();
-  //   }
-  // };
-
-  //v2
-  // const handleItemClick = (item) => {
-  //   setSelected(item);
-  //   const targetElement = document.getElementById(item);
-
-  //   // Check if the current path is not the root and navigate to root with hash
-  //   if (location.pathname !== "/") {
-  //     navigate(`/#${item}`, { replace: true });
-  //   }
-
-  //   if (targetElement) {
-  //     gsap.to(window, {
-  //       scrollTo: { y: targetElement, offsetY: 0 },
-  //       duration: 1,
-  //       ease: "power2.inOut",
-  //     });
-  //   }
-
-  //   if (isMobile) {
-  //     toggleNavbar();
-  //   }
-  // };
-
-  //v3
+  // Handle item click for smooth scrolling and navigation
   const handleItemClick = (item) => {
     setSelected(item);
 
     const targetElement = document.getElementById(item);
 
     if (targetElement) {
-      // If already on the correct page, just scroll to the section
       gsap.to(window, {
         scrollTo: { y: targetElement, offsetY: 0 },
         duration: 1,
         ease: "power2.inOut",
       });
     } else {
-      // Navigate to the root with the hash, but use the scroll behavior to avoid reloading
       navigate(`/#${item}`, { replace: true });
       setTimeout(() => {
         const target = document.getElementById(item);
@@ -231,14 +195,29 @@ const Navigation = ({
       }, 0);
     }
 
-    // Collapse navbar on mobile after clicking a link
     if (isMobile) {
-      toggleNavbar();
+      toggleNavbar(); // Close the navbar after clicking an item on mobile
     }
   };
 
   return (
     <>
+      {/* Toggle Arrow: Always visible on desktop, positioned at the bottom center of the navbar */}
+      {!isMobile && (
+        <div
+          ref={toggleArrowRef}
+          alt="Open/Close Navigation Menu"
+          className="fixed top-[0.5em] left-8 transform -translate-x-1/2 z-50 cursor-pointer border border-lime-600 rounded-full bg-lime-600 p-2"
+          onClick={toggleNavbar}
+          style={{
+            zIndex: 950,
+          }}
+        >
+          {/* Shared state for both mobile and desktop toggle */}
+          <FontAwesomeIcon icon={isCollapsed ? faBars : faArrowUp} size="lg" />
+        </div>
+      )}
+
       {/* Hamburger button: Only visible on mobile */}
       {isMobile && (
         <div
@@ -252,6 +231,7 @@ const Navigation = ({
             onClick={toggleNavbar}
             className="p-2 text-white rounded-lg bg-lime-600"
           >
+            {/* Shared state for both mobile and desktop toggle */}
             {isCollapsed ? (
               <FontAwesomeIcon icon={faBars} />
             ) : (
@@ -270,7 +250,7 @@ const Navigation = ({
             ? "bg-black bg-opacity-60"
             : "bg-transparent"
         } ${theme === "dark" ? " text-white" : "bg-gray-100 text-black"}`}
-        style={{ opacity: 1 }} // Ensure initial opacity is set to 1
+        style={{ opacity: 1, zIndex: 900 }}
       >
         <ul
           ref={navBarRef}
