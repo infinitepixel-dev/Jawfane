@@ -1,18 +1,18 @@
 const DevMode = true;
 //Be sure to change the base in vite.config.js to the correct path
 
+//INFO React Libraries
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-//INFO Pages imports
+//INFO Pages
 import Home from "@components/pages/Home";
 import Tour from "@components/pages/Tour";
 import Merch from "@components/pages/Merch";
 import Music from "@components/pages/MusicVideos";
 import Lore from "@components/pages/Lore";
 
-//INFO Sub-components imports
-import Navigation from "@components/navigation/Navigation";
+//INFO Sub-components
 import BackToTop from "@components/sub-components/BackToTop";
 
 //ANCHOR Product Management Components
@@ -97,14 +97,6 @@ const App = () => {
   return (
     <Router basename="/dev">
       <div id="main-app" className={`app-container ${theme} overflow-hidden`}>
-        <Navigation
-          DevMode={DevMode}
-          base={base}
-          theme={theme}
-          toggleTheme={toggleTheme}
-          isMobile={isMobile}
-          setIsMobile={setIsMobile}
-        />
         <Routes>
           <Route
             path="/"
@@ -114,6 +106,10 @@ const App = () => {
                 isMobile={isMobile}
                 cartItems={cartItems}
                 addToCart={addToCart}
+                DevMode={DevMode}
+                base={base}
+                toggleTheme={toggleTheme}
+                setIsMobile={setIsMobile}
               />
             }
           />
@@ -125,6 +121,10 @@ const App = () => {
                 isMobile={isMobile}
                 cartItems={cartItems}
                 addToCart={addToCart}
+                DevMode={DevMode}
+                base={base}
+                toggleTheme={toggleTheme}
+                setIsMobile={setIsMobile}
               />
             }
           />
@@ -136,6 +136,10 @@ const App = () => {
                 isMobile={isMobile}
                 cartItems={cartItems}
                 addToCart={addToCart}
+                DevMode={DevMode}
+                base={base}
+                toggleTheme={toggleTheme}
+                setIsMobile={setIsMobile}
               />
             }
           />

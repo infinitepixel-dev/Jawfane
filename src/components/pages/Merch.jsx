@@ -9,6 +9,11 @@ import noImage from "@assets/images/no-image.webp";
 import Variants from "../product_management/sub_components/widgets/Variants";
 
 function MerchPage({ addToCart, cartItems }) {
+  const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`;
+  //TODO: use product apiURL
+  //REVIEW temp apiUrl
+  // const apiUrl = "http://66.128.253.47:3082/api/products";
+
   const [products, setProducts] = useState([]);
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messagePosition, setMessagePosition] = useState({ top: 0, left: 0 });
@@ -28,11 +33,6 @@ function MerchPage({ addToCart, cartItems }) {
   // Ref for the modal
   const modalRef = useRef(null); //determins if the image modal is open or not
 
-  const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`;
-  //TODO: use product apiURL
-  //REVIEW temp apiUrl
-  // const apiUrl = "http://66.128.253.47:3082/api/products";
-
   const convertBlobToBase64 = (blob) => {
     if (!blob) return null;
 
@@ -43,6 +43,31 @@ function MerchPage({ addToCart, cartItems }) {
 
     return `data:image/jpeg;base64,${base64String}`;
   };
+
+  //only show cartPopOut on the merch component while it's in the viewport
+  useEffect(() => {
+    const cartPopOut = document.querySelector(".cart-pop-out");
+    const merch = document.getElementById("merch");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            cartPopOut.style.display = "block";
+          } else {
+            cartPopOut.style.display = "none";
+          }
+        });
+      },
+      { threshold: [0.1, 0.5, 0.9] } // Adjusted thresholds for different levels of visibility
+    );
+
+    observer.observe(merch);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   // Function to open modal when clicking on a product image
   const handleImageClick = (product) => {
@@ -258,8 +283,11 @@ function MerchPage({ addToCart, cartItems }) {
         <meta name="keywords" content={metaKeywords} />
       </Helmet> */}
 
-      <CartPopOut cartItems={cartItems} />
-      <h1 className="mb-8 text-4xl font-bold text-center">Merch</h1>
+      <div className="absolute top-24 cart-pop-out">
+        <CartPopOut cartItems={cartItems} />
+      </div>
+
+      <h1 className="mb-8 text-center text-4xl font-bold">Merch</h1>
 
       {/* Confirmation Message Popup */}
       <div
