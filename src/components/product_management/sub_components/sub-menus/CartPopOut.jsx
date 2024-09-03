@@ -35,11 +35,11 @@ function CartPopOut({ cartItems }) {
       {/* Button to open/close the cart sidebar */}
       <button
         style={{
-          zIndex: 800, // Ensure button is always on top of the sidebar
           right: "2em", // Adjust position for visibility
+          zIndex: 800, // Ensure the button is above the sidebar
           //   top: "72px",
           //   position: "fixed",
-          opacity: cartItems.length === 0 ? 0.5 : 1, // Reduce opacity if the cart is empty
+          opacity: cartItems.length === 0 ? 0.5 : 0.9, // Reduce opacity if the cart is empty
           cursor: cartItems.length === 0 ? "not-allowed" : "pointer", // Change cursor style if empty
         }}
         onClick={toggleCart}
@@ -67,20 +67,21 @@ function CartPopOut({ cartItems }) {
 
       {/* Cart Sidebar */}
       <div
-        className={`cart-sidebar fixed right-0 top-0 h-full transform bg-white shadow-lg ${
+        className={`cart-sidebar fixed right-0 top-0 h-full transform bg-opacity-80  bg-white shadow-lg ${
           isVisible ? "" : "translate-x-full"
         }`}
         style={{
+          backdropFilter: "blur(2em)",
           width: isVisible ? "80vw" : "100vw",
           maxWidth: "320px", // Max width for larger screens
           transform: "translateX(100%)",
-          zIndex: 1100, // Ensure the cart sidebar is just below the button
+          zIndex: 750, // Ensure the cart sidebar is just below the button
         }}
       >
         <div className="flex h-full flex-col">
           {/* Cart Items Section (Scrollable) */}
           <div className="flex-1 overflow-y-auto p-4">
-            <h2 className="mb-4 text-2xl font-bold">Your Cart</h2>
+            <h2 className="mb-4 text-2xl font-bold text-black">Mini Cart</h2>
 
             {/* List cart items */}
             {cartItems.length > 0 ? (
