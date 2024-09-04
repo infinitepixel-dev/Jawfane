@@ -11,6 +11,8 @@ import propTypes from "prop-types";
 //INFO Animation Libraries
 import { gsap } from "gsap";
 
+import "./UsersManager.module.css";
+
 const UsersManager = ({ storeId, roleMapData }) => {
   const APIUrl = `${window.location.protocol}//${window.location.hostname}:3030`;
 
@@ -168,23 +170,23 @@ const UsersManager = ({ storeId, roleMapData }) => {
   };
 
   return (
-    <div className="bg-gray-50 p-5 ">
+    <div className="bg-gray-50 p-5 bg-opacity-5 rounded-lg text-slate-300">
       <h2 className="mb-6 text-center text-2xl font-bold">User Management</h2>
 
       {/* Modal */}
       {showModal && (
         <div
           ref={modalRef}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center"
         >
-          <div className="bg-white p-4 rounded shadow-lg">
+          <div className=" p-4 rounded shadow-lg">
             <p className="text-lg font-semibold">{modalMessage}</p>
           </div>
         </div>
       )}
 
       {/* Add New User Section */}
-      <div className="rounded-lg bg-slate-300 p-6 shadow-lg">
+      <div className="rounded-lg bg-slate-300 bg-opacity-20 text-slate-300 p-6 shadow-lg">
         <h3 className="mb-4 text-xl font-semibold">Add New User</h3>
         <div className="mb-4 grid gap-4">
           <input
@@ -192,16 +194,17 @@ const UsersManager = ({ storeId, roleMapData }) => {
             placeholder="Email"
             value={newUser.email}
             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-            className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 placeholder-gray-500 placeholder:italic"
+            className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 placeholder-slate-300 placeholder:italic bg-slate-300 bg-opacity-20 text-slate-300 shadow-lg"
           />
           <input
             type="text"
             placeholder="Name"
             value={newUser.name}
             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-            className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 placeholder-gray-500 placeholder:italic"
+            className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 placeholder-slate-300 placeholder:italic bg-slate-300 bg-opacity-20 text-slate-300 shadow-lg"
           />
           <select
+            defaultValue="select-role"
             onChange={(e) =>
               setNewUser({
                 ...newUser,
@@ -209,19 +212,30 @@ const UsersManager = ({ storeId, roleMapData }) => {
                 role_id: roleMapData.roles[e.target.value],
               })
             }
-            className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500"
+            className={`rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 bg-slate-300 bg-opacity-20 text-slate-300 shadow-lg 
+  ${!newUser.role ? "italic" : ""}`} // Apply italic when no role is selected
           >
-            <option defaultValue="Select a role" disabled className="italic">
+            <option
+              value="select-role" // This ensures the placeholder is selected by default
+              disabled
+              className="italic text-slate-400" // Italicize and style the placeholder
+            >
               Select a role
             </option>
-            <option value="admin">Admin</option>
-            <option value="storeManager">Store Manager</option>
-            <option value="user">User</option>
+            <option value="admin" className="bg-opacity-100">
+              Admin
+            </option>
+            <option value="storeManager" className="bg-opacity-100">
+              Store Manager
+            </option>
+            <option value="user" className="bg-opacity-100">
+              User
+            </option>
           </select>
 
           <button
             onClick={handleAddUser}
-            className="rounded bg-blue-500 px-4 py-2 text-white transition duration-200 hover:bg-blue-600"
+            className="rounded bg-blue-500 px-4 py-2 text-slate-200 font-bold transition duration-200 hover:bg-blue-600"
           >
             Add User
           </button>
@@ -229,40 +243,41 @@ const UsersManager = ({ storeId, roleMapData }) => {
       </div>
 
       {/* All Users List */}
-      <div className="mt-8 rounded-lg bg-white p-6 shadow-lg">
+      <div className="mt-8 rounded-lg bg-slate-300 bg-opacity-20 text-slate-300 p-6 shadow-lg">
         <h3 className="mb-4 text-xl font-semibold text-center sm:text-left">
-          All Users
+          Existing Users
         </h3>
         <ul ref={usersListRef} className="space-y-4">
           {users.map((user, index) => (
             <li
               key={index}
-              className="flex flex-col items-start justify-between space-y-3 rounded bg-gray-200 p-4 shadow-md sm:flex-row sm:items-center sm:space-y-0"
+              className="flex flex-col items-start justify-between space-y-3 rounded bg-slate-300 bg-opacity-20  p-4 shadow-md sm:flex-row sm:items-center sm:space-y-0"
             >
               {/* User Details */}
-              <div className="w-full sm:w-auto">
-                <p className="font-medium text-center sm:text-left">
+              <div className="w-full sm:w-auto ">
+                <p className=" font-medium text-center sm:text-left">
                   {user.name}
                 </p>
-                <p className="text-gray-600 text-center sm:text-left">
+                <p className="text-slate-850 text-center sm:text-left">
                   {user.email}
                 </p>
-                <p className="text-gray-500 text-center sm:text-left">
+                <p className="text-slate-750 text-center sm:text-left">
                   {roleMapData.reverseRoleMap[user.role_id]}
                 </p>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex w-full space-x-3 justify-center sm:w-auto sm:justify-end sm:space-x-3">
+
+              <div className="flex w-full space-x-3  justify-center sm:w-auto sm:justify-end sm:space-x-3">
                 <button
                   onClick={() => setEditUser(user)}
-                  className="w-full rounded bg-green-600 px-4 py-2 text-sm text-white transition duration-200 hover:bg-green-700 sm:w-auto"
+                  className="w-full rounded bg-green-600 px-4 py-2 text-sm font-bold text-slate-200 transition duration-200 hover:bg-green-700 sm:w-auto"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteUser(user.id)}
-                  className="w-full rounded bg-red-500 px-4 py-2 text-sm text-white transition duration-200 hover:bg-red-600 sm:w-auto"
+                  className="w-full rounded bg-red-500 px-4 py-2 text-sm font-bold text-slate-200 transition duration-200 hover:bg-red-600 sm:w-auto"
                 >
                   Delete
                 </button>
@@ -274,8 +289,10 @@ const UsersManager = ({ storeId, roleMapData }) => {
 
       {/* Edit User Section */}
       {editUser && (
-        <div className="mt-8 rounded-lg  p-6 shadow-lg">
-          <h3 className="mb-4 text-xl font-semibold">Edit User</h3>
+        <div className="mt-8 rounded-lg bg-slate-300 bg-opacity-20 p-6 shadow-lg">
+          <h3 className="mb-4 text-xl font-semibold text-slate-300">
+            Edit Existing User
+          </h3>
           <div className="grid gap-4">
             <input
               type="email"
@@ -286,7 +303,7 @@ const UsersManager = ({ storeId, roleMapData }) => {
                   email: e.target.value,
                 })
               }
-              className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500"
+              className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 bg-slate-300 bg-opacity-20 text-slate-300 shadow-lg"
             />
             <input
               type="text"
@@ -298,22 +315,36 @@ const UsersManager = ({ storeId, roleMapData }) => {
                   role: roleMapData.reverseRoleMap[editUser.role_id],
                 })
               }
-              className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500"
+              className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 bg-slate-300 bg-opacity-20 text-slate-300 shadow-lg"
             />
             <select
-              defaultValue={roleMapData.reverseRoleMap[editUser.role_id]}
+              defaultValue={editUser.role}
               onChange={(e) =>
-                setEditUser({
+                setNewUser({
                   ...editUser,
                   role: e.target.value,
                   role_id: roleMapData.roles[e.target.value],
                 })
               }
-              className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500  bg-white"
+              className={`rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 bg-slate-300 bg-opacity-20 text-slate-300 shadow-lg 
+  ${!editUser.role ? "italic" : ""}`} // Apply italic when no role is selected
             >
-              <option value="admin">Admin</option>
-              <option value="storeManager">Store Manager</option>
-              <option value="user">User</option>
+              <option
+                value="select-role" // This ensures the placeholder is selected by default
+                disabled
+                className="italic text-slate-400" // Italicize and style the placeholder
+              >
+                Select a role
+              </option>
+              <option value="admin" className="bg-opacity-100">
+                Admin
+              </option>
+              <option value="storeManager" className="bg-opacity-100">
+                Store Manager
+              </option>
+              <option value="user" className="bg-opacity-100">
+                User
+              </option>
             </select>
 
             <div className="flex items-center gap-4 ">
