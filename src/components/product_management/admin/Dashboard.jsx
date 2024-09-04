@@ -47,12 +47,21 @@ import ProductsUtility from "../sub_components/utilities/ProductsUtility";
 // import BandsInTownEvents from "../sub_components/widgets/BandsInTownEvents";
 
 function Dashboard({ storeId }) {
-  console.log("Store ID: ", storeId);
+  // console.log("Store ID: ", storeId);
 
   const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082`;
   const { user, login, loading } = useContext(AuthContext);
 
-  const [selectedPage, setSelectedPage] = useState("dashboard");
+  //INFO: Boolean to control whether to persist page state in localStorage
+  const persistPageState = true;
+
+  // Initialize selectedPage state from localStorage if persistPageState is true
+  const [selectedPage, setSelectedPage] = useState(() => {
+    if (persistPageState) {
+      return localStorage.getItem("selectedPage") || "dashboard";
+    }
+    return "dashboard";
+  });
 
   const [products, setProducts] = useState([]);
 
@@ -108,11 +117,37 @@ function Dashboard({ storeId }) {
   // Admin Sidebar state and functions
   const [showSidebar, setShowSidebar] = useState(false);
 
-  const reverseRoleMap = {
-    1: "admin",
-    2: "storeManager",
-    3: "user",
-  };
+  //use the keys as the values dynamically based on the roleMap
+  const [roleMapData, setRoleMapData] = useState({
+    roles: {
+      admin: 1,
+      storeManager: 2,
+      user: 3,
+    },
+    reverseRoleMap: {},
+  });
+
+  useEffect(() => {
+    // Generate reverseRoleMap only if roles have changed
+    const newReverseRoleMap = Object.keys(roleMapData.roles).reduce(
+      (acc, role) => {
+        acc[roleMapData.roles[role]] = role;
+        return acc;
+      },
+      {}
+    );
+
+    // Only update state if reverseRoleMap has changed
+    if (
+      JSON.stringify(newReverseRoleMap) !==
+      JSON.stringify(roleMapData.reverseRoleMap)
+    ) {
+      setRoleMapData((prevData) => ({
+        ...prevData,
+        reverseRoleMap: newReverseRoleMap,
+      }));
+    }
+  }, [roleMapData]); // Dependency only on roles to avoid unnecessary loops
 
   // Animation for trash icon on mount
   useEffect(() => {
@@ -165,6 +200,13 @@ function Dashboard({ storeId }) {
       fetchProducts();
     }
   }, [user, apiUrl, fetchProducts]);
+
+  // Persist selectedPage to localStorage if persistPageState is true
+  useEffect(() => {
+    if (persistPageState) {
+      localStorage.setItem("selectedPage", selectedPage);
+    }
+  }, [selectedPage, persistPageState]);
 
   // Animate product cards on initial mount
   useEffect(() => {
@@ -231,14 +273,16 @@ function Dashboard({ storeId }) {
   };
 
   return (
-    <div className="container-fluid p-4">
+    <div className="container-fluid min-h-screen p-4">
       <div className="container-fluid p-4">
         <div className="w-screen">
           {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
         </div>
-        <h1 className="mb-8 mt-8 text-center text-4xl font-bold text-white">
+        <h1 className="  text-center text-4xl font-bold text-white">
           Admin Dashboard
         </h1>
+        {/* hr tag */}
+        <hr className="my-4 border-gray-600" />
 
         <button className="fixed left-0 top-0 z-50 p-4" onClick={openSidebar}>
           <FaRegListAlt
@@ -253,7 +297,7 @@ function Dashboard({ storeId }) {
           setShowSidebar={setShowSidebar}
           setSelectedPage={setSelectedPage} // Pass the setSelectedPage function
           user={user}
-          role={reverseRoleMap[user.role]}
+          role={roleMapData.reverseRoleMap[user.role]}
         />
 
         {/* Conditionally render the selected page */}
@@ -266,8 +310,6 @@ function Dashboard({ storeId }) {
               {/* Product Grid */}
               <div className="grid auto-rows-min grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {products.map((product, index) => {
-                  // console.log('Edited Data: ', editedData)
-
                   return (
                     <div key={product.id} className="w-11/12 mx-auto">
                       <DashboardProductCard
@@ -342,7 +384,14 @@ function Dashboard({ storeId }) {
             </>
           )}
           {selectedPage === "add-product" && <AddProduct />}
-          {selectedPage === "users-manager" && <UsersManager />}
+          {selectedPage === "users-manager" && (
+            <UsersManager
+              storeId={storeId}
+              roleMapData={roleMapData}
+              // roleMap={roleMap}
+              // reverseRoleMap={reverseRoleMap}
+            />
+          )}
           {selectedPage === "payments" && <Payments />}
           {selectedPage === "view-site" && <div>Viewing Site...</div>}
         </div>

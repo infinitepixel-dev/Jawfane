@@ -70,10 +70,12 @@ const AdminSidebar = ({
 
   return (
     <div
-      className={`admin-sidebar fixed left-0 top-0 z-50 h-full transform bg-gray-800 bg-opacity-95 text-white ${
+      className={`admin-sidebar fixed top-0 z-50 h-full transform bg-gray-800 bg-opacity-95 text-white ${
         showSidebar ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out`}
       style={{
+        // left: "-0.25em",
+        left: 0,
         zIndex: 1000,
         backdropFilter: "blur(2em)",
       }}
