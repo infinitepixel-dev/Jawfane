@@ -1,3 +1,9 @@
+//UsersManager.jsx
+
+/*
+A component to manage users in the admin dashboard
+*/
+
 //INFO React Libraries
 import { useState, useEffect, useRef, useCallback } from "react";
 import propTypes from "prop-types";

@@ -10,6 +10,7 @@ import Lore from "./Lore";
 import Navigation from "../sub-components/navigation/Navigation";
 
 //INFO Sub-components imports
+import BackToTop from "@components/sub-components/BackToTop";
 import CanvasLogo from "../sub-components/CanvasLogo";
 
 function Home({
@@ -44,6 +45,7 @@ function Home({
         <Lore theme={theme} />
         <Footer theme={theme} />
       </div>
+      <BackToTop />
     </>
   );
 }

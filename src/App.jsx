@@ -1,5 +1,10 @@
 const DevMode = true;
 //Be sure to change the base in vite.config.js to the correct path
+//Home.jx
+
+/*
+A component that populates the home page
+*/
 
 //INFO React Libraries
 import { useState, useEffect } from "react";
@@ -13,7 +18,7 @@ import Music from "@components/pages/MusicVideos";
 import Lore from "@components/pages/Lore";
 
 //INFO Sub-components
-import BackToTop from "@components/sub-components/BackToTop";
+// import BackToTop from "@components/sub-components/BackToTop";
 
 //ANCHOR Product Management Components
 //INFO Admin Pages
@@ -101,7 +106,7 @@ const App = () => {
     <Router basename="/dev">
       <div
         id="main-app"
-        className={`app-container ${theme} overflow-hidden bg-slate-950`}
+        className={`app-container ${theme} overflow-hidden bg-black`}
       >
         <Routes>
           <Route
@@ -198,7 +203,6 @@ const App = () => {
             element={<Dashboard storeId={storeId} />}
           />
         </Routes>
-        <BackToTop />
       </div>
     </Router>
   );
