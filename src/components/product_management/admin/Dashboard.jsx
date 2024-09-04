@@ -7,6 +7,7 @@ A component that displays the product dashboard for the admin
 //INFO React Libraries
 import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import propTypes from "prop-types";
 
 //INFO Animation Libraries
 import { gsap } from "gsap";
@@ -36,7 +37,9 @@ import ProductsUtility from "../sub_components/utilities/ProductsUtility";
 //INFO Sub-components - widgets
 import BandsInTownEvents from "../sub_components/widgets/BandsInTownEvents";
 
-function Dashboard() {
+function Dashboard({ storeId }) {
+  console.log("Store ID: ", storeId);
+
   const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082`;
   const { user, login, loading } = useContext(AuthContext);
 
@@ -126,16 +129,24 @@ function Dashboard() {
 
     if (userParam && !user) {
       const userData = JSON.parse(decodeURIComponent(userParam));
-      if (userData.role !== 1) {
-        console.log("User Data: ", userData);
-        console.log("User Param", userParam);
 
+      // Log userData for better debugging
+      console.log("User Data received from URL:", userData);
+
+      if (userData.role !== 1 && userData.storeId !== storeId) {
+        console.log("User role mismatch or store ID mismatch");
+        console.log(
+          "Expected Store ID:",
+          storeId,
+          "User Store ID:",
+          userData.storeId
+        );
         navigate("/no-access");
       } else {
         login(userData);
       }
     }
-  }, [location.search, user, login, navigate]);
+  }, [location.search, user, login, navigate, storeId]);
 
   // Fetch products from API if user is authenticated
   useEffect(() => {
@@ -355,5 +366,9 @@ function Dashboard() {
     </div>
   );
 }
+
+Dashboard.propTypes = {
+  storeId: propTypes.number,
+};
 
 export default Dashboard;

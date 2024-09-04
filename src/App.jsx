@@ -33,6 +33,9 @@ import CheckoutPage from "@pages_product_management/Checkout";
 import "./App.css";
 
 const App = () => {
+  //TODO fetch the db for the store id
+  const storeId = 1;
+
   //import the base from vite config
   const [base, setBase] = useState("");
   const [theme, setTheme] = useState("dark");
@@ -96,7 +99,10 @@ const App = () => {
 
   return (
     <Router basename="/dev">
-      <div id="main-app" className={`app-container ${theme} overflow-hidden`}>
+      <div
+        id="main-app"
+        className={`app-container ${theme} overflow-hidden bg-slate-950`}
+      >
         <Routes>
           <Route
             path="/"
@@ -164,8 +170,14 @@ const App = () => {
           {/* Product Management Routes */}
 
           {/* Admin Pages */}
-          <Route path={`${base}/dashboard`} element={<Dashboard />} />
-          <Route path={`/dashboard`} element={<Dashboard />} />
+          <Route
+            path={`${base}/dashboard`}
+            element={<Dashboard storeId={storeId} />}
+          />
+          <Route
+            path={`/dashboard`}
+            element={<Dashboard storeId={storeId} />}
+          />
           <Route path={`/add-product`} element={<AddProductForm />} />
           {/* import Dashboard from "@admin_product_management/Dashboard.jsx";
           import UsersManager from "@admin_product_management/UsersManager";
@@ -174,7 +186,10 @@ const App = () => {
           "@pages_product_management/CartPage"; import CheckoutPage from
           "@pages_product_management/Checkout"; // INFO Sub-components import
           CartPopOut from "@sub-menus_product_management/CartPopOut"; */}
-          <Route path={`/users-manager`} element={<UsersManager />} />
+          <Route
+            path={`/users-manager`}
+            element={<UsersManager storeId={storeId} />}
+          />
 
           {/* Cart Page */}
           <Route
@@ -190,7 +205,7 @@ const App = () => {
           />
           <Route
             path={`/checkout`}
-            element={<CheckoutPage cartItems={cartItems} />}
+            element={<CheckoutPage cartItems={cartItems} storeId={storeId} />}
           />
         </Routes>
         <BackToTop />
