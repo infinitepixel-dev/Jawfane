@@ -18,8 +18,8 @@ import BackToTop from "@components/sub-components/BackToTop";
 //ANCHOR Product Management Components
 //INFO Admin Pages
 import Dashboard from "@admin_product_management/Dashboard.jsx";
-import UsersManager from "@admin_product_management/UsersManager";
-import AddProductForm from "@admin_product_management/AddProductForm";
+// import UsersManager from "@admin_product_management/UsersManager";
+// import AddProductForm from "@admin_product_management/AddProductForm";
 
 //INFO Pages
 import CartPage from "@pages_product_management/CartPage";
@@ -167,30 +167,8 @@ const App = () => {
             element={<Lore theme={theme} isMobile={isMobile} />}
           />
           {/* <Route path='/booking' element={<Booking theme={theme} />} /> */}
-          {/* Product Management Routes */}
 
-          {/* Admin Pages */}
-          <Route
-            path={`${base}/dashboard`}
-            element={<Dashboard storeId={storeId} />}
-          />
-          <Route
-            path={`/dashboard`}
-            element={<Dashboard storeId={storeId} />}
-          />
-          <Route path={`/add-product`} element={<AddProductForm />} />
-          {/* import Dashboard from "@admin_product_management/Dashboard.jsx";
-          import UsersManager from "@admin_product_management/UsersManager";
-          import AddProductForm from "@admin_product_management/AddProductForm";
-          //INFO Pages import CartPage from
-          "@pages_product_management/CartPage"; import CheckoutPage from
-          "@pages_product_management/Checkout"; // INFO Sub-components import
-          CartPopOut from "@sub-menus_product_management/CartPopOut"; */}
-          <Route
-            path={`/users-manager`}
-            element={<UsersManager storeId={storeId} />}
-          />
-
+          {/* Payments Routes */}
           {/* Cart Page */}
           <Route
             path="/cart"
@@ -206,6 +184,18 @@ const App = () => {
           <Route
             path={`/checkout`}
             element={<CheckoutPage cartItems={cartItems} storeId={storeId} />}
+          />
+
+          {/* Product Management Routes */}
+
+          {/* Admin Pages */}
+          <Route
+            path={`${base}/dashboard`}
+            element={<Dashboard storeId={storeId} />}
+          />
+          <Route
+            path={`/dashboard`}
+            element={<Dashboard storeId={storeId} />}
           />
         </Routes>
         <BackToTop />

@@ -1,86 +1,76 @@
-//UsersManager.jsx
-/*
-A component that allows the admin to manage users allowed in the admin dashboard
-*/
-
 //INFO React Libraries
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
 import propTypes from "prop-types";
 
 //INFO Animation Libraries
 import { gsap } from "gsap";
 
-const UsersManager = ({ storeId }) => {
-  // console.log("Store ID:", storeId);
-
+const UsersManager = ({ storeId, roleMapData }) => {
   const APIUrl = `${window.location.protocol}//${window.location.hostname}:3030`;
 
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({
     email: "",
     name: "",
-    role: "user",
+    role: "",
     store_id: storeId, //Associates with the store
   });
   const [editUser, setEditUser] = useState(null);
+  const [modalMessage, setModalMessage] = useState(""); // State to manage the modal message
+  const [showModal, setShowModal] = useState(false); // State to control the modal visibility
   const usersListRef = useRef(null);
+  const modalRef = useRef(null); // Ref for the modal element
 
-  const roleMap = {
-    user: 3, // User has role_id = 3
-    admin: 1, // Admin has role_id = 1
-    storeManager: 2, // Store Manager has role_id = 2
-  };
+  const getUsers = useCallback(async () => {
+    try {
+      const response = await fetch(`${APIUrl}/users-data`);
 
-  const reverseRoleMap = {
-    1: "admin",
-    2: "storeManager",
-    3: "user",
-  };
-
-  useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const response = await fetch(`${APIUrl}/users-data`);
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const users = await response.json();
-        setUsers(users);
-
-        // GSAP animation for users list
-        gsap.fromTo(
-          usersListRef.current.children,
-          { opacity: 0, y: 50 },
-          { opacity: 1, y: 0, stagger: 0.1, duration: 0.6 }
-        );
-      } catch (error) {
-        console.error("There was an error!", error);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
 
-    getUsers();
+      const users = await response.json();
+      setUsers(users);
+
+      // GSAP animation for users list
+      gsap.fromTo(
+        usersListRef.current.children,
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, stagger: 0.1, duration: 0.6 }
+      );
+    } catch (error) {
+      console.error("There was an error!", error);
+    }
   }, [APIUrl]);
 
-  //v1
-  // Add a new user
-  // const handleAddUser = () => {
-  //     //POST with fetch
-  //     fetch(`${APIUrl}/users-data`, {
-  //         method: 'POST',
-  //         headers: {
-  //             'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify(newUser),
-  //     }).then(() => {
-  //         setUsers([...users, newUser])
-  //         setNewUser({ email: '', name: '', role: 'user' })
-  //     })
-  // }
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
 
-  //v2
+  // Function to show the modal with GSAP animation
+  const showMessageModal = (message) => {
+    setModalMessage(message);
+    setShowModal(true);
+
+    // GSAP animation for showing the modal
+    gsap.fromTo(
+      modalRef.current,
+      { opacity: 0, scale: 0.8 },
+      { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }
+    );
+
+    setTimeout(() => {
+      // GSAP animation for hiding the modal after 3 seconds
+      gsap.to(modalRef.current, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.4,
+        ease: "power2.in",
+        onComplete: () => setShowModal(false), // Hide modal after animation
+      });
+    }, 1000); // Modal will stay visible for 3 seconds
+  };
+
   // Add a new user
   const handleAddUser = () => {
     fetch(`${APIUrl}/users-data`, {
@@ -90,60 +80,62 @@ const UsersManager = ({ storeId }) => {
       },
       body: JSON.stringify({
         ...newUser,
-        role_id: roleMap[newUser.role], // Convert role name to role_id before sending to the backend
+        role_id: roleMapData.roles[newUser.role],
       }),
     }).then(() => {
+      getUsers();
       setUsers([...users, newUser]);
       setNewUser({ email: "", name: "", role: "user", store_id: storeId }); // Reset newUser state
+      showMessageModal("User added successfully"); // Show success modal
     });
   };
 
-  //v1
-  // Update an existing user
-  // const handleEditUser = (id) => {
-  //     //Fetch with PUT
-  //     fetch(`${APIUrl}/${id}`, {
-  //         method: 'PUT',
-  //         headers: {
-  //             'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify(editUser),
-  //     }).then(() => {
-  //         setUsers(
-  //             users.map((user) =>
-  //                 user.id === id ? { ...user, ...editUser } : user
-  //             )
-  //         )
-  //         setEditUser(null)
-  //     })
-  // }
-
-  //v2
   // Edit User
-  const handleEditUser = (id) => {
-    fetch(`${APIUrl}/users-data/edit/${id}/${storeId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...editUser,
-        role_id: roleMap[editUser.role], // Convert role name to role_id before sending to the backend
-      }),
-    }).then(() => {
+  const handleEditUser = async (id) => {
+    console.log("edit user:", editUser);
+
+    try {
+      const response = await fetch(
+        `${APIUrl}/users-data/edit/${id}/${storeId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...editUser,
+            role: editUser.role,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update user");
+      }
+
+      const responseData = await response.json(); // Await the response JSON
+      console.log("Response:", responseData);
+
+      // Update the users list after a successful edit
       setUsers(
         users.map((user) =>
           user.id === id
-            ? { ...user, ...editUser, role: roleMap[editUser.role] }
+            ? { ...user, ...editUser, role: roleMapData.roles[editUser.role] }
             : user
         )
       );
       setEditUser(null);
-    });
+      showMessageModal("User updated successfully"); // Show success modal
+    } catch (error) {
+      console.error("Error updating user:", error);
+      showMessageModal("Failed to update user"); // Show failure modal
+    }
   };
 
   // Delete a user
   const handleDeleteUser = (id) => {
+    //pull new user list to ensure the user is in the db to delete
+
     console.log(`Deleting user with id: ${id} and store id: ${storeId}`);
     if (!id || !storeId) {
       console.error("Missing user ID or store ID");
@@ -157,12 +149,15 @@ const UsersManager = ({ storeId }) => {
       .then((response) => {
         if (response.ok) {
           setUsers(users.filter((user) => user.id !== id));
+          showMessageModal("User deleted successfully"); // Show success modal
         } else {
           console.error("Delete request failed", response);
+          showMessageModal("Failed to delete user"); // Show failure modal
         }
       })
       .catch((error) => {
         console.error("Error deleting user:", error);
+        showMessageModal("Failed to delete user"); // Show failure modal
       });
   };
 
@@ -170,52 +165,19 @@ const UsersManager = ({ storeId }) => {
     <div className="bg-gray-50 p-5 ">
       <h2 className="mb-6 text-center text-2xl font-bold">User Management</h2>
 
-      {/* Temp Navbar */}
-      <nav aria-label="Page navigation" className="mb-8">
-        <ul className="flex justify-center space-x-6">
-          <li>
-            <Link
-              to="/add-product"
-              className="text-lg font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800"
-            >
-              Add Product
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/merch"
-              className="text-lg font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800"
-            >
-              Merch Page
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/cart"
-              className="text-lg font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800"
-            >
-              Cart Page
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/checkout"
-              className="text-lg font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800"
-            >
-              Checkout Page
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/users-manager"
-              className="text-lg font-medium text-blue-600 transition-colors duration-200 hover:text-blue-800"
-            >
-              Users Manager
-            </Link>
-          </li>
-        </ul>
-      </nav>
+      {/* Modal */}
+      {showModal && (
+        <div
+          ref={modalRef}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        >
+          <div className="bg-white p-4 rounded shadow-lg">
+            <p className="text-lg font-semibold">{modalMessage}</p>
+          </div>
+        </div>
+      )}
 
+      {/* Add New User Section */}
       <div className="rounded-lg bg-slate-300 p-6 shadow-lg">
         <h3 className="mb-4 text-xl font-semibold">Add New User</h3>
         <div className="mb-4 grid gap-4">
@@ -234,12 +196,11 @@ const UsersManager = ({ storeId }) => {
             className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500 placeholder-gray-500 placeholder:italic"
           />
           <select
-            // value={newUser.role}
             onChange={(e) =>
               setNewUser({
                 ...newUser,
                 role: e.target.value,
-                role_id: roleMap[e.target.value],
+                role_id: roleMapData.roles[e.target.value],
               })
             }
             className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500"
@@ -261,29 +222,41 @@ const UsersManager = ({ storeId }) => {
         </div>
       </div>
 
+      {/* All Users List */}
       <div className="mt-8 rounded-lg bg-white p-6 shadow-lg">
-        <h3 className="mb-4 text-xl font-semibold">All Users</h3>
+        <h3 className="mb-4 text-xl font-semibold text-center sm:text-left">
+          All Users
+        </h3>
         <ul ref={usersListRef} className="space-y-4">
           {users.map((user, index) => (
             <li
               key={index}
-              className="flex items-center justify-between rounded bg-gray-200 p-4 shadow-md"
+              className="flex flex-col items-start justify-between space-y-3 rounded bg-gray-200 p-4 shadow-md sm:flex-row sm:items-center sm:space-y-0"
             >
-              <div>
-                <p className="font-medium">{user.name}</p>
-                <p className="text-gray-600">{user.email}</p>
-                <p className="text-gray-500">{reverseRoleMap[user.role_id]}</p>
+              {/* User Details */}
+              <div className="w-full sm:w-auto">
+                <p className="font-medium text-center sm:text-left">
+                  {user.name}
+                </p>
+                <p className="text-gray-600 text-center sm:text-left">
+                  {user.email}
+                </p>
+                <p className="text-gray-500 text-center sm:text-left">
+                  {roleMapData.reverseRoleMap[user.role_id]}
+                </p>
               </div>
-              <div className="space-x-3">
+
+              {/* Action Buttons */}
+              <div className="flex w-full space-x-3 justify-center sm:w-auto sm:justify-end sm:space-x-3">
                 <button
                   onClick={() => setEditUser(user)}
-                  className="rounded bg-green-600 px-3 py-1 text-white transition duration-200 hover:bg-green-700"
+                  className="w-full rounded bg-green-600 px-4 py-2 text-sm text-white transition duration-200 hover:bg-green-700 sm:w-auto"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteUser(user.id)}
-                  className="rounded bg-red-500 px-3 py-1 text-white transition duration-200 hover:bg-red-600"
+                  className="w-full rounded bg-red-500 px-4 py-2 text-sm text-white transition duration-200 hover:bg-red-600 sm:w-auto"
                 >
                   Delete
                 </button>
@@ -293,6 +266,7 @@ const UsersManager = ({ storeId }) => {
         </ul>
       </div>
 
+      {/* Edit User Section */}
       {editUser && (
         <div className="mt-8 rounded-lg  p-6 shadow-lg">
           <h3 className="mb-4 text-xl font-semibold">Edit User</h3>
@@ -315,17 +289,18 @@ const UsersManager = ({ storeId }) => {
                 setEditUser({
                   ...editUser,
                   name: e.target.value,
+                  role: roleMapData.reverseRoleMap[editUser.role_id],
                 })
               }
               className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500"
             />
             <select
-              value={newUser.role}
+              defaultValue={roleMapData.reverseRoleMap[editUser.role_id]}
               onChange={(e) =>
-                setNewUser({
-                  ...newUser,
+                setEditUser({
+                  ...editUser,
                   role: e.target.value,
-                  role_id: roleMap[e.target.value],
+                  role_id: roleMapData.roles[e.target.value],
                 })
               }
               className="rounded border p-2 transition duration-150 focus:ring-2 focus:ring-blue-500  bg-white"
@@ -359,6 +334,7 @@ const UsersManager = ({ storeId }) => {
 
 UsersManager.propTypes = {
   storeId: propTypes.number.isRequired,
+  roleMapData: propTypes.object.isRequired,
 };
 
 export default UsersManager;
