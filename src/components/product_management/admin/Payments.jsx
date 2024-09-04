@@ -19,13 +19,13 @@ function Payments() {
   const paymentOptions = {
     stripe: {
       label: "Stripe",
-      icon: <FaStripe size={50} />,
+      icon: <FaStripe size={75} />,
       color: "#635BFF", // Stripe brand color
       ariaLabel: "Stripe Payment Option",
     },
     paypal: {
       label: "PayPal",
-      icon: <FaPaypal size={50} />,
+      icon: <FaPaypal size={75} />,
       color: "#00457C", // PayPal brand color
       ariaLabel: "PayPal Payment Option",
     },
@@ -76,69 +76,73 @@ function Payments() {
   };
 
   return (
-    // center the content
-    <div
-      className="
+    <div className="container-fluid bg-slate-200 bg-opacity-10 rounded-lg">
+      <div
+        className="
         flex justify-center items-center 
    
     
     "
-    >
-      <div className="p-8 space-y-4">
-        <h2 className="text-2xl font-bold text-white">
-          Select Payment Methods
-        </h2>
-        <div className="flex space-x-6">
-          {Object.keys(paymentOptions).map((paymentType) => (
-            <div
-              key={paymentType}
-              role="button"
-              tabIndex="0"
-              aria-pressed={enabledPayments[paymentType]}
-              aria-label={paymentOptions[paymentType].ariaLabel}
-              className={`cursor-pointer ${
-                enabledPayments[paymentType] ? "text-current" : "text-gray-400"
-              } ${paymentType}-icon`}
-              onClick={() => togglePayment(paymentType)}
-              onKeyPress={(e) => handleKeyPress(e, paymentType)}
-            >
-              {/* if icon equals .icon else image url */}
-              {typeof paymentOptions[paymentType].icon === "string" ? (
-                // SVG image with color using filter
-                <img
-                  src={paymentOptions[paymentType].icon}
-                  alt={paymentOptions[paymentType].label}
-                  className="w-12"
-                  style={{
-                    filter: enabledPayments[paymentType]
-                      ? applyColorFilter(paymentOptions[paymentType].color)
-                      : "grayscale(100%) brightness(0) invert(30%)",
-                  }}
-                />
-              ) : (
-                <div
-                  className="w-12"
-                  style={{
-                    color: enabledPayments[paymentType]
-                      ? paymentOptions[paymentType].color
-                      : "#666666",
-                  }}
-                >
-                  {paymentOptions[paymentType].icon}
-                </div>
-              )}
-              <p
-                className="mt-2 text-center"
-                style={
+      >
+        <div className="p-8 space-y-4">
+          <h2 className="text-2xl font-bold text-slate-300">
+            Select Payment Methods
+          </h2>
+          <div className="flex space-x-6">
+            {Object.keys(paymentOptions).map((paymentType) => (
+              <div
+                key={paymentType}
+                role="button"
+                tabIndex="0"
+                aria-pressed={enabledPayments[paymentType]}
+                aria-label={paymentOptions[paymentType].ariaLabel}
+                className={`cursor-pointer ${
                   enabledPayments[paymentType]
-                    ? { color: paymentOptions[paymentType].color }
-                    : { color: "#666666" }
-                }
+                    ? "text-current"
+                    : "text-gray-400"
+                } ${paymentType}-icon`}
+                onClick={() => togglePayment(paymentType)}
+                onChange={(e) => handleKeyPress(e, paymentType)}
               >
-                {paymentOptions[paymentType].label}
-              </p>
-            </div>
-          ))}
+                {/* if icon equals .icon else image url */}
+                {typeof paymentOptions[paymentType].icon === "string" ? (
+                  // SVG image with color using filter
+                  <img
+                    src={paymentOptions[paymentType].icon}
+                    alt={paymentOptions[paymentType].label}
+                    className="w-12 m-4"
+                    style={{
+                      filter: enabledPayments[paymentType]
+                        ? applyColorFilter(paymentOptions[paymentType].color)
+                        : "grayscale(100%) brightness(0) invert(30%)",
+                      width: "4.50rem",
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="w-12 m-4"
+                    style={{
+                      color: enabledPayments[paymentType]
+                        ? paymentOptions[paymentType].color
+                        : "#666666",
+                    }}
+                  >
+                    {paymentOptions[paymentType].icon}
+                  </div>
+                )}
+                <p
+                  className="mt-2 text-center font-extrabold"
+                  style={
+                    enabledPayments[paymentType]
+                      ? { color: paymentOptions[paymentType].color }
+                      : { color: "#666666" }
+                  }
+                >
+                  {paymentOptions[paymentType].label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -70,7 +70,7 @@ const AdminSidebar = ({
 
   return (
     <div
-      className={`admin-sidebar fixed top-0 z-50 h-full transform bg-gray-800 bg-opacity-95 text-white ${
+      className={`admin-sidebar fixed top-0 z-50 h-full transform bg-gray-800 bg-opacity-90 text-slate-200 ${
         showSidebar ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out`}
       style={{
@@ -92,7 +92,7 @@ const AdminSidebar = ({
           <div key={index}>
             <li>
               <button
-                className="flex items-center space-x-2 text-lg hover:text-gray-300"
+                className="flex items-center space-x-2 text-lg font-extrabold text-slate-200 hover:text-indigo-500"
                 onClick={() => {
                   closeSidebar();
                   item.onClick();

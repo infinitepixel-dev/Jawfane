@@ -278,7 +278,7 @@ function Dashboard({ storeId }) {
         <div className="w-screen">
           {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
         </div>
-        <h1 className="  text-center text-4xl font-bold text-white">
+        <h1 className="  text-center text-4xl font-bold text-slate-300">
           Admin Dashboard
         </h1>
         {/* hr tag */}
@@ -303,7 +303,7 @@ function Dashboard({ storeId }) {
         {/* Conditionally render the selected page */}
         <div>
           {selectedPage === "dashboard" && (
-            <div className="text-white">Admin Dashboard</div>
+            <div className="text-slate-300">Admin Dashboard</div>
           )}
           {selectedPage === "manage-products" && (
             <>
