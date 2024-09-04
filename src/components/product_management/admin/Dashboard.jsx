@@ -6,7 +6,11 @@ A component that displays the product dashboard for the admin
 
 //INFO React Libraries
 import { useContext, useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+  // Link
+} from "react-router-dom";
 import propTypes from "prop-types";
 
 //INFO Animation Libraries
@@ -16,8 +20,12 @@ import { gsap } from "gsap";
 import { FaRegListAlt } from "react-icons/fa";
 
 //ANCHOR Product Management Components
-//INFO Admin
-import Login from "./Login";
+
+//INFO Admin Pages
+import AddProduct from "@admin_product_management/AddProductForm";
+import Login from "@admin_product_management/Login";
+// import Logout from "@admin_product_management/Logout";
+import UsersManager from "@admin_product_management/UsersManager";
 
 //INFO Sub-components - apis
 //products
@@ -42,6 +50,8 @@ function Dashboard({ storeId }) {
 
   const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082`;
   const { user, login, loading } = useContext(AuthContext);
+
+  const [selectedPage, setSelectedPage] = useState("dashboard");
 
   const [products, setProducts] = useState([]);
 
@@ -221,14 +231,48 @@ function Dashboard({ storeId }) {
 
   return (
     <div className="container-fluid p-4">
-      <div className="w-screen">
-        {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
-      </div>
-      <h1 className="mb-8 mt-8 text-center text-4xl font-bold text-white">
+      {/* <div className="w-screen"> */}
+      {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
+      {/* </div> */}
+      {/* <h1 className="mb-8 mt-8 text-center text-4xl font-bold text-white">
         Product Dashboard
-      </h1>
+      </h1> */}
+
+      <div className="container-fluid p-4">
+        <div className="w-screen">
+          {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
+        </div>
+        <h1 className="mb-8 mt-8 text-center text-4xl font-bold text-white">
+          Product Dashboard
+        </h1>
+
+        <button className="fixed left-0 top-0 z-50 p-4" onClick={openSidebar}>
+          <FaRegListAlt
+            className="text-3xl text-slate-400"
+            alt="Sidebar Admin Menu"
+          />
+        </button>
+
+        {/* AdminSidebar */}
+        <AdminSidebar
+          showSidebar={showSidebar}
+          setShowSidebar={setShowSidebar}
+          setSelectedPage={setSelectedPage} // Pass the setSelectedPage function
+          user={user}
+          role={reverseRoleMap[user.role]}
+        />
+
+        {/* Conditionally render the selected page */}
+        <div>
+          {selectedPage === "dashboard" && <h2>Welcome to the Dashboard</h2>}
+          {selectedPage === "add-product" && <AddProduct />}
+          {selectedPage === "users-manager" && <UsersManager />}
+          {selectedPage === "view-site" && <div>Viewing Site...</div>}
+        </div>
+      </div>
+
       {/* Navigation */}
-      <nav aria-label="Page navigation" className="mb-6">
+      {/* <nav aria-label="Page navigation" className="mb-6">
         <ul className="flex justify-center space-x-6">
           <li>
             <Link
@@ -278,15 +322,15 @@ function Dashboard({ storeId }) {
           className="text-3xl text-slate-400"
           alt="Sidebar Admin Menu"
         />
-      </button>
+      </button> */}
 
       {/* AdminSidebar here... */}
-      <AdminSidebar
+      {/* <AdminSidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
         user={user}
         role={reverseRoleMap[user.role]}
-      />
+      /> */}
 
       {/* Product Grid */}
       <div className="grid auto-rows-min grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
