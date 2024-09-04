@@ -26,6 +26,7 @@ import AddProduct from "@admin_product_management/AddProductForm";
 import Login from "@admin_product_management/Login";
 // import Logout from "@admin_product_management/Logout";
 import UsersManager from "@admin_product_management/UsersManager";
+import Payments from "@admin_product_management/Payments";
 
 //INFO Sub-components - apis
 //products
@@ -43,7 +44,7 @@ import ImageUtility from "../sub_components/utilities/ImageUtility";
 import ProductsUtility from "../sub_components/utilities/ProductsUtility";
 
 //INFO Sub-components - widgets
-import BandsInTownEvents from "../sub_components/widgets/BandsInTownEvents";
+// import BandsInTownEvents from "../sub_components/widgets/BandsInTownEvents";
 
 function Dashboard({ storeId }) {
   console.log("Store ID: ", storeId);
@@ -225,25 +226,18 @@ function Dashboard({ storeId }) {
     gsap.fromTo(
       ".admin-sidebar",
       { x: "-100%" },
-      { x: "0%", duration: 0.5, ease: "power3.inOut" }
+      { x: "0%", duration: 0.2, ease: "power3.inOut" }
     );
   };
 
   return (
     <div className="container-fluid p-4">
-      {/* <div className="w-screen"> */}
-      {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
-      {/* </div> */}
-      {/* <h1 className="mb-8 mt-8 text-center text-4xl font-bold text-white">
-        Product Dashboard
-      </h1> */}
-
       <div className="container-fluid p-4">
         <div className="w-screen">
           {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
         </div>
         <h1 className="mb-8 mt-8 text-center text-4xl font-bold text-white">
-          Product Dashboard
+          Admin Dashboard
         </h1>
 
         <button className="fixed left-0 top-0 z-50 p-4" onClick={openSidebar}>
@@ -264,149 +258,97 @@ function Dashboard({ storeId }) {
 
         {/* Conditionally render the selected page */}
         <div>
-          {selectedPage === "dashboard" && <h2>Welcome to the Dashboard</h2>}
+          {selectedPage === "dashboard" && (
+            <div className="text-white">Admin Dashboard</div>
+          )}
+          {selectedPage === "manage-products" && (
+            <>
+              {/* Product Grid */}
+              <div className="grid auto-rows-min grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {products.map((product, index) => {
+                  // console.log('Edited Data: ', editedData)
+
+                  return (
+                    <div key={product.id} className="w-11/12 mx-auto">
+                      <DashboardProductCard
+                        product={product}
+                        editProduct={editProduct}
+                        editedData={editedData}
+                        setEditedData={setEditedData}
+                        imageOption={imageOption}
+                        imageUrl={imageUrl}
+                        handleFileChange={handleFileChange}
+                        handleImageUrlChange={handleImageUrlChange}
+                        handleImageOptionChange={handleImageOptionChange}
+                        handleDeleteClick={handleDeleteClick}
+                        handleInputChange={handleInputChange}
+                        cardRefs={cardRefs}
+                        trashIconRefs={trashIconRefs}
+                        arrowRefs={arrowRefs}
+                        setHoveredIndex={setHoveredIndex}
+                        index={index}
+                        handleSave={handleSave}
+                        apiUrl={apiUrl}
+                        fetchProducts={fetchProducts}
+                        imageFile={imageFile}
+                        handleCancel={handleCancel}
+                        setImageFile={setImageFile}
+                        setImageUrl={setImageUrl}
+                        convertBlobToBase64={convertBlobToBase64}
+                        handleEditClick={handleEditClick}
+                        setImageOption={setImageOption}
+                        setSelectedProduct={setSelectedProduct}
+                        setShowModal={setShowModal}
+                      />
+                    </div>
+                  );
+                })}
+
+                {/* Delete Confirmation Modal */}
+                {showModal && (
+                  <div className="payment-modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-black">
+                    <div className="rounded-lg bg-white p-8 text-center shadow-lg">
+                      <h2 className="mb-4 text-2xl font-bold">
+                        Delete Product
+                      </h2>
+                      <p className="mb-4">
+                        Are you sure you want to delete this product?
+                      </p>
+                      <button
+                        className="mr-4 rounded-lg bg-red-500 px-4 py-2 text-white shadow transition hover:bg-red-700"
+                        onClick={() =>
+                          confirmDelete(
+                            selectedProduct,
+                            trashIconRefs,
+                            handleDelete,
+                            cardRefs,
+                            setShowModal,
+                            setSelectedProduct
+                          )
+                        }
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        className="rounded-lg bg-gray-500 px-4 py-2 text-white shadow transition hover:bg-gray-700"
+                        onClick={() => closeModal(setShowModal)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
           {selectedPage === "add-product" && <AddProduct />}
           {selectedPage === "users-manager" && <UsersManager />}
+          {selectedPage === "payments" && <Payments />}
           {selectedPage === "view-site" && <div>Viewing Site...</div>}
         </div>
       </div>
 
-      {/* Navigation */}
-      {/* <nav aria-label="Page navigation" className="mb-6">
-        <ul className="flex justify-center space-x-6">
-          <li>
-            <Link
-              to="/add-product"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800"
-            >
-              Add Product
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/merch"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800"
-            >
-              Merch Page
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/cart"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800"
-            >
-              Cart Page
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/checkout"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800"
-            >
-              Checkout Page
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/users-manager"
-              className="text-lg font-medium text-blue-600 hover:text-blue-800"
-            >
-              Users Manger
-            </Link>
-          </li>
-        </ul>
-      </nav>
-
-      <button className="fixed left-0 top-0 z-50 p-4" onClick={openSidebar}>
-        <FaRegListAlt
-          className="text-3xl text-slate-400"
-          alt="Sidebar Admin Menu"
-        />
-      </button> */}
-
-      {/* AdminSidebar here... */}
-      {/* <AdminSidebar
-        showSidebar={showSidebar}
-        setShowSidebar={setShowSidebar}
-        user={user}
-        role={reverseRoleMap[user.role]}
-      /> */}
-
-      {/* Product Grid */}
-      <div className="grid auto-rows-min grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((product, index) => {
-          // console.log('Edited Data: ', editedData)
-
-          return (
-            <div key={product.id} className="w-11/12 mx-auto">
-              <DashboardProductCard
-                product={product}
-                editProduct={editProduct}
-                editedData={editedData}
-                setEditedData={setEditedData}
-                imageOption={imageOption}
-                imageUrl={imageUrl}
-                handleFileChange={handleFileChange}
-                handleImageUrlChange={handleImageUrlChange}
-                handleImageOptionChange={handleImageOptionChange}
-                handleDeleteClick={handleDeleteClick}
-                handleInputChange={handleInputChange}
-                cardRefs={cardRefs}
-                trashIconRefs={trashIconRefs}
-                arrowRefs={arrowRefs}
-                setHoveredIndex={setHoveredIndex}
-                index={index}
-                handleSave={handleSave}
-                apiUrl={apiUrl}
-                fetchProducts={fetchProducts}
-                imageFile={imageFile}
-                handleCancel={handleCancel}
-                setImageFile={setImageFile}
-                setImageUrl={setImageUrl}
-                convertBlobToBase64={convertBlobToBase64}
-                handleEditClick={handleEditClick}
-                setImageOption={setImageOption}
-                setSelectedProduct={setSelectedProduct}
-                setShowModal={setShowModal}
-              />
-            </div>
-          );
-        })}
-
-        {/* Delete Confirmation Modal */}
-        {showModal && (
-          <div className="payment-modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-black">
-            <div className="rounded-lg bg-white p-8 text-center shadow-lg">
-              <h2 className="mb-4 text-2xl font-bold">Delete Product</h2>
-              <p className="mb-4">
-                Are you sure you want to delete this product?
-              </p>
-              <button
-                className="mr-4 rounded-lg bg-red-500 px-4 py-2 text-white shadow transition hover:bg-red-700"
-                onClick={() =>
-                  confirmDelete(
-                    selectedProduct,
-                    trashIconRefs,
-                    handleDelete,
-                    cardRefs,
-                    setShowModal,
-                    setSelectedProduct
-                  )
-                }
-              >
-                Confirm
-              </button>
-              <button
-                className="rounded-lg bg-gray-500 px-4 py-2 text-white shadow transition hover:bg-gray-700"
-                onClick={() => closeModal(setShowModal)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-      <BandsInTownEvents artistName="Metallica" />
+      {/* <BandsInTownEvents artistName="Metallica" /> */}
     </div>
   );
 }
