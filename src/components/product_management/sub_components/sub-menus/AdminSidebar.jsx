@@ -1,7 +1,6 @@
-//AdminSidebar.jsx
-
 /*
-A sidebar component for the admin dashboard
+A sidebar component for the admin dashboard.
+Ensures menu items never overlap with the logout or footer sections.
 */
 
 import { useNavigate } from "react-router-dom";
@@ -17,7 +16,7 @@ import { LiaShippingFastSolid } from "react-icons/lia";
 import { BsCashCoin } from "react-icons/bs";
 
 //INFO Assets
-import PowerByInfinitePixel from "../widgets/PowerByInfinitePixel";
+import DevelopedByInfinitePixel from "../widgets/DevelopedByInfinitePixel";
 
 //INFO Admin
 import Logout from "@admin_product_management/Logout";
@@ -78,9 +77,8 @@ const AdminSidebar = ({
     <div
       className={`admin-sidebar fixed top-0 z-50 h-full transform bg-gray-800 bg-opacity-90 text-slate-200 ${
         showSidebar ? "translate-x-0" : "-translate-x-full"
-      } transition-transform duration-300 ease-in-out`}
+      } transition-transform duration-300 ease-in-out flex flex-col`}
       style={{
-        // left: "-0.25em",
         left: 0,
         zIndex: 1000,
         backdropFilter: "blur(2em)",
@@ -93,36 +91,41 @@ const AdminSidebar = ({
         </button>
       </div>
 
-      <ul className="ml-4 mt-8 space-y-4">
-        {menuItems.map((item, index) => (
-          <div key={index}>
-            <li>
-              <button
-                className="flex items-center space-x-2 text-lg font-extrabold text-slate-200 hover:text-indigo-500"
-                onClick={() => {
-                  closeSidebar();
-                  item.onClick();
-                }}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            </li>
-            {index < menuItems.length - 1 && (
-              <hr className="border-gray-600 my-2" />
-            )}
-          </div>
-        ))}
-      </ul>
-
-      {/* login user / logout button */}
-      <div className="absolute w-full bottom-52">
-        <Logout user={user} role={role} />
+      {/* Ensure the menu section is scrollable and occupies remaining height */}
+      <div className="flex-1 overflow-y-auto px-4 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
+        <ul className="mt-8 space-y-4">
+          {menuItems.map((item, index) => (
+            <div key={index}>
+              <li>
+                <button
+                  className="flex items-center space-x-2 text-lg font-extrabold text-slate-200 hover:text-indigo-500"
+                  onClick={() => {
+                    closeSidebar();
+                    item.onClick();
+                  }}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </button>
+              </li>
+              {index < menuItems.length - 1 && (
+                <hr className="border-gray-600 my-2" />
+              )}
+            </div>
+          ))}
+        </ul>
       </div>
-
-      {/* display powerby at the bottom center of the menu */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-        <PowerByInfinitePixel />
+      <hr className="border-gray-600 my-2" />
+      {/* Stick the logout button and footer to the bottom */}
+      <div className="px-4 flex flex-col items-center justify-end space-y-20">
+        {/* Logout button */}
+        <div className="w-full flex justify-center">
+          <Logout user={user} role={role} />
+        </div>
+        {/* Developed by Infinite Pixel */}
+        <div className="w-full flex justify-center">
+          <DevelopedByInfinitePixel />
+        </div>
       </div>
     </div>
   );
