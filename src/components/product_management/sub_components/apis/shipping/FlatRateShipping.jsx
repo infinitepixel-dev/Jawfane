@@ -5,54 +5,30 @@ A component to manage flat rate and quantity-based shipping with GSAP animations
 */
 
 //INFO React Libraries
-import { useState, useEffect, useRef } from "react"
-import propTypes from "prop-types"
+import { useState, useEffect, useRef } from "react";
+import propTypes from "prop-types";
 
 //INFO Animation Libraries
-import { gsap } from "gsap"
+import { gsap } from "gsap";
 
-// Modal component for alert messages
-const AlertModal = ({ message, closeModal }) => {
-  const modalRef = useRef(null)
-
-  useEffect(() => {
-    // Animate modal appearance
-    gsap.fromTo(
-      modalRef.current,
-      { opacity: 0, scale: 0.8 },
-      { opacity: 1, scale: 1, duration: 0.5 }
-    )
-  }, [])
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="p-6 bg-white rounded-lg shadow-lg">
-        <p className="mb-4 text-lg">{message}</p>
-        <button
-          onClick={closeModal}
-          className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  )
-}
+//INFO Sub-components
+import AlertModal from "@widgets_product_management/AlertModal";
 
 // Main FlatRateShipping component
+// eslint-disable-next-line no-unused-vars
 const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
-  const [shippingType, setShippingType] = useState("")
-  const [flatRate, setFlatRate] = useState("")
+  const [shippingType, setShippingType] = useState("");
+  const [flatRate, setFlatRate] = useState("");
   const [quantityBased, setQuantityBased] = useState([
     { methodName: "", lowEnd: "", highEnd: "", cost: "", isEditing: true }, // Initial row is in edit mode
-  ])
-  const [shippingMethodName, setShippingMethodName] = useState("")
-  const [modalMessage, setModalMessage] = useState("")
+  ]);
+  const [shippingMethodName, setShippingMethodName] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
 
   // Refs for GSAP animations
-  const formRef = useRef(null)
-  const flatRateRef = useRef(null)
-  const quantityBasedRef = useRef(null)
+  const formRef = useRef(null);
+  const flatRateRef = useRef(null);
+  const quantityBasedRef = useRef(null);
 
   useEffect(() => {
     // Animate form appearance
@@ -61,108 +37,108 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
       y: 50,
       duration: 1,
       ease: "power2.out",
-    })
-  }, [])
+    });
+  }, []);
 
   useEffect(() => {
     if (shippingType === "flatRate") {
-      gsap.from(flatRateRef.current, { opacity: 0, y: 20, duration: 0.5 })
+      gsap.from(flatRateRef.current, { opacity: 0, y: 20, duration: 0.5 });
     } else if (shippingType === "quantityBased") {
-      gsap.from(quantityBasedRef.current, { opacity: 0, y: 20, duration: 0.5 })
+      gsap.from(quantityBasedRef.current, { opacity: 0, y: 20, duration: 0.5 });
     }
-  }, [shippingType])
+  }, [shippingType]);
 
   const handleShippingTypeChange = (e) => {
-    setShippingType(e.target.value)
-  }
+    setShippingType(e.target.value);
+  };
 
   // Add a new range row with editing enabled initially
   const handleAddRange = () => {
     setQuantityBased([
       ...quantityBased,
       { methodName: "", lowEnd: "", highEnd: "", cost: "", isEditing: true },
-    ])
-  }
+    ]);
+  };
 
   // Handle input changes for range fields
   const handleRangeChange = (index, e) => {
-    const updatedRanges = [...quantityBased]
-    updatedRanges[index][e.target.name] = e.target.value
-    setQuantityBased(updatedRanges)
-  }
+    const updatedRanges = [...quantityBased];
+    updatedRanges[index][e.target.name] = e.target.value;
+    setQuantityBased(updatedRanges);
+  };
 
   // Toggle edit mode for a range
   const handleEditRange = (index) => {
-    const updatedRanges = [...quantityBased]
-    updatedRanges[index].isEditing = !updatedRanges[index].isEditing
-    setQuantityBased(updatedRanges)
-  }
+    const updatedRanges = [...quantityBased];
+    updatedRanges[index].isEditing = !updatedRanges[index].isEditing;
+    setQuantityBased(updatedRanges);
+  };
 
   // Remove a range row
   const handleRemoveRange = (index) => {
-    const updatedRanges = quantityBased.filter((_, i) => i !== index)
-    setQuantityBased(updatedRanges)
-  }
+    const updatedRanges = quantityBased.filter((_, i) => i !== index);
+    setQuantityBased(updatedRanges);
+  };
 
   // Display modal with message
   const showModal = (message) => {
-    setModalMessage(message)
-  }
+    setModalMessage(message);
+  };
 
   // Close modal
   const closeModal = () => {
-    setModalMessage("")
-  }
+    setModalMessage("");
+  };
 
   // Check if the provided number is a whole number
-  const isWholeNumber = (num) => Number.isInteger(parseFloat(num))
+  const isWholeNumber = (num) => Number.isInteger(parseFloat(num));
 
   // Validate if the range overlaps with others or is out of order
   const isRangeValid = (lowEnd, highEnd, index) => {
-    const newLow = parseInt(lowEnd, 10)
-    const newHigh = parseInt(highEnd, 10)
+    const newLow = parseInt(lowEnd, 10);
+    const newHigh = parseInt(highEnd, 10);
 
     if (
       !isWholeNumber(newLow) ||
       !isWholeNumber(newHigh) ||
       newLow >= newHigh
     ) {
-      return false
+      return false;
     }
 
     for (let i = 0; i < quantityBased.length; i++) {
       if (i !== index) {
-        const oldLow = parseInt(quantityBased[i].lowEnd, 10)
-        const oldHigh = parseInt(quantityBased[i].highEnd, 10)
+        const oldLow = parseInt(quantityBased[i].lowEnd, 10);
+        const oldHigh = parseInt(quantityBased[i].highEnd, 10);
 
         if (
           (newLow >= oldLow && newLow <= oldHigh) ||
           (newHigh >= oldLow && newHigh <= oldHigh)
         ) {
-          return false
+          return false;
         }
 
         if (i === index - 1 && newLow !== oldHigh + 1) {
-          return false
+          return false;
         }
       }
     }
 
-    return true
-  }
+    return true;
+  };
 
   // Handle form submission
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Validate all ranges
     const invalidRange = quantityBased.some(
       (item, index) => !isRangeValid(item.lowEnd, item.highEnd, index)
-    )
+    );
 
     if (invalidRange) {
-      showModal("One or more ranges are overlapping or not sequential.")
-      return
+      showModal("One or more ranges are overlapping or not sequential.");
+      return;
     }
 
     // Process the data (save, send to API, etc.)
@@ -171,8 +147,8 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
       flatRate,
       quantityBased,
       shippingMethodName,
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -183,13 +159,18 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
         onSubmit={handleSubmit}
         className="p-6 space-y-4 bg-gray-900 rounded-lg shadow-lg text-slate-200"
         ref={formRef}
+        aria-label="Flat Rate Shipping Form"
       >
         <div className="mb-4">
-          <label className="block mb-2 text-lg">Shipping Type:</label>
+          <label className="block mb-2 text-lg" htmlFor="shippingType">
+            Shipping Type:
+          </label>
           <select
+            id="shippingType"
             value={shippingType}
             onChange={handleShippingTypeChange}
-            className="w-full p-2 text-gray-200 bg-gray-800 rounded"
+            className="w-full p-2 text-gray-200 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
+            aria-required="true"
           >
             <option value="">Select Shipping Type</option>
             <option value="flatRate">Flat Rate</option>
@@ -199,12 +180,16 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
 
         {shippingType === "flatRate" && (
           <div ref={flatRateRef} className="mb-4">
-            <label className="block mb-2 text-lg">Flat Rate:</label>
+            <label className="block mb-2 text-lg" htmlFor="flatRate">
+              Flat Rate:
+            </label>
             <input
+              id="flatRate"
               type="number"
               value={flatRate}
               onChange={(e) => setFlatRate(e.target.value)}
-              className="w-full p-2 text-gray-200 bg-gray-800 rounded"
+              className="w-full p-2 text-gray-200 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
+              aria-required="true"
             />
           </div>
         )}
@@ -224,7 +209,8 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
                       placeholder="Method Name"
                       value={item.methodName}
                       onChange={(e) => handleRangeChange(index, e)}
-                      className="w-full p-2 text-gray-200 bg-gray-800 rounded"
+                      className="w-full p-2 text-gray-200 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
+                      aria-required="true"
                     />
                     <div className="flex space-x-4">
                       <input
@@ -233,7 +219,8 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
                         placeholder="Low End (e.g., 1)"
                         value={item.lowEnd}
                         onChange={(e) => handleRangeChange(index, e)}
-                        className="w-full p-2 text-gray-200 bg-gray-800 rounded"
+                        className="w-full p-2 text-gray-200 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
+                        aria-required="true"
                       />
                       <input
                         type="number"
@@ -244,14 +231,15 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
                           if (
                             isRangeValid(item.lowEnd, e.target.value, index)
                           ) {
-                            handleRangeChange(index, e)
+                            handleRangeChange(index, e);
                           } else {
                             showModal(
                               "Range overlaps or is invalid. Ensure the new range does not overlap and is sequential."
-                            )
+                            );
                           }
                         }}
-                        className="w-full p-2 text-gray-200 bg-gray-800 rounded"
+                        className="w-full p-2 text-gray-200 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
+                        aria-required="true"
                       />
                     </div>
                     <input
@@ -260,12 +248,13 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
                       placeholder="Cost"
                       value={item.cost}
                       onChange={(e) => handleRangeChange(index, e)}
-                      className="w-full p-2 text-gray-200 bg-gray-800 rounded"
+                      className="w-full p-2 text-gray-200 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
+                      aria-required="true"
                     />
                     <button
                       type="button"
                       onClick={() => handleEditRange(index)}
-                      className="px-2 py-1 text-sm text-white bg-green-600 rounded hover:bg-green-700"
+                      className="px-2 py-1 text-sm text-black bg-green-600 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
                     >
                       Save
                     </button>
@@ -278,7 +267,8 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
                         <button
                           type="button"
                           onClick={() => handleEditRange(index)}
-                          className="px-2 py-1 text-sm text-white bg-yellow-600 rounded hover:bg-yellow-700"
+                          className="px-2 py-1 text-sm text-white bg-yellow-600 rounded hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                          aria-label="Edit range"
                         >
                           Edit
                         </button>
@@ -295,7 +285,8 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
                 <button
                   type="button"
                   onClick={() => handleRemoveRange(index)}
-                  className="px-2 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700"
+                  className="px-2 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                  aria-label="Delete range"
                 >
                   Delete
                 </button>
@@ -304,7 +295,8 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
             <button
               type="button"
               onClick={handleAddRange}
-              className="px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+              className="px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              aria-label="Add new range"
             >
               Add New Row
             </button>
@@ -312,29 +304,34 @@ const FlatRateShipping = ({ getShippingOptions, saveShippingOptions }) => {
         )}
 
         <div className="mb-4">
-          <label className="block mb-2 text-lg">Shipping Method Name:</label>
+          <label className="block mb-2 text-lg" htmlFor="shippingMethodName">
+            Shipping Method Name:
+          </label>
           <input
+            id="shippingMethodName"
             type="text"
             value={shippingMethodName}
             onChange={(e) => setShippingMethodName(e.target.value)}
-            className="w-full p-2 text-gray-200 bg-gray-800 rounded"
+            className="w-full p-2 text-gray-200 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
+            aria-required="true"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full px-4 py-2 font-bold text-white bg-purple-900 rounded hover:bg-purple-800"
+          className="w-full px-4 py-2 font-bold text-white bg-purple-900 rounded hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
+          aria-label="Save shipping method"
         >
           Save Shipping Method
         </button>
       </form>
     </>
-  )
-}
+  );
+};
 
 FlatRateShipping.propTypes = {
   getShippingOptions: propTypes.func.isRequired,
   saveShippingOptions: propTypes.func.isRequired,
-}
+};
 
-export default FlatRateShipping
+export default FlatRateShipping;
