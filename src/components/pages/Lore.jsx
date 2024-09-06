@@ -4,32 +4,32 @@
 A component that displays information about the band members
 */
 
-import { useRef, useState, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState, useEffect } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger)
 
 function Lore() {
-  const panels = useRef([]);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const panels = useRef([])
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   // Listen for screen resize to determine mobile or desktop layout
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   useEffect(() => {
     panels.current.forEach((panel, index) => {
-      const image = panel.querySelector(".bg-image");
+      const image = panel.querySelector(".bg-image")
       const position = isMobile
         ? bandData[index].position.mobile
-        : bandData[index].position.desktop;
+        : bandData[index].position.desktop
 
       // Set the initial position using `x` and `y` for pixel-based movement
       gsap.set(image, {
@@ -37,17 +37,17 @@ function Lore() {
         y: `${position.y}px`, // Use pixels instead of percentage
         scale: 1.1, // Slightly scale the image to allow room for movement
         transformOrigin: "center top",
-      });
-    });
-  }, [isMobile]);
+      })
+    })
+  }, [isMobile])
 
   const handleClick = (index) => {
-    const panel = panels.current[index];
-    const bio = panel.querySelector(".bio");
-    const image = panel.querySelector(".bg-image");
+    const panel = panels.current[index]
+    const bio = panel.querySelector(".bio")
+    const image = panel.querySelector(".bg-image")
 
     if (activeIndex === index) {
-      setActiveIndex(null);
+      setActiveIndex(null)
       // Keep the panel static, only animate the image
       gsap.to(image, {
         scale: 1,
@@ -55,39 +55,39 @@ function Lore() {
         y: 0, // Reset y position
         duration: 0.5,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(bio, {
         height: 0,
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => (bio.style.display = "none"),
-      });
+      })
     } else {
       if (activeIndex !== null) {
-        const prevPanel = panels.current[activeIndex];
-        const prevBio = prevPanel.querySelector(".bio");
-        const prevImage = prevPanel.querySelector(".bg-image");
+        const prevPanel = panels.current[activeIndex]
+        const prevBio = prevPanel.querySelector(".bio")
+        const prevImage = prevPanel.querySelector(".bg-image")
         gsap.to(prevImage, {
           scale: 1,
           x: 0, // Reset x position
           y: 0, // Reset y position
           duration: 0.5,
           ease: "power2.inOut",
-        });
+        })
         gsap.to(prevBio, {
           height: 0,
           opacity: 0,
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => (prevBio.style.display = "none"),
-        });
+        })
       }
 
-      setActiveIndex(index);
+      setActiveIndex(index)
       const position = isMobile
         ? bandData[index].position.mobile
-        : bandData[index].position.desktop;
+        : bandData[index].position.desktop
 
       // Animate the image within the panel using pixel-based movement
       gsap.to(image, {
@@ -97,8 +97,8 @@ function Lore() {
         transformOrigin: "center top",
         duration: 0.5,
         ease: "power2.inOut",
-      });
-      bio.style.display = "block";
+      })
+      bio.style.display = "block"
       gsap.fromTo(
         bio,
         { height: 0, opacity: 0 },
@@ -108,9 +108,9 @@ function Lore() {
           duration: 0.5,
           ease: "power2.inOut",
         }
-      );
+      )
     }
-  };
+  }
 
   const handleMouseEnter = (index) => {
     if (activeIndex !== index) {
@@ -118,9 +118,9 @@ function Lore() {
         scale: 1.1, // Keep hover scaling
         duration: 0.15,
         ease: "power2.inOut",
-      });
+      })
     }
-  };
+  }
 
   const handleMouseLeave = (index) => {
     if (activeIndex !== index) {
@@ -129,9 +129,9 @@ function Lore() {
         scale: 1,
         duration: 0.15,
         ease: "power2.inOut",
-      });
+      })
     }
-  };
+  }
 
   return (
     <div
@@ -186,7 +186,7 @@ function Lore() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 const bandData = [
@@ -240,6 +240,6 @@ const bandData = [
       desktop: { x: "0", y: "0" },
     },
   },
-];
+]
 
-export default Lore;
+export default Lore
