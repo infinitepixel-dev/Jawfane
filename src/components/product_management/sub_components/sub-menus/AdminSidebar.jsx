@@ -13,6 +13,7 @@ import { gsap } from "gsap";
 //INFO Icons
 import { FaTimes, FaPlus, FaUsers, FaHome, FaEye } from "react-icons/fa";
 import { FaBoxesPacking } from "react-icons/fa6";
+import { LiaShippingFastSolid } from "react-icons/lia";
 import { BsCashCoin } from "react-icons/bs";
 
 //INFO Assets
@@ -65,6 +66,11 @@ const AdminSidebar = ({
       icon: <BsCashCoin />,
       label: "Payments",
       onClick: () => setSelectedPage("payments"),
+    },
+    {
+      icon: <LiaShippingFastSolid />,
+      label: "Shipping",
+      onClick: () => setSelectedPage("shipping"),
     },
   ];
 

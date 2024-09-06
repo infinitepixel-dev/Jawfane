@@ -27,6 +27,7 @@ import Login from "@admin_product_management/Login";
 // import Logout from "@admin_product_management/Logout";
 import UsersManager from "@admin_product_management/UsersManager";
 import Payments from "@admin_product_management/Payments";
+import Shipping from "@admin_product_management/Shipping";
 
 //INFO Sub-components - apis
 //products
@@ -273,7 +274,7 @@ function Dashboard({ storeId }) {
   };
 
   return (
-    <div className="container-fluid min-h-screen p-4">
+    <div className="container-fluid min-h-screen p-4 bg-blue-900 bg-opacity-30 ">
       <div className="container-fluid p-4">
         <div className="w-screen">
           {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
@@ -392,7 +393,8 @@ function Dashboard({ storeId }) {
               // reverseRoleMap={reverseRoleMap}
             />
           )}
-          {selectedPage === "payments" && <Payments />}
+          {selectedPage === "payments" && <Payments storeId={storeId} />}
+          {selectedPage === "shipping" && <Shipping storeId={storeId} />}
           {selectedPage === "view-site" && <div>Viewing Site...</div>}
         </div>
       </div>
