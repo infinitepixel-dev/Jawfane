@@ -18,11 +18,11 @@ function Shipping({ storeId }) {
   console.log("Shipping:", storeId);
 
   const [shippingOptions, setShippingOptions] = useState({
-    flatRate: false,
+    flatRate: true, //for dev set to true for force enable
   });
 
   // Refs for GSAP animations
-  const flatRateRef = useRef(null);
+  const flatRateRef = useRef(null); //For Dev set to true or false null
   const flatRateCheckboxRef = useRef(null);
 
   useEffect(() => {
