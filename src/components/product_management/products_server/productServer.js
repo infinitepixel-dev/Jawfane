@@ -74,9 +74,6 @@ db.getConnection((err, connection) => {
 app.get("/api/products", (req, res) => {
   db.query("SELECT * FROM products", (err, result) => {
     // console.log('Products: ', result) // Debug log to check for duplicates;
-app.get("/api/products", (req, res) => {
-  db.query("SELECT * FROM products", (err, result) => {
-    // console.log('Products: ', result) // Debug log to check for duplicates;
 
     if (err) throw err;
     res.json(result);
@@ -216,8 +213,6 @@ app.put("/api/products/:id", upload.single("image"), (req, res) => {
     return res.status(400).json({ error: "Title and price are required." });
   }
 
-  // Construct the SQL query for updating
-  const sql = `
   // Construct the SQL query for updating
   const sql = `
         UPDATE products 

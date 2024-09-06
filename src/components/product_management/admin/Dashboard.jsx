@@ -27,6 +27,7 @@ import Login from "@admin_product_management/Login";
 // import Logout from "@admin_product_management/Logout";
 import UsersManager from "@admin_product_management/UsersManager";
 import Payments from "@admin_product_management/Payments";
+import Shipping from "@admin_product_management/Shipping";
 
 //INFO Sub-components - apis
 //products
@@ -393,6 +394,7 @@ function Dashboard({ storeId }) {
             />
           )}
           {selectedPage === "payments" && <Payments storeId={storeId} />}
+          {selectedPage === "shipping" && <Shipping storeId={storeId} />}
           {selectedPage === "view-site" && <div>Viewing Site...</div>}
         </div>
       </div>

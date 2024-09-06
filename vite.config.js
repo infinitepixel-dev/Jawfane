@@ -59,6 +59,10 @@ export default defineConfig({
         __dirname,
         "src/components/product_management/sub_components/widgets"
       ),
+      "@shipping_product_management": resolve(
+        __dirname,
+        "src/components/product_management/sub_components/apis/shipping"
+      ),
     },
   },
 });
