@@ -88,11 +88,11 @@ function Lore() {
       }
 
       setActiveIndex(index);
-
-      // Animate the image when the panel is active
       const position = isMobile
         ? bandData[index].position.mobile
         : bandData[index].position.desktop;
+
+      // Animate the image within the panel using pixel-based movement
       gsap.to(image, {
         scale: 1.3,
         x: `${parseFloat(position.x)}px`,
@@ -101,8 +101,6 @@ function Lore() {
         duration: 0.5,
         ease: "power2.inOut",
       });
-
-      // Display and animate the bio expansion
       bio.style.display = "block";
       gsap.fromTo(
         bio,
