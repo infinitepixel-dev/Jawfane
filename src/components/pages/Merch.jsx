@@ -1,104 +1,105 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react"
 // import { Link } from "react-router-dom";
-import propTypes from "prop-types";
-import { gsap } from "gsap";
+import propTypes from "prop-types"
+import { gsap } from "gsap"
 // import { Helmet } from "react-helmet-async"; // Import Helmet for meta tags
-import CartPopOut from "@sub-menus_product_management/CartPopOut";
+import CartPopOut from "@sub-menus_product_management/CartPopOut"
 
-import noImage from "@assets/images/no-image.webp";
-import Variants from "../product_management/sub_components/widgets/Variants";
+import noImage from "@assets/images/no-image.webp"
+import Variants from "../product_management/sub_components/widgets/Variants"
 
 function MerchPage({ addToCart, cartItems }) {
-  const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`;
+  //const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`;
+  const apiUrl = `https://vps.infinitepixel.dev:3082/api/products`
   //TODO: use product apiURL
   //REVIEW temp apiUrl
   // const apiUrl = "http://66.128.253.47:3082/api/products";
 
-  const [products, setProducts] = useState([]);
-  const [confirmationMessage, setConfirmationMessage] = useState("");
-  const [messagePosition, setMessagePosition] = useState({ top: 0, left: 0 });
-  const [activeCardIndex, setActiveCardIndex] = useState(null);
-  const [isAnimating, setIsAnimating] = useState([]); // Track animation status for each card
-  const [selectedProduct, setSelectedProduct] = useState(null); // State to track selected product for modal
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [products, setProducts] = useState([])
+  const [confirmationMessage, setConfirmationMessage] = useState("")
+  const [messagePosition, setMessagePosition] = useState({ top: 0, left: 0 })
+  const [activeCardIndex, setActiveCardIndex] = useState(null)
+  const [isAnimating, setIsAnimating] = useState([]) // Track animation status for each card
+  const [selectedProduct, setSelectedProduct] = useState(null) // State to track selected product for modal
+  const [isModalOpen, setIsModalOpen] = useState(false) // State for modal visibility
 
   // eslint-disable-next-line no-unused-vars
-  const [metaTitle, setMetaTitle] = useState("Merch - Bow to the Corgi"); // Default meta title
+  const [metaTitle, setMetaTitle] = useState("Merch - Bow to the Corgi") // Default meta title
   // const [metaDescription, setMetaDescription] = useState(""); // Default meta description
   // const [metaKeywords, setMetaKeywords] = useState(""); // Default meta keywords
 
   // GSAP Ref for the confirmation message
-  const confirmRef = useRef(null);
-  const cardRefs = useRef([]);
+  const confirmRef = useRef(null)
+  const cardRefs = useRef([])
   // Ref for the modal
-  const modalRef = useRef(null); //determins if the image modal is open or not
+  const modalRef = useRef(null) //determins if the image modal is open or not
 
   const convertBlobToBase64 = (blob) => {
-    if (!blob) return null;
+    if (!blob) return null
 
-    const byteArray = new Uint8Array(blob.data);
+    const byteArray = new Uint8Array(blob.data)
     const base64String = btoa(
       byteArray.reduce((data, byte) => data + String.fromCharCode(byte), "")
-    );
+    )
 
-    return `data:image/jpeg;base64,${base64String}`;
-  };
+    return `data:image/jpeg;base64,${base64String}`
+  }
 
   //only show cartPopOut on the merch component while it's in the viewport
   useEffect(() => {
-    const cartPopOut = document.querySelector(".cart-pop-out");
-    const merch = document.getElementById("merch");
+    const cartPopOut = document.querySelector(".cart-pop-out")
+    const merch = document.getElementById("merch")
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            cartPopOut.style.display = "block";
+            cartPopOut.style.display = "block"
           } else {
-            cartPopOut.style.display = "none";
+            cartPopOut.style.display = "none"
           }
-        });
+        })
       },
       { threshold: [0.1, 0.5, 0.9] } // Adjusted thresholds for different levels of visibility
-    );
+    )
 
-    observer.observe(merch);
+    observer.observe(merch)
 
     return () => {
-      observer.disconnect();
-    };
-  }, []);
+      observer.disconnect()
+    }
+  }, [])
 
   // Function to open modal when clicking on a product image
   const handleImageClick = (product) => {
     if (product.image || product.image_url) {
-      setSelectedProduct(product); // Set selected product for the modal
-      setIsModalOpen(true); // Open the modal
+      setSelectedProduct(product) // Set selected product for the modal
+      setIsModalOpen(true) // Open the modal
     }
-  };
+  }
 
   // Function to close the modal
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedProduct(null);
-  };
+    setIsModalOpen(false)
+    setSelectedProduct(null)
+  }
 
   // Detect clicks outside of the modal to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handleCloseModal();
+        handleCloseModal()
       }
-    };
+    }
 
     if (isModalOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside)
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isModalOpen]);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isModalOpen])
 
   // Fetch products and set animations for each card
   //v1
@@ -130,14 +131,14 @@ function MerchPage({ addToCart, cartItems }) {
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
+          throw new Error(`HTTP error! Status: ${res.status}`)
         }
-        return res.json();
+        return res.json()
       })
       .then((data) => {
-        setProducts(data);
-        setIsAnimating(new Array(data.length).fill(false)); // Initialize animation status for each product
-        cardRefs.current = Array(data.length).fill(null); // Initialize refs for each product card
+        setProducts(data)
+        setIsAnimating(new Array(data.length).fill(false)) // Initialize animation status for each product
+        cardRefs.current = Array(data.length).fill(null) // Initialize refs for each product card
 
         // Set meta description and keywords based on the first product as an example
         if (data.length > 0) {
@@ -145,13 +146,13 @@ function MerchPage({ addToCart, cartItems }) {
           // setMetaKeywords(data[0].keywords || "Corgi, Ruler, Bork");
         }
       })
-      .catch((err) => console.error("Fetch error:", err));
-  }, [apiUrl]);
+      .catch((err) => console.error("Fetch error:", err))
+  }, [apiUrl])
 
   // GSAP entrance animation for product cards
   useEffect(() => {
     if (products.length > 0) {
-      const validRefs = cardRefs.current.filter((ref) => ref !== null);
+      const validRefs = cardRefs.current.filter((ref) => ref !== null)
       if (validRefs.length === products.length) {
         gsap.fromTo(
           validRefs,
@@ -163,10 +164,10 @@ function MerchPage({ addToCart, cartItems }) {
             duration: 0.8, // Slightly increased duration for smoothness
             ease: "power3.out", // Smooth easing for fluid animation
           }
-        );
+        )
       }
     }
-  }, [products]);
+  }, [products])
 
   // GSAP animation for confirmation message
   useEffect(() => {
@@ -174,37 +175,37 @@ function MerchPage({ addToCart, cartItems }) {
       const tl = gsap.timeline({
         onComplete: () => {
           setIsAnimating((prev) => {
-            const updated = [...prev];
-            updated[activeCardIndex] = false;
-            return updated;
-          });
+            const updated = [...prev]
+            updated[activeCardIndex] = false
+            return updated
+          })
         },
-      });
+      })
 
       tl.to(cardRefs.current[activeCardIndex], {
         opacity: 0.5,
         duration: 0.3, // Slightly longer for smooth dimming
         ease: "power2.out",
-      });
+      })
       tl.fromTo(
         confirmRef.current,
         { opacity: 0, y: -20 },
         { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" } // Slightly extended
-      );
+      )
       tl.to(confirmRef.current, {
         opacity: 0,
         y: -20,
         duration: 0.6, // Smooth hide animation
         ease: "power2.out",
         delay: 1.5,
-      });
+      })
       tl.to(cardRefs.current[activeCardIndex], {
         opacity: 1,
         duration: 0.3, // Restores opacity smoothly
         ease: "power2.out",
-      });
+      })
     }
-  }, [confirmationMessage, activeCardIndex]);
+  }, [confirmationMessage, activeCardIndex])
 
   // GSAP hover effect for scaling cards on hover
   useEffect(() => {
@@ -212,7 +213,7 @@ function MerchPage({ addToCart, cartItems }) {
     cardRefs.current.forEach((card) => {
       if (card) {
         // Set initial scale to 1
-        gsap.set(card, { scale: 1 });
+        gsap.set(card, { scale: 1 })
 
         // Add hover effect: scale up on mouse enter
         card.addEventListener("mouseenter", () => {
@@ -222,8 +223,8 @@ function MerchPage({ addToCart, cartItems }) {
             ease: "power2.out",
             immediateRender: true, // Ensures animation starts immediately
             overwrite: "auto", // Cancels any existing animations on this element
-          });
-        });
+          })
+        })
 
         // Scale back to normal on mouse leave
         card.addEventListener("mouseleave", () => {
@@ -232,45 +233,45 @@ function MerchPage({ addToCart, cartItems }) {
             duration: 0.1, // Fast duration for scaling back
             ease: "power2.out",
             overwrite: "auto", // Ensure smooth transition back
-          });
-        });
+          })
+        })
       }
-    });
-  }, [products]); // Only run when products are updated
+    })
+  }, [products]) // Only run when products are updated
 
   // Handle adding product to the cart
   const handleAddToCart = (product, index) => {
-    if (isAnimating[index]) return;
+    if (isAnimating[index]) return
 
     setIsAnimating((prev) => {
-      const updated = [...prev];
-      updated[index] = true;
-      return updated;
-    });
+      const updated = [...prev]
+      updated[index] = true
+      return updated
+    })
 
-    addToCart(product);
+    addToCart(product)
 
-    setConfirmationMessage("");
+    setConfirmationMessage("")
     setTimeout(() => {
-      setConfirmationMessage(`${product.title} added to cart!`);
-    }, 0);
+      setConfirmationMessage(`${product.title} added to cart!`)
+    }, 0)
 
-    setActiveCardIndex(index);
+    setActiveCardIndex(index)
 
-    const card = cardRefs.current[index];
+    const card = cardRefs.current[index]
     if (card) {
-      const rect = card.getBoundingClientRect();
-      const cardCenterX = rect.left + rect.width / 2;
-      const cardCenterY = rect.top + rect.height / 2;
+      const rect = card.getBoundingClientRect()
+      const cardCenterX = rect.left + rect.width / 2
+      const cardCenterY = rect.top + rect.height / 2
 
       setMessagePosition({
         top: cardCenterY + window.scrollY,
         left: cardCenterX + window.scrollX,
-      });
+      })
     }
-  };
+  }
 
-  let addToCartButton = "bg-lime-600 hover:bg-lime-500";
+  let addToCartButton = "bg-lime-600 hover:bg-lime-500"
 
   return (
     <div
@@ -287,7 +288,7 @@ function MerchPage({ addToCart, cartItems }) {
         <CartPopOut cartItems={cartItems} />
       </div>
 
-      <h1 className="mb-8 text-center text-4xl font-bold">Merch</h1>
+      <h1 className="mb-8 text-4xl font-bold text-center">Merch</h1>
 
       {/* Confirmation Message Popup */}
       <div
@@ -417,12 +418,12 @@ function MerchPage({ addToCart, cartItems }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 MerchPage.propTypes = {
   addToCart: propTypes.func.isRequired,
   cartItems: propTypes.array.isRequired,
-};
+}
 
-export default MerchPage;
+export default MerchPage
