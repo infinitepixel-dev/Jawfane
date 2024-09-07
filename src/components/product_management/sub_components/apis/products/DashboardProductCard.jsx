@@ -40,6 +40,8 @@ function DashboardProductCard({
   setImageOption,
   setSelectedProduct,
   setShowModal,
+  // eslint-disable-next-line no-unused-vars
+  storeId,
 }) {
   // useEffect(() => {
   //     console.log('editedData:', editedData)
@@ -66,7 +68,13 @@ function DashboardProductCard({
     >
       <button
         onClick={() =>
-          handleDeleteClick(product.id, index, setSelectedProduct, setShowModal)
+          handleDeleteClick(
+            product.id,
+            index,
+            setSelectedProduct,
+            setShowModal,
+            storeId
+          )
         }
         onMouseEnter={() => setHoveredIndex(index)}
         onMouseLeave={() => setHoveredIndex(null)}
@@ -402,6 +410,7 @@ DashboardProductCard.propTypes = {
   setImageOption: propTypes.func.isRequired,
   setSelectedProduct: propTypes.func.isRequired,
   setShowModal: propTypes.func.isRequired,
+  storeId: propTypes.number,
 };
 
 export default DashboardProductCard;

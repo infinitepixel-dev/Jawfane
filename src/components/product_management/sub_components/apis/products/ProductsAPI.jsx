@@ -9,6 +9,8 @@ import { useCallback } from "react";
 import { gsap } from "gsap";
 
 function ProductsAPI(apiUrl, setProducts, storeId) {
+  console.log("Products API Initialized", storeId);
+
   // Fetch updated products list
   /*
     Using Memoization to prevent unnecessary re-renders
@@ -55,6 +57,7 @@ function ProductsAPI(apiUrl, setProducts, storeId) {
         method: "DELETE",
 
         headers: {
+          store_id: storeId,
           "Content-Type": "application/json",
         },
         credentials: "include", // Include credentials (cookies, etc.) if needed

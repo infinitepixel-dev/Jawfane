@@ -22,7 +22,7 @@ function ProductsUtility(storeId) {
       description: product.description ?? "",
       category: product.category ?? "",
       product_id: product.product_id ?? "",
-      created_at: product.created_at ?? "",
+      created_at: product.created_at ?? null,
       image_url: product.image_url ?? "",
       image: product.image ?? "",
       product_weight: product.product_weight ?? "",
@@ -35,8 +35,8 @@ function ProductsUtility(storeId) {
       featured: product.featured ?? "",
       sale: product.sale ?? "",
       discount_price: product.discount_price ?? "",
-      discount_start: product.discount_start ?? "",
-      discount_end: product.discount_end ?? "",
+      discount_start: product.discount_start ?? null,
+      discount_end: product.discount_end ?? null,
     });
     setImageOption(product.image_url ? "image_url" : "image_upload" ?? "");
     setImageUrl(product.image_url ?? "");
@@ -115,7 +115,7 @@ function ProductsUtility(storeId) {
       description: "",
       category: "",
       product_id: "",
-      created_at: "",
+      created_at: null,
       image_url: "",
       image: "",
       product_weight: "",
@@ -128,8 +128,8 @@ function ProductsUtility(storeId) {
       featured: "",
       sale: "",
       discount_price: "",
-      discount_start: "",
-      discount_end: "",
+      discount_start: null,
+      discount_end: null,
     });
     setImageFile(null);
     setImageUrl("");

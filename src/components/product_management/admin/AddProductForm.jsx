@@ -1,18 +1,67 @@
+//AddProductForm.jsx
+
+/*
+A form component to add a new product
+*/
+
+//INFO React Libraries
 import { useState, useEffect, useRef } from "react";
+import propTypes from "prop-types";
+
+//INFO GSAP for animations
 import { gsap } from "gsap";
 
-function AddProductForm() {
+function AddProductForm({ storeId, setProducts }) {
+  console.log("AddProductForm storeId: ", storeId);
+  // console.log("AddProductForm products: ", setProducts);
+
+  /*
+    id: product.id,
+      title: product.title ?? "",
+      price: product.price ?? "",
+      quantity: product.quantity ?? 0,
+      description: product.description ?? "",
+      category: product.category ?? "",
+      product_id: product.product_id ?? "",
+      created_at: product.created_at ?? "",
+      image_url: product.image_url ?? "",
+      image: product.image ?? "",
+      product_weight: product.product_weight ?? "",
+      weight_unit: product.weight_unit ?? "",
+      product_dimensions: product.product_dimensions ?? "",
+      meta_title: product.meta_title ?? "",
+      meta_description: product.meta_description ?? "",
+      meta_keywords: product.meta_keywords ?? "",
+      status: product.status ?? "",
+      featured: product.featured ?? "",
+      sale: product.sale ?? "",
+      discount_price: product.discount_price ?? "",
+      discount_start: product.discount_start ?? "",
+      discount_end: product.discount_end ?? "",
+  */
+
   const [formData, setFormData] = useState({
     title: "",
-    price: "",
+    price: 0.0,
+    quantity: 0,
     description: "",
     category: "",
-    payment_id: "",
-    image_url: "", // Always initialize with an empty string to make it controlled
-    image: null, // For uploaded image file, initialized with null
+    product_id: "",
+    created_at: new Date().toISOString().slice(0, 19).replace("T", " "),
+    image_url: "",
+    image: null,
+    product_weight: 0.0,
+    weight_unit: "",
+    product_dimensions: "",
     meta_title: "",
     meta_description: "",
     meta_keywords: "",
+    status: 1,
+    featured: 0,
+    sale: 0,
+    discount_price: 0.0,
+    discount_start: null,
+    discount_end: null,
   });
 
   const [selectedImageType, setSelectedImageType] = useState("file"); // Track selected image type
@@ -70,12 +119,23 @@ function AddProductForm() {
     const data = new FormData();
     data.append("title", formData.title);
     data.append("price", formData.price);
+    data.append("quantity", formData.quantity);
     data.append("description", formData.description);
     data.append("category", formData.category);
-    data.append("payment_id", formData.payment_id);
+    data.append("product_id", formData.product_id);
+    data.append("created_at", formData.created_at);
+    data.append("product_weight", formData.product_weight);
+    data.append("weight_unit", formData.weight_unit);
+    data.append("product_dimensions", formData.product_dimensions);
     data.append("meta_title", formData.meta_title);
     data.append("meta_description", formData.meta_description);
     data.append("meta_keywords", formData.meta_keywords);
+    data.append("status", formData.status);
+    data.append("featured", formData.featured);
+    data.append("sale", formData.sale);
+    data.append("discount_price", formData.discount_price);
+    data.append("discount_start", formData.discount_start);
+    data.append("discount_end", formData.discount_end);
 
     if (formData.image_url) {
       data.append("image_url", formData.image_url); // Append image URL
@@ -84,8 +144,13 @@ function AddProductForm() {
     }
 
     try {
+      console.log("Add Product URL: ", apiUrl);
+
       const response = await fetch(apiUrl, {
         method: "POST",
+        headers: {
+          store_id: storeId,
+        },
         body: data, // Use FormData for file upload
       });
 
@@ -95,6 +160,8 @@ function AddProductForm() {
       } else {
         const data = await response.json();
         console.log("Product added:", data);
+
+        // setProducts((prevProducts) => [...prevProducts, data]);
       }
     } catch (err) {
       console.error("Fetch error:", err);
@@ -198,16 +265,7 @@ function AddProductForm() {
           className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        {/* Payment ID */}
-        <input
-          type="text"
-          placeholder="Payment ID"
-          value={formData.payment_id || ""} // Ensure the value is always a string
-          onChange={(e) =>
-            setFormData({ ...formData, payment_id: e.target.value })
-          }
-          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        {/* Product ID */}
       </div>
 
       <div className="my-6">
@@ -296,5 +354,10 @@ function AddProductForm() {
     </form>
   );
 }
+
+AddProductForm.propTypes = {
+  storeId: propTypes.number.isRequired,
+  setProducts: propTypes.func.isRequired,
+};
 
 export default AddProductForm;

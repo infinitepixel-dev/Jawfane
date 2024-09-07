@@ -15,6 +15,9 @@ import { gsap } from "gsap";
 import { Trash, Trash2 } from "react-feather";
 import { Link } from "react-router-dom";
 
+//Shipping API
+import USPSApi from "@apis_product_management//shipping/usps/USPSApi";
+
 function CartPage({ cartItems, setCartItems, removeFromCart, updateQuantity }) {
   const itemRefs = useRef([]); // Initialize with an empty array
   const [isModalVisible, setIsModalVisible] = useState(false); // Track modal visibility
@@ -228,6 +231,9 @@ function CartPage({ cartItems, setCartItems, removeFromCart, updateQuantity }) {
               <p className="mt-4 text-center text-gray-400 md:text-right">
                 Total: ${(item.price * item.quantity).toFixed(2)}
               </p>
+
+              {/*REVIEW - USPS Calculate */}
+              <USPSApi />
 
               <button
                 onClick={() => removeFromCart(item.id)}

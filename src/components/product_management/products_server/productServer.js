@@ -6,21 +6,34 @@
 const express = require("express");
 const mysql = require("mysql2/promise");
 const bodyParser = require("body-parser");
+// const https = require("https");
 const cors = require("cors");
 const multer = require("multer"); // For handling file uploads
 const sharp = require("sharp");
+// const { promisify } = require('util')
+// const fs = require('fs')
+// const { getSSLConfig } = require("/home/vpsinfinitepixel/Servers/sslUtils");
+
 const dotenv = require("dotenv");
 const Stripe = require("stripe"); // Import Stripe
-
-// Import the dynamic pool creation function
-const createPoolWithDB = require("./createPoolWithDB");
 
 dotenv.config();
 
 // Initialize Stripe with secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// console.log('stripe secret key: ', process.env.STRIPE_SECRET_KEY)
+// Import the dynamic pool creation function
+const createPoolWithDB = require("./createPoolWithDB");
 
 const app = express();
+
+// Get the db_name associated with the store_id from the OmniStoreDB
+const omniPool = mysql.createPool({
+  host: process.env.DB_OMNI_HOST,
+  user: process.env.DB_OMNI_USER,
+  password: process.env.DB_OMNI_PASSWORD,
+  database: process.env.DB_OMNI_NAME,
+});
 
 // Add this CORS configuration to allow React on port 5173
 app.use(
@@ -49,24 +62,32 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Middleware to dynamically select the correct database based on the store_id
 app.use(async (req, res, next) => {
+  console.log("Request headers: ", req.headers);
+
   try {
-    const store_id = req.headers["store-id"]; // Pass store_id in headers (can also be passed via URL or query params)
+    const store_id = req.headers["store_id"]; // Pass store_id in headers (can also be passed via URL or query params)
+
+    console.log("Store ID: ", store_id);
+
     if (!store_id) {
       return res.status(400).json({ error: "store_id is required" });
     }
 
-    // Get the db_name associated with the store_id from the OmniStoreDB
-    const omniPool = mysql.createPool({
-      host: process.env.DB_OMNI_HOST,
-      user: process.env.DB_OMNI_USER,
-      password: process.env.DB_OMNI_PASSWORD,
-      database: process.env.DB_OMNI_NAME,
-    });
+    console.log(`
+      host: ${process.env.DB_OMNI_HOST}
+      user: ${process.env.DB_OMNI_USER}
+      password: ${process.env.DB_OMNI_PASSWORD}
+      database: ${process.env.DB_OMNI_NAME}
+      `);
+
+    // console.log("OmniPool: ", omniPool);
 
     const [storeRows] = await omniPool.execute(
       "SELECT db_name FROM stores WHERE id = ?",
       [store_id]
     );
+
+    // console.log("Store Rows: ", storeRows);
 
     if (storeRows.length === 0) {
       return res.status(404).json({ error: "Store not found" });
@@ -83,6 +104,14 @@ app.use(async (req, res, next) => {
     return res.status(500).json({ error: "Failed to select store database" });
   }
 });
+
+//ANCHOR Helper function to format JavaScript Date to MySQL DATETIME format
+function formatDateForMySQL(date) {
+  console.log("date: ", date);
+
+  const d = new Date(date);
+  return d.toISOString().slice(0, 19).replace("T", " ");
+}
 
 //API GETS all products from the dynamically selected database
 app.get("/api/products", async (req, res) => {
@@ -101,18 +130,56 @@ app.get("/api/products", async (req, res) => {
 app.post("/api/products", upload.single("image"), async (req, res) => {
   const storePool = req.storePool; // Use the dynamic store connection pool
   const {
+    id,
     title,
     price,
+    quantity,
     description,
     category,
-    payment_id,
+    product_id,
+    created_at,
     image_url,
+    product_weight,
+    weight_unit,
+    product_dimensions,
     meta_title,
     meta_description,
     meta_keywords,
+    status,
+    featured,
+    sale,
+    discount_price,
+    discount_start,
+    discount_end,
   } = req.body;
 
   let image = null;
+
+  //compress and resize the image if it exists in the request
+  if (req.file) {
+    image = await sharp(req.file.buffer)
+      .resize(800) // Resize to a max width of 800px
+      .jpeg({ quality: 70 }) // Compress the image to 70% quality
+      .toBuffer();
+  }
+
+  console.log("created_at: ", created_at);
+
+  const formattedCreatedAt = formatDateForMySQL(created_at);
+
+  let formattedDiscountStart;
+  if (discount_start != "null") {
+    console.log("discount_start: ", discount_start);
+
+    formattedDiscountStart = formatDateForMySQL(discount_start);
+  }
+
+  let formattedDiscountEnd = null;
+  if (discount_end != "null") {
+    console.log();
+
+    formattedDiscountEnd = formatDateForMySQL(discount_end);
+  }
 
   if (req.file) {
     // Compress and resize the image
@@ -132,23 +199,35 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
   // Insert into the database
   try {
     const [result] = await storePool.query(
-      "INSERT INTO products (title, price, description, category, payment_id, image_url, image, meta_title, meta_description, meta_keywords) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO products (id, title, price, quantity, description, category, product_id, created_at, image_url, image, product_weight, weight_unit, product_dimensions, meta_title, meta_description, meta_keywords, status, featured, sale, discount_price, discount_start, discount_end) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
+        id,
         title,
         price,
+        quantity,
         description,
         category,
-        payment_id,
-        image_url,
+        product_id,
+        formattedCreatedAt, // Use formatted date
+        image_url || "",
         image,
+        product_weight,
+        weight_unit,
+        product_dimensions,
         meta_title,
         meta_description,
         meta_keywords,
+        status,
+        featured,
+        sale,
+        discount_price,
+        formattedDiscountStart,
+        formattedDiscountEnd,
       ]
     );
     return res.status(201).json({
       id: result.insertId,
-      message: "Product added successfully.",
+      message: "Product added successfully ;).",
     });
   } catch (err) {
     console.error("Error adding product:", err);
@@ -158,8 +237,6 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
 
 //API GET a single product from the dynamically selected database
 app.get("/api/products/:id", async (req, res) => {
-  req.storePool = createPoolWithDB(dbName);
-
   const storePool = req.storePool; // Use the dynamic store connection pool
   const { id } = req.params;
 
@@ -202,26 +279,44 @@ app.delete("/api/products/:id", async (req, res) => {
 
 //API UPDATES a product in the dynamically selected database
 app.put("/api/products/:id", upload.single("image"), async (req, res) => {
+  console.log("PUT request received...");
+
   const storePool = req.storePool; // Use the dynamic store connection pool
   const { id } = req.params;
-  console.log("Product ID:", id);
+
+  console.log("PUT Id: ", id);
 
   const {
     title,
     price,
+    quantity,
     description,
     category,
-    payment_id,
+    product_id,
+    created_at,
     image_url,
+    product_weight,
+    weight_unit,
+    product_dimensions,
     meta_title,
     meta_description,
     meta_keywords,
+    status,
+    featured,
+    sale,
+    discount_price,
+    discount_start,
+    discount_end,
   } = req.body;
 
   let image = null;
 
+  // Compress and optimize the image if it exists in the request
   if (req.file) {
-    image = req.file.buffer; // Store the image as a buffer in the database
+    image = await sharp(req.file.buffer)
+      .resize(800) // Resize to a max width of 800px
+      .jpeg({ quality: 70 }) // Compress the image to 70% quality
+      .toBuffer();
   }
 
   if (!title || !price) {
@@ -229,22 +324,48 @@ app.put("/api/products/:id", upload.single("image"), async (req, res) => {
   }
 
   try {
+    console.log("created_at: ", created_at);
+
+    const formattedCreatedAt = formatDateForMySQL(created_at);
+
+    let formattedDiscountStart;
+    if (discount_start != "null") {
+      console.log("discount_start: ", discount_start);
+
+      formattedDiscountStart = formatDateForMySQL(discount_start);
+    }
+
+    let formattedDiscountEnd = null;
+    if (discount_end != "null") {
+      console.log();
+
+      formattedDiscountEnd = formatDateForMySQL(discount_end);
+    }
+
     const [result] = await storePool.query(
-      `UPDATE products 
-       SET title = ?, price = ?, description = ?, category = ?, payment_id = ?, 
-           image_url = ?, image = ?, meta_title = ?, meta_description = ?, meta_keywords = ?
-       WHERE id = ?`,
+      "UPDATE products SET title = ?, price = ?, quantity = ?, description = ?, category = ?, product_id = ?, created_at = ?, image_url = ?, image = ?, product_weight = ?, weight_unit = ?, product_dimensions = ?, meta_title = ?, meta_description = ?, meta_keywords = ?, status = ?, featured = ?, sale = ?, discount_price = ?, discount_start = ?, discount_end = ? WHERE id = ?",
       [
         title,
         price,
+        quantity,
         description,
         category,
-        payment_id,
+        product_id,
+        formattedCreatedAt, // Use formatted date
         image_url || "",
-        image,
+        image, // Store optimized image
+        product_weight,
+        weight_unit,
+        product_dimensions,
         meta_title,
         meta_description,
         meta_keywords,
+        status,
+        featured,
+        sale,
+        discount_price,
+        formattedDiscountStart,
+        formattedDiscountEnd,
         id,
       ]
     );
@@ -262,12 +383,12 @@ app.put("/api/products/:id", upload.single("image"), async (req, res) => {
 
 //REVIEW Access correct db dynamically based on store id:
 app.get("/api/store/:store_id/products", async (req, res) => {
-  const { store_id } = req.params; // Get store_id from the URL path
-  console.log("Store ID:", store_id);
+  const { store_id } = req.params;
+  const storePool = req.storePool; // Use the dynamic store connection pool
 
   try {
     // Get the db_name associated with the store_id from the OmniStoreDB
-    const [storeRows] = await pool.execute(
+    const [storeRows] = await omniPool.execute(
       "SELECT db_name FROM stores WHERE id = ?",
       [store_id]
     );
@@ -276,18 +397,7 @@ app.get("/api/store/:store_id/products", async (req, res) => {
       return res.status(404).json({ error: "Store not found" });
     }
 
-    const dbName = storeRows[0].db_name;
-
-    // Create a new connection to the store's database
-    const storePool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: dbName, // Use the dynamically retrieved database name
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
+    // const dbName = storeRows[0].db_name;
 
     // Query the products table from the store's database
     const [productRows] = await storePool.execute("SELECT * FROM products");
@@ -295,7 +405,7 @@ app.get("/api/store/:store_id/products", async (req, res) => {
     res.status(200).json(productRows);
   } catch (error) {
     console.error("Error retrieving store products:", error);
-    res.status(500).json({ error: "Uh Oh!!! " + error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -318,5 +428,12 @@ app.post("/api/payment", async (req, res) => {
   }
 });
 
+//ANCHOR Set server to public on a port
+// app.listen(3082, "0.0.0.0", () => console.log(`Server started on port 3082`));
+
+const port = 3082;
+
 // Set server to public on a port
-app.listen(3082, "0.0.0.0", () => console.log(`Server started on port 3082`));
+app.listen(port, "0.0.0.0", () =>
+  console.log(`Server started on port ${port}`)
+);

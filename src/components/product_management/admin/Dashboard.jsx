@@ -22,7 +22,7 @@ import { FaRegListAlt } from "react-icons/fa";
 //ANCHOR Product Management Components
 
 //INFO Admin Pages
-import AddProduct from "@admin_product_management/AddProductForm";
+import AddProductForm from "@admin_product_management/AddProductForm";
 import Login from "@admin_product_management/Login";
 // import Logout from "@admin_product_management/Logout";
 import UsersManager from "@admin_product_management/UsersManager";
@@ -278,6 +278,8 @@ function Dashboard({ storeId }) {
     );
   };
 
+  console.log("Products: ", products);
+
   return (
     <div className="min-h-screen p-4 bg-blue-900 container-fluid bg-opacity-30 ">
       <div className="p-4 container-fluid">
@@ -347,6 +349,7 @@ function Dashboard({ storeId }) {
                         setImageOption={setImageOption}
                         setSelectedProduct={setSelectedProduct}
                         setShowModal={setShowModal}
+                        storeId={storeId}
                       />
                     </div>
                   );
@@ -389,7 +392,9 @@ function Dashboard({ storeId }) {
               </div>
             </>
           )}
-          {selectedPage === "add-product" && <AddProduct />}
+          {selectedPage === "add-product" && (
+            <AddProductForm storeId={storeId} setProducts={setProducts} />
+          )}
           {selectedPage === "users-manager" && (
             <UsersManager
               storeId={storeId}
