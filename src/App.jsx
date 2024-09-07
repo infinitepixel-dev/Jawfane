@@ -120,6 +120,7 @@ const App = () => {
                 base={base}
                 toggleTheme={toggleTheme}
                 setIsMobile={setIsMobile}
+                storeId={storeId}
               />
             }
           />
@@ -135,6 +136,7 @@ const App = () => {
                 base={base}
                 toggleTheme={toggleTheme}
                 setIsMobile={setIsMobile}
+                storeId={storeId}
               />
             }
           />
@@ -150,6 +152,7 @@ const App = () => {
                 base={base}
                 toggleTheme={toggleTheme}
                 setIsMobile={setIsMobile}
+                storeId={storeId}
               />
             }
           />
@@ -161,6 +164,7 @@ const App = () => {
                 theme={theme}
                 cartItems={cartItems}
                 addToCart={addToCart}
+                storeId={storeId}
               />
             }
           />

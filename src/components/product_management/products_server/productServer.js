@@ -4,22 +4,21 @@
 /* eslint-disable no-undef */
 // Import dependencies
 const express = require("express");
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const multer = require("multer"); // For handling file uploads
 const sharp = require("sharp");
-// const { promisify } = require('util')
-// const fs = require('fs')
-
 const dotenv = require("dotenv");
 const Stripe = require("stripe"); // Import Stripe
+
+// Import the dynamic pool creation function
+const createPoolWithDB = require("./createPoolWithDB");
 
 dotenv.config();
 
 // Initialize Stripe with secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-// console.log('stripe secret key: ', process.env.STRIPE_SECRET_KEY)
 
 const app = express();
 
@@ -32,7 +31,6 @@ app.use(
         "http://66.128.253.47:5173",
         "https://vps.infinitepixel.dev",
       ];
-      // If the origin is in the list of allowed origins or no origin (for non-browser requests)
       if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
         callback(null, true);
       } else {
@@ -49,39 +47,59 @@ app.use(bodyParser.json());
 // Configure multer for handling file uploads (store image in memory)
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Create connection
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+// Middleware to dynamically select the correct database based on the store_id
+app.use(async (req, res, next) => {
+  try {
+    const store_id = req.headers["store-id"]; // Pass store_id in headers (can also be passed via URL or query params)
+    if (!store_id) {
+      return res.status(400).json({ error: "store_id is required" });
+    }
 
-// Test the connection pool
-db.getConnection((err, connection) => {
-  if (err) {
-    console.error("Error connecting to the database:", err);
-  } else {
-    console.log("Connected to MySQL using connection pool");
-    connection.release(); // Release the connection back to the pool
+    // Get the db_name associated with the store_id from the OmniStoreDB
+    const omniPool = mysql.createPool({
+      host: process.env.DB_OMNI_HOST,
+      user: process.env.DB_OMNI_USER,
+      password: process.env.DB_OMNI_PASSWORD,
+      database: process.env.DB_OMNI_NAME,
+    });
+
+    const [storeRows] = await omniPool.execute(
+      "SELECT db_name FROM stores WHERE id = ?",
+      [store_id]
+    );
+
+    if (storeRows.length === 0) {
+      return res.status(404).json({ error: "Store not found" });
+    }
+
+    const dbName = storeRows[0].db_name;
+
+    // Create a new connection pool for the store's database
+    req.storePool = createPoolWithDB(dbName);
+
+    next(); // Proceed to the next middleware or route
+  } catch (error) {
+    console.error("Error selecting store database:", error);
+    return res.status(500).json({ error: "Failed to select store database" });
   }
 });
 
-//API GETS all products from the 'products' table of the database
-app.get("/api/products", (req, res) => {
-  db.query("SELECT * FROM products", (err, result) => {
-    // console.log('Products: ', result) // Debug log to check for duplicates;
+//API GETS all products from the dynamically selected database
+app.get("/api/products", async (req, res) => {
+  const storePool = req.storePool; // Use the dynamic store connection pool
 
-    if (err) throw err;
-    res.json(result);
-  });
+  try {
+    const [products] = await storePool.query("SELECT * FROM products");
+    res.json(products);
+  } catch (err) {
+    console.error("Error retrieving products:", err);
+    res.status(500).json({ error: "Failed to retrieve products" });
+  }
 });
 
-//API Creates a new product in the 'products' table of the database
+//API Creates a new product in the 'products' table of the dynamically selected database
 app.post("/api/products", upload.single("image"), async (req, res) => {
+  const storePool = req.storePool; // Use the dynamic store connection pool
   const {
     title,
     price,
@@ -112,80 +130,82 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
   }
 
   // Insert into the database
-  db.query(
-    "INSERT INTO products (title, price, description, category, payment_id, image_url, image, meta_title, meta_description, meta_keywords) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    [
-      title,
-      price,
-      description,
-      category,
-      payment_id,
-      image_url,
-      image,
-      meta_title,
-      meta_description,
-      meta_keywords,
-    ],
-    (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Database error occurred." });
-      }
-      return res.status(201).json({
-        id: result.insertId,
-        message: "Product added successfully.",
-      });
-    }
-  );
+  try {
+    const [result] = await storePool.query(
+      "INSERT INTO products (title, price, description, category, payment_id, image_url, image, meta_title, meta_description, meta_keywords) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        title,
+        price,
+        description,
+        category,
+        payment_id,
+        image_url,
+        image,
+        meta_title,
+        meta_description,
+        meta_keywords,
+      ]
+    );
+    return res.status(201).json({
+      id: result.insertId,
+      message: "Product added successfully.",
+    });
+  } catch (err) {
+    console.error("Error adding product:", err);
+    res.status(500).json({ error: "Failed to add product" });
+  }
 });
 
-//API GET a single product from the 'products' table of the database
-app.get("/api/products/:id", (req, res) => {
+//API GET a single product from the dynamically selected database
+app.get("/api/products/:id", async (req, res) => {
+  req.storePool = createPoolWithDB(dbName);
+
+  const storePool = req.storePool; // Use the dynamic store connection pool
   const { id } = req.params;
 
-  db.query("SELECT * FROM products WHERE id = ?", [id], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database error occurred." });
-    }
-    if (result.length === 0) {
+  try {
+    const [product] = await storePool.query(
+      "SELECT * FROM products WHERE id = ?",
+      [id]
+    );
+
+    if (product.length === 0) {
       return res.status(404).json({ error: "Product not found." });
     }
-    return res.json(result[0]);
-  });
+    return res.json(product[0]);
+  } catch (err) {
+    console.error("Error retrieving product:", err);
+    res.status(500).json({ error: "Failed to retrieve product" });
+  }
 });
 
-//API DELETES a product from the 'products' table of the database
-app.delete("/api/products/:id", (req, res) => {
+//API DELETES a product from the dynamically selected database
+app.delete("/api/products/:id", async (req, res) => {
+  const storePool = req.storePool; // Use the dynamic store connection pool
   const { id } = req.params;
 
-  // eslint-disable-next-line no-unused-vars
-  db.query("DELETE FROM products WHERE id = ?", [id], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database error occurred." });
+  try {
+    const [result] = await storePool.query(
+      "DELETE FROM products WHERE id = ?",
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Product not found." });
     }
     return res.json({ message: "Product deleted successfully." });
-  });
+  } catch (err) {
+    console.error("Error deleting product:", err);
+    res.status(500).json({ error: "Failed to delete product" });
+  }
 });
 
-/* 
-  title VARCHAR(255) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    description TEXT,
-    category VARCHAR(255),
-    payment_id VARCHAR(255),
-    image_url VARCHAR(255),  -- URL for the product image
-    image BLOB,  -- Binary data for the product image if stored directly
-    meta_title VARCHAR(255),  -- SEO Title for the product
-    meta_description TEXT,  -- SEO Description for the product
-    meta_keywords TEXT,  -- SEO Keywords for the product
-*/
-
-//API UPDATES a product in the 'products' table of the database
-//Edit product
-app.put("/api/products/:id", upload.single("image"), (req, res) => {
+//API UPDATES a product in the dynamically selected database
+app.put("/api/products/:id", upload.single("image"), async (req, res) => {
+  const storePool = req.storePool; // Use the dynamic store connection pool
   const { id } = req.params;
+  console.log("Product ID:", id);
+
   const {
     title,
     price,
@@ -198,61 +218,86 @@ app.put("/api/products/:id", upload.single("image"), (req, res) => {
     meta_keywords,
   } = req.body;
 
-  console.log("Image URL: ", image_url); // Debug log to check for duplicates
-
   let image = null;
 
-  // If the image file is uploaded, set it
   if (req.file) {
     image = req.file.buffer; // Store the image as a buffer in the database
-    console.log("Image uploaded:", image);
   }
 
-  // Validate that the title and price fields are not empty
   if (!title || !price) {
     return res.status(400).json({ error: "Title and price are required." });
   }
 
-  // Construct the SQL query for updating
-  const sql = `
-        UPDATE products 
-        SET title = ?, price = ?, description = ?, category = ?, payment_id = ?, 
-            image_url = ?, image = ?, meta_title = ?, meta_description = ?, meta_keywords = ?
-        WHERE id = ?
-    `;
+  try {
+    const [result] = await storePool.query(
+      `UPDATE products 
+       SET title = ?, price = ?, description = ?, category = ?, payment_id = ?, 
+           image_url = ?, image = ?, meta_title = ?, meta_description = ?, meta_keywords = ?
+       WHERE id = ?`,
+      [
+        title,
+        price,
+        description,
+        category,
+        payment_id,
+        image_url || "",
+        image,
+        meta_title,
+        meta_description,
+        meta_keywords,
+        id,
+      ]
+    );
 
-  const values = [
-    title,
-    price,
-    description,
-    category,
-    payment_id,
-    image_url || "", // Ensure image_url is passed correctly
-    image,
-    meta_title,
-    meta_description,
-    meta_keywords,
-    id,
-  ];
-
-  //REVIEW Unused result variable
-  // eslint-disable-next-line no-unused-vars
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error("Uh oh PUT product error:", err);
-      return res.status(500).json({ error: "Database error occurred." });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Product not found." });
     }
+
     return res.json({ message: "Product updated successfully." });
-  });
+  } catch (err) {
+    console.error("Error updating product:", err);
+    res.status(500).json({ error: "Failed to update product" });
+  }
 });
 
-//TODO Break this out to a Stripe_Payments server file
-//ANCHOR Stripe Payment
-/*
+//REVIEW Access correct db dynamically based on store id:
+app.get("/api/store/:store_id/products", async (req, res) => {
+  const { store_id } = req.params; // Get store_id from the URL path
+  console.log("Store ID:", store_id);
 
-API calls return simulated objects. For example, you can retrieve and use test account, payment, customer, charge, refund, transfer, balance, and subscription objects.
+  try {
+    // Get the db_name associated with the store_id from the OmniStoreDB
+    const [storeRows] = await pool.execute(
+      "SELECT db_name FROM stores WHERE id = ?",
+      [store_id]
+    );
 
-*/
+    if (storeRows.length === 0) {
+      return res.status(404).json({ error: "Store not found" });
+    }
+
+    const dbName = storeRows[0].db_name;
+
+    // Create a new connection to the store's database
+    const storePool = mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: dbName, // Use the dynamically retrieved database name
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+    });
+
+    // Query the products table from the store's database
+    const [productRows] = await storePool.execute("SELECT * FROM products");
+
+    res.status(200).json(productRows);
+  } catch (error) {
+    console.error("Error retrieving store products:", error);
+    res.status(500).json({ error: "Uh Oh!!! " + error.message });
+  }
+});
 
 // Stripe payment route
 app.post("/api/payment", async (req, res) => {
@@ -273,29 +318,5 @@ app.post("/api/payment", async (req, res) => {
   }
 });
 
-//ANCHOR Set server to public on a port
+// Set server to public on a port
 app.listen(3082, "0.0.0.0", () => console.log(`Server started on port 3082`));
-
-//INFO Seed the db with product data if one doesn't exist
-/*
-
-CREATE TABLE products (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    description TEXT,
-    category VARCHAR(255),
-    payment_id VARCHAR(255),
-    image_url VARCHAR(255),  -- URL for the product image
-    image BLOB,  -- Binary data for the product image if stored directly
-    meta_title VARCHAR(255),  -- SEO Title for the product
-    meta_description TEXT,  -- SEO Description for the product
-    meta_keywords TEXT,  -- SEO Keywords for the product
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
-*/
-
-//INFO drop seo_meta from existing products if it
-//ALTER TABLE products DROP COLUMN seo_meta;

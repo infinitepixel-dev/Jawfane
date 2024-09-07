@@ -23,6 +23,7 @@ function Home({
   base,
   toggleTheme,
   setIsMobile,
+  storeId,
 }) {
   // console.log("Home component rendered");
   // console.log("Cart Items: ", cartItems);
@@ -40,7 +41,12 @@ function Home({
       {/* <div id="main-app" className="w-screen"> */}
       <div id="home" className="w-screen overflow-x-hidden">
         <CanvasLogo theme={theme} isMobile={isMobile} />
-        <Merch theme={theme} cartItems={cartItems} addToCart={addToCart} />
+        <Merch
+          theme={theme}
+          cartItems={cartItems}
+          addToCart={addToCart}
+          storeId={storeId}
+        />
         <MusicVideos theme={theme} />
         <Tour theme={theme} />
         <Lore theme={theme} />
@@ -61,6 +67,7 @@ Home.propTypes = {
   base: propTypes.string.isRequired,
   toggleTheme: propTypes.func.isRequired,
   setIsMobile: propTypes.func.isRequired,
-}
+  storeId: propTypes.number,
+};
 
 export default Home
