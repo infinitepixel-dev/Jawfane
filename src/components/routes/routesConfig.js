@@ -2,7 +2,7 @@
 
 // import Booking from "@components/pages/Booking";
 
-import { lazy } from "react";
+import { lazy } from "react"
 
 // routesConfig.js
 export const navigationRoutes = [
@@ -10,8 +10,8 @@ export const navigationRoutes = [
   { id: "n2", name: "merch", label: "Merch" },
   { id: "n3", name: "music", label: "Music" },
   { id: "n4", name: "tour", label: "Tour" },
-  { id: "n5", name: "booking", label: "Booking", disabled: true }, // Disable booking as an example
-];
+  { id: "n5", name: "booking", label: "Booking" },
+]
 
 //INFO export
 
@@ -71,14 +71,25 @@ export const componentRoutes = [
       keywords: "music, videos, band, jawfane",
     },
   },
+  {
+    id: "booking",
+    key: "a6",
+    path: "/booking",
+    componentPath: "../pages/Booking.jsx",
+    metaData: {
+      title: "Book Jawfane",
+      description: "Book Jawfane for your next event",
+      keywords: "music, videos, band, jawfane, booking",
+    },
+  },
   // { path: "/booking", component: Booking, disabled: true },
-];
+]
 
-let RoutesWithComponents = componentRoutes;
+let RoutesWithComponents = componentRoutes
 
 if (typeof window !== "undefined") {
   // Vite-specific logic for dynamic imports
-  const componentMap = import.meta.glob("../pages/*.{jsx,js}");
+  const componentMap = import.meta.glob("../pages/*.{jsx,js}")
 
   //INFO Sub components path
   // const subComponentMap = import.meta.glob(
@@ -87,7 +98,7 @@ if (typeof window !== "undefined") {
   /* console.log('Component Map:', { ...componentMap, ...subComponentMap }) */
 
   // Initialize the components object
-  const components = {};
+  const components = {}
 
   // Define required meta fields
   const requiredMetaFields = [
@@ -105,18 +116,18 @@ if (typeof window !== "undefined") {
     // "requiresAuth", // Whether authentication is required
     // "roles", // Roles allowed to access
     // "breadcrumbs", // Breadcrumb navigation information
-  ];
+  ]
 
   // Adjust componentPath if necessary to match the keys in componentMap
   componentRoutes.forEach((route) => {
     // console.log("Route:", route);
 
-    const importPath = route.componentPath;
-    let componentPromise = null;
+    const importPath = route.componentPath
+    let componentPromise = null
 
     if (componentMap[importPath]) {
-      componentPromise = componentMap[importPath]();
-      components[route.key] = lazy(componentMap[importPath]);
+      componentPromise = componentMap[importPath]()
+      components[route.key] = lazy(componentMap[importPath])
 
       // console.log("Components:", components);
     }
@@ -128,32 +139,32 @@ if (typeof window !== "undefined") {
 
     //INFO Else if the component is not found, log a warning
     else {
-      console.warn(`Component for path ${importPath} not found.`);
+      console.warn(`Component for path ${importPath} not found.`)
     }
 
     // If the component was found, check for meta information
     if (componentPromise) {
       componentPromise.then((componentModule) => {
-        const component = componentModule.default;
-        const meta = component?.meta || {};
+        const component = componentModule.default
+        const meta = component?.meta || {}
         requiredMetaFields.forEach((field) => {
           if (!meta[field]) {
             /*      console.warn(
                             `Meta field "${field}" is missing in component for path ${importPath}`
                         ) */
           }
-        });
-      });
+        })
+      })
     }
-  });
+  })
 
   // Create RoutesWithComponents array
   RoutesWithComponents = componentRoutes.map((route) => ({
     ...route,
     component: components[route.key],
-  }));
+  }))
 }
 
 // console.log("Routes with Components:", RoutesWithComponents);
 
-export default RoutesWithComponents;
+export default RoutesWithComponents

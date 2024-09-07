@@ -1,17 +1,18 @@
-import propTypes from "prop-types";
+import propTypes from "prop-types"
 
 //INFO Pages imports
 
-import Tour from "./Tour";
-import Merch from "./Merch";
-import MusicVideos from "./MusicVideos";
-import Footer from "../sub-components/Footer";
-import Lore from "./Lore";
-import Navigation from "../sub-components/navigation/Navigation";
+import Tour from "./Tour"
+import Merch from "./Merch"
+import MusicVideos from "./MusicVideos"
+import Footer from "../sub-components/Footer"
+import Lore from "./Lore"
+import Booking from "../product_management/pages/Booking"
 
 //INFO Sub-components imports
-import BackToTop from "@components/sub-components/BackToTop";
-import CanvasLogo from "../sub-components/CanvasLogo";
+import Navigation from "../sub-components/navigation/Navigation"
+import BackToTop from "@components/sub-components/BackToTop"
+import CanvasLogo from "../sub-components/CanvasLogo"
 
 function Home({
   theme,
@@ -43,11 +44,12 @@ function Home({
         <MusicVideos theme={theme} />
         <Tour theme={theme} />
         <Lore theme={theme} />
+        <Booking theme={theme} />
         <Footer theme={theme} />
       </div>
       <BackToTop />
     </>
-  );
+  )
 }
 
 Home.propTypes = {
@@ -59,6 +61,6 @@ Home.propTypes = {
   base: propTypes.string.isRequired,
   toggleTheme: propTypes.func.isRequired,
   setIsMobile: propTypes.func.isRequired,
-};
+}
 
-export default Home;
+export default Home
