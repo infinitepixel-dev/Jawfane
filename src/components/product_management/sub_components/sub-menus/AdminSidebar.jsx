@@ -3,23 +3,23 @@ A sidebar component for the admin dashboard.
 Ensures menu items never overlap with the logout or footer sections.
 */
 
-import { useNavigate } from "react-router-dom";
-import propTypes from "prop-types";
+import { useNavigate } from "react-router-dom"
+import propTypes from "prop-types"
 
 //INFO Animation Libraries
-import { gsap } from "gsap";
+import { gsap } from "gsap"
 
 //INFO Icons
-import { FaTimes, FaPlus, FaUsers, FaHome, FaEye } from "react-icons/fa";
-import { FaBoxesPacking } from "react-icons/fa6";
-import { LiaShippingFastSolid } from "react-icons/lia";
-import { BsCashCoin } from "react-icons/bs";
+import { FaTimes, FaPlus, FaUsers, FaHome, FaEye } from "react-icons/fa"
+import { FaBoxesPacking } from "react-icons/fa6"
+import { LiaShippingFastSolid } from "react-icons/lia"
+import { BsCashCoin } from "react-icons/bs"
 
 //INFO Assets
-import DevelopedByInfinitePixel from "../widgets/DevelopedByInfinitePixel";
+import DevelopedByInfinitePixel from "../widgets/DevelopedByInfinitePixel"
 
 //INFO Admin
-import Logout from "@admin_product_management/Logout";
+import Logout from "@admin_product_management/Logout"
 
 const AdminSidebar = ({
   showSidebar,
@@ -28,19 +28,23 @@ const AdminSidebar = ({
   user,
   role,
 }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const closeSidebar = () => {
     gsap.to(".admin-sidebar", {
       x: "-100%",
       duration: 0.2,
       ease: "power3.inOut",
-    });
-    setTimeout(() => setShowSidebar(false), 500);
-  };
+    })
+    setTimeout(() => setShowSidebar(false), 500)
+  }
 
   const menuItems = [
-    { icon: <FaEye />, label: "View Site", onClick: () => navigate("/home") },
+    {
+      icon: <FaEye />,
+      label: "View Website",
+      onClick: () => navigate("/home"),
+    },
     {
       icon: <FaHome />,
       label: "Dashboard",
@@ -71,7 +75,7 @@ const AdminSidebar = ({
       label: "Shipping",
       onClick: () => setSelectedPage("shipping"),
     },
-  ];
+  ]
 
   return (
     <div
@@ -92,7 +96,7 @@ const AdminSidebar = ({
       </div>
 
       {/* Ensure the menu section is scrollable and occupies remaining height */}
-      <div className="flex-1 overflow-y-auto px-4 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
+      <div className="flex-1 px-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
         <ul className="mt-8 space-y-4">
           {menuItems.map((item, index) => (
             <div key={index}>
@@ -100,8 +104,8 @@ const AdminSidebar = ({
                 <button
                   className="flex items-center space-x-2 text-lg font-extrabold text-slate-200 hover:text-indigo-500"
                   onClick={() => {
-                    closeSidebar();
-                    item.onClick();
+                    closeSidebar()
+                    item.onClick()
                   }}
                 >
                   {item.icon}
@@ -109,27 +113,27 @@ const AdminSidebar = ({
                 </button>
               </li>
               {index < menuItems.length - 1 && (
-                <hr className="border-gray-600 my-2" />
+                <hr className="my-2 border-gray-600" />
               )}
             </div>
           ))}
         </ul>
       </div>
-      <hr className="border-gray-600 my-2" />
+      <hr className="my-2 border-gray-600" />
       {/* Stick the logout button and footer to the bottom */}
-      <div className="px-4 flex flex-col items-center justify-end space-y-20">
+      <div className="flex flex-col items-center justify-end px-4 space-y-20">
         {/* Logout button */}
-        <div className="w-full flex justify-center">
+        <div className="flex justify-center w-full">
           <Logout user={user} role={role} />
         </div>
         {/* Developed by Infinite Pixel */}
-        <div className="w-full flex justify-center">
+        <div className="flex justify-center w-full">
           <DevelopedByInfinitePixel />
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 AdminSidebar.propTypes = {
   showSidebar: propTypes.bool.isRequired,
@@ -137,6 +141,6 @@ AdminSidebar.propTypes = {
   setSelectedPage: propTypes.func.isRequired,
   user: propTypes.object.isRequired,
   role: propTypes.string.isRequired,
-};
+}
 
-export default AdminSidebar;
+export default AdminSidebar
