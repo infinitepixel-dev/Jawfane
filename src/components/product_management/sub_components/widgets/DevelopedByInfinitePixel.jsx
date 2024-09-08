@@ -1,5 +1,7 @@
 //DevelopedByInfinitePixel.jsx
-import ip_logo from "../../assets/images/ip_logo.png";
+
+//INFO Images
+import ip_logo from "@assets_product_management/images/ip_logo.png";
 
 function DevelopedByInfinitePixel() {
   return (

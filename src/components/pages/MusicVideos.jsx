@@ -1,9 +1,18 @@
+//MusicVideos.jsx
+
+/*
+A component to manage the music videos section of the website
+*/
+
+//INFO React Libraries
 import { useEffect, useRef } from "react";
+import propTypes from "prop-types";
+
+//INFO React Animation Libraries
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-gsap.registerPlugin(ScrollToPlugin);
 
-import propTypes from "prop-types";
+gsap.registerPlugin(ScrollToPlugin);
 
 const MusicVideos = ({ theme }) => {
   const isUserInteracting = useRef(false);

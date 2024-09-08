@@ -1,3 +1,9 @@
+//Footer.jsx
+
+/*
+A component to manage the footer of the website
+*/
+
 const Footer = () => {
   return (
     <>

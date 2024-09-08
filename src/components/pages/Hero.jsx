@@ -1,10 +1,21 @@
+//Hero.jsx
+
+/*
+A component to manage the hero section of the website
+*/
+
+//INFO React Libraries
 import { useEffect, useRef } from "react";
+import propTypes from "prop-types";
+
+//INFO Animation Libraries
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import propTypes from "prop-types";
-import hero_bg from "@public/hero_bg.webp";
 
 gsap.registerPlugin(ScrollToPlugin);
+
+//INFO Images
+import hero_bg from "@public/hero_bg.webp";
 
 const Hero = ({ theme }) => {
   const isUserInteracting = useRef(false);

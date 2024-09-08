@@ -1,5 +1,10 @@
-import { DarkModeSwitch } from "react-toggle-dark-mode";
+//ThemeSwitch.jsx
+
+//INFO React Libraries
 import propTypes from "prop-types";
+
+//INFO Dark Mode Switch
+import { DarkModeSwitch } from "react-toggle-dark-mode";
 
 const ThemeSwitch = ({ theme, toggleTheme }) => {
   const isDarkMode = theme === "dark";

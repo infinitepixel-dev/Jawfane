@@ -1,4 +1,9 @@
+//Variants.jsx
+
+//INFO React Libraries
 import { useState, useRef, useEffect } from "react";
+
+//INFO Animation Libraries
 import { gsap } from "gsap";
 
 const Variants = () => {

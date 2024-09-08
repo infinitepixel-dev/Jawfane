@@ -1,10 +1,23 @@
+//Navigation.jsx
+
+/*
+A component to manage the navigation bar for the store
+*/
+
+//INFO React Libraries
 import { useEffect, useState, useRef, useCallback } from "react";
 import propTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
+
+//INFO Animation Libraries
 import { gsap } from "gsap";
-import AudioPlayer from "@components/sub-components/AudioPlayer";
+
+//INFO Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+
+//INFO Sub-components
+import AudioPlayer from "@audio_product_management/AudioPlayer";
 import CartPopOut from "@sub-menus_product_management/CartPopOut";
 
 const Navigation = ({

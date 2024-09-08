@@ -16,9 +16,6 @@ import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Underline from "@tiptap/extension-underline";
-import Strike from "@tiptap/extension-strike";
-import CodeBlock from "@tiptap/extension-code-block";
-import Blockquote from "@tiptap/extension-blockquote";
 
 import { SketchPicker } from "react-color";
 
@@ -47,9 +44,6 @@ function Wysiwyg() {
       TextStyle, // For custom text styles
       Color, // For text color
       Underline, // To enable underline formatting
-      Strike, // Strikethrough extension
-      CodeBlock, // Code block extension
-      Blockquote, // Blockquote extension
     ],
     content: "<p>Type something here...</p>",
     onUpdate: ({ editor }) => {

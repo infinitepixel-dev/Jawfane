@@ -1,18 +1,24 @@
+//Home.jsx
+
+/*
+A component to manage the home page of the website
+*/
+
+//INFO React Libraries
 import propTypes from "prop-types";
 
-//INFO Pages imports
+//INFO Pages
+import Tour from "@pages/Tour";
+import Merch from "@pages/Merch";
+import MusicVideos from "@pages/MusicVideos";
+import Footer from "@pages/Footer";
+import Lore from "@pages/Lore";
+import Booking from "@pages/Booking";
 
-import Tour from "./Tour";
-import Merch from "./Merch";
-import MusicVideos from "./MusicVideos";
-import Footer from "../sub-components/Footer";
-import Lore from "./Lore";
-import Booking from "../product_management/pages/Booking";
-
-//INFO Sub-components imports
-import Navigation from "../sub-components/navigation/Navigation";
-import BackToTop from "@components/sub-components/BackToTop";
-import CanvasLogo from "../sub-components/CanvasLogo";
+//INFO Sub-components
+import Navigation from "@navigation_product_management/Navigation";
+import BackToTop from "@buttons_product_management/BackToTop";
+import CanvasLogo from "@logos_product_management/CanvasLogo";
 
 function Home({
   theme,

@@ -1,13 +1,24 @@
+//CanvasLogo.jsx
+
+/*
+A component to manage the canvas logo for the store
+*/
+
+//INFO React Libraries
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
 import propTypes from "prop-types";
 
+//INFO Animation Libraries
+import { gsap } from "gsap";
+
+//INFO Images
 import hero_bg from "@assets/images/hero_bg.webp";
 import hero_bg_mobile from "@assets/images/hero_bg_mobile.webp";
 
-import "./AnimatedLogo.css";
+//INFO Custom CSS
+import "./CanvasLogo.module.css";
 
-const AnimatedLogo = ({ theme, isMobile }) => {
+const CanvasLogo = ({ theme, isMobile }) => {
   const logoRef = useRef(null);
 
   const colorChangeSpeed = 2000; // Duration in milliseconds for the color change
@@ -56,7 +67,7 @@ const AnimatedLogo = ({ theme, isMobile }) => {
 
   return (
     <div
-      id="animatedLogo"
+      id="canvasLogo"
       className="relative flex items-center justify-center w-full h-screen overflow-hidden"
     >
       {isMobile === true ? (
@@ -190,9 +201,9 @@ const AnimatedLogo = ({ theme, isMobile }) => {
   );
 };
 
-AnimatedLogo.propTypes = {
+CanvasLogo.propTypes = {
   theme: propTypes.string.isRequired,
   isMobile: propTypes.bool.isRequired,
 };
 
-export default AnimatedLogo;
+export default CanvasLogo;

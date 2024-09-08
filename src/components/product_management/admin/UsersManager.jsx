@@ -14,7 +14,11 @@ import { gsap } from "gsap";
 import "./UsersManager.module.css";
 
 const UsersManager = ({ storeId, roleMapData }) => {
-  const APIUrl = `${window.location.protocol}//${window.location.hostname}:3030`;
+  // const APIUrl = `${window.location.protocol}//${window.location.hostname}:3030`;
+
+  const APIUrl = `https://vps.infinitepixel.dev:3030`;
+
+  console.log("APIUrl:", APIUrl);
 
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({

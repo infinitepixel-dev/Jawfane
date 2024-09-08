@@ -1,6 +1,15 @@
+//AnimatedCheckbox.jsx
+
+/*
+A component to manage the checkbox animation
+*/
+
+//INFO React Libraries
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
 import propTypes from "prop-types";
+
+//INFO Animation Libraries
+import { gsap } from "gsap";
 
 function AnimatedCheckbox({ isSelected, onSelect, className }) {
   const checkboxRef = useRef(null);
