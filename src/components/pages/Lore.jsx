@@ -4,33 +4,33 @@
 A component that displays information about the band members
 */
 
-import { useRef, useState, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState, useEffect } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger)
 
 function Lore() {
-  const panels = useRef([]);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const panels = useRef([])
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   // Handle screen resizing and detect if the user is on mobile or desktop
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   // Set initial positions and image scaling for each panel based on device type (mobile/desktop)
   useEffect(() => {
     panels.current.forEach((panel, index) => {
-      const image = panel.querySelector(".bg-image");
+      const image = panel.querySelector(".bg-image")
       const position = isMobile
         ? bandData[index].position.mobile
-        : bandData[index].position.desktop;
+        : bandData[index].position.desktop
 
       // Set the initial image properties such as scale and position
       gsap.set(image, {
@@ -38,59 +38,59 @@ function Lore() {
         y: `${position.y}px`,
         scale: 1.1,
         transformOrigin: "center top",
-      });
-    });
-  }, [isMobile]);
+      })
+    })
+  }, [isMobile])
 
   // Handle click event on a panel, expanding the bio and triggering scrolling
   const handleClick = (index) => {
-    const panel = panels.current[index];
-    const bio = panel.querySelector(".bio");
-    const image = panel.querySelector(".bg-image");
+    const panel = panels.current[index]
+    const bio = panel.querySelector(".bio")
+    const image = panel.querySelector(".bg-image")
 
     if (activeIndex === index) {
       // Close the active bio
-      setActiveIndex(null);
+      setActiveIndex(null)
       gsap.to(image, {
         scale: 1,
         x: 0,
         y: 0,
         duration: 0.5,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(bio, {
         height: 0,
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => (bio.style.display = "none"),
-      });
+      })
     } else {
       // Close any previously opened bio
       if (activeIndex !== null) {
-        const prevPanel = panels.current[activeIndex];
-        const prevBio = prevPanel.querySelector(".bio");
-        const prevImage = prevPanel.querySelector(".bg-image");
+        const prevPanel = panels.current[activeIndex]
+        const prevBio = prevPanel.querySelector(".bio")
+        const prevImage = prevPanel.querySelector(".bg-image")
         gsap.to(prevImage, {
           scale: 1,
           x: 0,
           y: 0,
           duration: 0.5,
           ease: "power2.inOut",
-        });
+        })
         gsap.to(prevBio, {
           height: 0,
           opacity: 0,
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => (prevBio.style.display = "none"),
-        });
+        })
       }
 
-      setActiveIndex(index);
+      setActiveIndex(index)
       const position = isMobile
         ? bandData[index].position.mobile
-        : bandData[index].position.desktop;
+        : bandData[index].position.desktop
 
       // Animate the image within the panel using pixel-based movement
       gsap.to(image, {
@@ -100,38 +100,38 @@ function Lore() {
         transformOrigin: "center top",
         duration: 0.5,
         ease: "power2.inOut",
-      });
-      bio.style.display = "block";
+      })
+      bio.style.display = "block"
       gsap.fromTo(
         bio,
         { height: 0, opacity: 0 },
         {
-          height: isMobile ? "20%" : "25%", // Responsive bio height for mobile and desktop
+          height: isMobile ? "20%" : "35%", // Responsive bio height for mobile and desktop
           opacity: 1,
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => {
-            startScrolling(bio); // Trigger scrolling after the bio is expanded
+            startScrolling(bio) // Trigger scrolling after the bio is expanded
           },
         }
-      );
+      )
     }
-  };
+  }
 
   // Start the scrolling effect on the bio section
   const startScrolling = (bio) => {
-    const scrollHeight = bio.scrollHeight - bio.clientHeight; // Calculate scrollable height
+    const scrollHeight = bio.scrollHeight - bio.clientHeight // Calculate scrollable height
     if (scrollHeight > 0) {
       gsap.to(bio, {
         scrollTo: { y: scrollHeight },
-        duration: 60, // Adjust the duration for slower/faster scrolling
+        duration: 50, // Adjust the duration for slower/faster scrolling
         ease: "none", // Linear scrolling
-        delay: 1.5, // Delay before scrolling starts
+        delay: 2, // Delay before scrolling starts
         repeat: -1, // Infinite looping
         yoyo: true, // Scroll back and forth
-      });
+      })
     }
-  };
+  }
 
   // Handle image scaling on hover
   const handleMouseEnter = (index) => {
@@ -140,9 +140,9 @@ function Lore() {
         scale: 1.1,
         duration: 0.15,
         ease: "power2.inOut",
-      });
+      })
     }
-  };
+  }
 
   // Reset image scaling when mouse leaves
   const handleMouseLeave = (index) => {
@@ -151,9 +151,9 @@ function Lore() {
         scale: 1,
         duration: 0.15,
         ease: "power2.inOut",
-      });
+      })
     }
-  };
+  }
 
   return (
     <div
@@ -198,7 +198,7 @@ function Lore() {
             </p>
           </div>
           <div
-            className="relative z-10 w-full p-6 rounded-lg text-lg text-center text-white bg-black bio bg-opacity-90 md:text-xl"
+            className="relative z-10 w-full p-6 text-lg text-center text-white bg-black rounded-lg bio bg-opacity-90 md:text-xl"
             style={{
               display: "none",
               overflow: "hidden", // Ensure scrolling happens inside
@@ -210,7 +210,7 @@ function Lore() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 const bandData = [
@@ -237,7 +237,21 @@ const bandData = [
   {
     member: "Austin Heipp",
     imageUrl: "images/austin-heipp.jpg",
-    bio: "Austin Heipp is the commanding voice of Jawfane, delivering powerful vocals that define the band's sound.",
+    bio: `It’s without thought that some things should be done. Defense of our youngest and smallest should be a reflex, not a debate.
+
+I may be the loudest, but it’s only through pain that you learn to be the softest.
+/n
+A self-taught vocalist, I care not to remember my younger years, only the songs that got me through them. It’s with those feelings I replace training and invoke pure, unfiltered emotion. It’s with those feelings I replace doubt with certainty, certain that the reflex to defend the indefensible — the ones who have yet to find their voice — is the reflex I so desired.
+/n
+I am the reckoning. The shield against what was done to me.
+/n
+I am someone who would have protected me when I was younger.
+/n
+Across the distance, Frodo and Sam journeyed. I have been, and like them, I saw many tragedies. But like Frodo carrying the burden of the age, I spoke to the ones who hurt like me, and through them, I was able to cast the nagging, unending voice of defeat into the fire.
+/n
+“I carry my shield not for me alone, I carry it for the sake of everyone like me and those who have not yet known the strength of their position.”
+/n
+— The Shield Sage, Austin`,
     position: {
       flip: true,
       mobile: { x: "0", y: "0" },
@@ -264,6 +278,6 @@ const bandData = [
       desktop: { x: "0", y: "0" },
     },
   },
-];
+]
 
-export default Lore;
+export default Lore

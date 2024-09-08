@@ -14,6 +14,7 @@ import { FaTimes, FaPlus, FaUsers, FaHome, FaEye } from "react-icons/fa"
 import { FaBoxesPacking } from "react-icons/fa6"
 import { LiaShippingFastSolid } from "react-icons/lia"
 import { BsCashCoin } from "react-icons/bs"
+import { BookOpen } from "react-feather"
 
 //INFO Assets
 import DevelopedByInfinitePixel from "../widgets/DevelopedByInfinitePixel"
@@ -59,6 +60,11 @@ const AdminSidebar = ({
       icon: <FaBoxesPacking />,
       label: "Product Manager",
       onClick: () => setSelectedPage("manage-products"),
+    },
+    {
+      icon: <BookOpen />,
+      label: "Lore Editor",
+      onClick: () => setSelectedPage("lore-editor"),
     },
     {
       icon: <FaUsers />,
