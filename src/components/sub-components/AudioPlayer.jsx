@@ -8,7 +8,7 @@ import "./AudioPlayer.module.css";
 
 const AudioPlayer = ({ theme }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const minVolume = "0.01";
+  const minVolume = "0.00";
   const maxVolume = "0.09";
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const AudioPlayer = ({ theme }) => {
       <div className="flex justify-center md:justify-end">
         <button
           id="playPauseBtn"
-          className="flex items-center justify-center w-12 h-12 p-2 text-white rounded-full shadow-lg bg-lime-500 audio-button"
+          className="flex items-center justify-center w-12 h-12 p-2 text-white rounded-full shadow-lg bg-lime-700 hover:bg-lime-600 audio-button"
         >
           <FontAwesomeIcon
             icon={isPlaying ? faPause : faPlay}

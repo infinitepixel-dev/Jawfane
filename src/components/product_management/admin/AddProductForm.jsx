@@ -11,7 +11,9 @@ import propTypes from "prop-types";
 //INFO GSAP for animations
 import { gsap } from "gsap";
 
-function AddProductForm({ storeId, setProducts }) {
+//REVIEW
+// eslint-disable-next-line no-unused-vars
+function AddProductForm({ storeId, products, setProducts }) {
   console.log("AddProductForm storeId: ", storeId);
   // console.log("AddProductForm products: ", setProducts);
 
@@ -144,8 +146,6 @@ function AddProductForm({ storeId, setProducts }) {
     }
 
     try {
-      console.log("Add Product URL: ", apiUrl);
-
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -158,10 +158,37 @@ function AddProductForm({ storeId, setProducts }) {
         const errorData = await response.json();
         console.error("Error:", errorData);
       } else {
-        const data = await response.json();
-        console.log("Product added:", data);
+        //If successful, updates the products array
+        const { id } = await response.json(); // Get the new product ID from the response
 
-        // setProducts((prevProducts) => [...prevProducts, data]);
+        // Build the new product object from formData and the returned ID
+        const newProduct = {
+          id, // Use the returned id from the response
+          title: formData.title,
+          price: formData.price,
+          quantity: formData.quantity,
+          description: formData.description,
+          category: formData.category,
+          product_id: formData.product_id,
+          created_at: formData.created_at,
+          product_weight: formData.product_weight,
+          weight_unit: formData.weight_unit,
+          product_dimensions: formData.product_dimensions,
+          meta_title: formData.meta_title,
+          meta_description: formData.meta_description,
+          meta_keywords: formData.meta_keywords,
+          status: formData.status,
+          featured: formData.featured,
+          sale: formData.sale,
+          discount_price: formData.discount_price,
+          discount_start: formData.discount_start,
+          discount_end: formData.discount_end,
+          image_url: formData.image_url, // If available
+          image: formData.image, // If available
+        };
+
+        // Append the new product to the current products state
+        setProducts((prevProducts) => [...prevProducts, newProduct]);
       }
     } catch (err) {
       console.error("Fetch error:", err);
@@ -357,6 +384,7 @@ function AddProductForm({ storeId, setProducts }) {
 
 AddProductForm.propTypes = {
   storeId: propTypes.number.isRequired,
+  products: propTypes.array.isRequired,
   setProducts: propTypes.func.isRequired,
 };
 

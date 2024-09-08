@@ -62,7 +62,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Middleware to dynamically select the correct database based on the store_id
 app.use(async (req, res, next) => {
-  console.log("Request headers: ", req.headers);
+  // console.log("Request headers: ", req.headers);
 
   try {
     const store_id = req.headers["store_id"]; // Pass store_id in headers (can also be passed via URL or query params)
@@ -226,7 +226,7 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
       ]
     );
     return res.status(201).json({
-      id: result.insertId,
+      id: result.insertId, // Send back the insertId from the result
       message: "Product added successfully ;).",
     });
   } catch (err) {
