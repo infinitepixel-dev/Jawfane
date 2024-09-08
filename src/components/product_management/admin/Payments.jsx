@@ -13,7 +13,7 @@ import { gsap } from "gsap";
 
 //React Icons;
 import { FaStripe, FaPaypal } from "react-icons/fa";
-import SquarePayLogo from "@public/images/logos/Square_Jewel_Black.svg";
+import SquarePayLogo from "/images/logos/Square_Jewel_Black.svg";
 
 function Payments({ storeId }) {
   const [enabledPayments, setEnabledPayments] = useState({
