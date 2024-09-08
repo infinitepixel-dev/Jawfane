@@ -5,73 +5,74 @@ A component that displays the product dashboard for the admin
 */
 
 //INFO React Libraries
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect, useRef } from "react"
 import {
   useNavigate,
   useLocation,
   // Link
-} from "react-router-dom";
-import propTypes from "prop-types";
+} from "react-router-dom"
+import propTypes from "prop-types"
 
 //INFO Animation Libraries
-import { gsap } from "gsap";
+import { gsap } from "gsap"
 
 //INFO Icons
-import { FaRegListAlt } from "react-icons/fa";
+import { FaRegListAlt } from "react-icons/fa"
 
 //ANCHOR Product Management Components
 
 //INFO Admin Pages
-import AddProduct from "@admin_product_management/AddProductForm";
-import Login from "@admin_product_management/Login";
+import AddProduct from "@admin_product_management/AddProductForm"
+import Login from "@admin_product_management/Login"
 // import Logout from "@admin_product_management/Logout";
-import UsersManager from "@admin_product_management/UsersManager";
-import Payments from "@admin_product_management/Payments";
-import Shipping from "@admin_product_management/Shipping";
+import UsersManager from "@admin_product_management/UsersManager"
+import Payments from "@admin_product_management/Payments"
+import Shipping from "@admin_product_management/Shipping"
 
 //INFO Sub-components - apis
 //products
-import DashboardProductCard from "../sub_components/apis/products/DashboardProductCard";
-import ProductsAPI from "../sub_components/apis/products/ProductsAPI";
+import DashboardProductCard from "../sub_components/apis/products/DashboardProductCard"
+import ProductsAPI from "../sub_components/apis/products/ProductsAPI"
 
 //INFO Sub-components - contexts
-import { AuthContext } from "../sub_components/contexts/AuthContext";
+import { AuthContext } from "../sub_components/contexts/AuthContext"
 
 //INFO Sub-components - sub-menus
-import AdminSidebar from "../sub_components/sub-menus/AdminSidebar";
+import AdminSidebar from "../sub_components/sub-menus/AdminSidebar"
 
 //INFO Sub-components - utilities
-import ImageUtility from "../sub_components/utilities/ImageUtility";
-import ProductsUtility from "../sub_components/utilities/ProductsUtility";
+import ImageUtility from "../sub_components/utilities/ImageUtility"
+import ProductsUtility from "../sub_components/utilities/ProductsUtility"
 
 //INFO Sub-components - widgets
 // import BandsInTownEvents from "../sub_components/widgets/BandsInTownEvents";
+import LoreEditor from "@admin_product_management/LoreEditor"
 
 function Dashboard({ storeId }) {
   // console.log("Store ID: ", storeId);
 
   //const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082`;
-  const apiUrl = "https://vps.infinitepixel.dev:3082";
-  const { user, login, loading } = useContext(AuthContext);
+  const apiUrl = "https://vps.infinitepixel.dev:3082"
+  const { user, login, loading } = useContext(AuthContext)
 
   //INFO: Boolean to control whether to persist page state in localStorage
-  const persistPageState = true;
+  const persistPageState = true
 
   // Initialize selectedPage state from localStorage if persistPageState is true
   const [selectedPage, setSelectedPage] = useState(() => {
     if (persistPageState) {
-      return localStorage.getItem("selectedPage") || "dashboard";
+      return localStorage.getItem("selectedPage") || "dashboard"
     }
-    return "dashboard";
-  });
+    return "dashboard"
+  })
 
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([])
 
   const { fetchProducts, handleDelete } = ProductsAPI(
     apiUrl,
     setProducts,
     storeId
-  );
+  )
 
   const {
     editProduct,
@@ -82,7 +83,7 @@ function Dashboard({ storeId }) {
     handleDeleteClick,
     confirmDelete,
     closeModal,
-  } = ProductsUtility(storeId);
+  } = ProductsUtility(storeId)
 
   const {
     imageOption,
@@ -95,13 +96,13 @@ function Dashboard({ storeId }) {
     handleImageOptionChange,
     handleFileChange,
     handleImageUrlChange,
-  } = ImageUtility();
+  } = ImageUtility()
 
   // Ref to track if component is mounted
-  const hasMounted = useRef(false);
+  const hasMounted = useRef(false)
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const [editedData, setEditedData] = useState({
     title: "",
@@ -112,16 +113,16 @@ function Dashboard({ storeId }) {
     meta_title: "",
     meta_description: "",
     meta_keywords: "",
-  });
+  })
 
-  const cardRefs = useRef([]);
-  const trashIconRefs = useRef([]);
-  const arrowRefs = useRef([]);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const cardRefs = useRef([])
+  const trashIconRefs = useRef([])
+  const arrowRefs = useRef([])
+  const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [showModal, setShowModal] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
   // Admin Sidebar state and functions
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false)
 
   //use the keys as the values dynamically based on the roleMap
   const [roleMapData, setRoleMapData] = useState({
@@ -131,17 +132,17 @@ function Dashboard({ storeId }) {
       user: 3,
     },
     reverseRoleMap: {},
-  });
+  })
 
   useEffect(() => {
     // Generate reverseRoleMap only if roles have changed
     const newReverseRoleMap = Object.keys(roleMapData.roles).reduce(
       (acc, role) => {
-        acc[roleMapData.roles[role]] = role;
-        return acc;
+        acc[roleMapData.roles[role]] = role
+        return acc
       },
       {}
-    );
+    )
 
     // Only update state if reverseRoleMap has changed
     if (
@@ -151,75 +152,75 @@ function Dashboard({ storeId }) {
       setRoleMapData((prevData) => ({
         ...prevData,
         reverseRoleMap: newReverseRoleMap,
-      }));
+      }))
     }
-  }, [roleMapData]); // Dependency only on roles to avoid unnecessary loops
+  }, [roleMapData]) // Dependency only on roles to avoid unnecessary loops
 
   // Animation for trash icon on mount
   useEffect(() => {
     const validIcons = Array.from(trashIconRefs.current).filter(
       (icon) => icon !== null
-    );
+    )
     validIcons.forEach((icon, index) => {
       if (icon) {
-        gsap.set(icon, { scale: 0, opacity: 0 });
+        gsap.set(icon, { scale: 0, opacity: 0 })
         gsap.to(icon, {
           scale: 1,
           opacity: 1,
           duration: 0.3,
           ease: "back.out(1.7)",
           delay: index * 0.1, // Stagger animation for better effect
-        });
+        })
       }
-    });
-  }, [products]);
+    })
+  }, [products])
 
   // Handle user login from query parameters in URL
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const userParam = queryParams.get("user");
+    const queryParams = new URLSearchParams(location.search)
+    const userParam = queryParams.get("user")
 
     if (userParam && !user) {
-      const userData = JSON.parse(decodeURIComponent(userParam));
+      const userData = JSON.parse(decodeURIComponent(userParam))
 
       // Log userData for better debugging
-      console.log("User Data received from URL:", userData);
+      console.log("User Data received from URL:", userData)
 
       if (userData.role !== 1 && userData.storeId !== storeId) {
-        console.log("User role mismatch or store ID mismatch");
+        console.log("User role mismatch or store ID mismatch")
         console.log(
           "Expected Store ID:",
           storeId,
           "User Store ID:",
           userData.storeId
-        );
-        navigate("/no-access");
+        )
+        navigate("/no-access")
       } else {
-        login(userData);
+        login(userData)
       }
     }
-  }, [location.search, user, login, navigate, storeId]);
+  }, [location.search, user, login, navigate, storeId])
 
   // Fetch products from API if user is authenticated
   useEffect(() => {
     if (user) {
-      fetchProducts();
+      fetchProducts()
     }
-  }, [user, apiUrl, fetchProducts]);
+  }, [user, apiUrl, fetchProducts])
 
   // Persist selectedPage to localStorage if persistPageState is true
   useEffect(() => {
     if (persistPageState) {
-      localStorage.setItem("selectedPage", selectedPage);
+      localStorage.setItem("selectedPage", selectedPage)
     }
-  }, [selectedPage, persistPageState]);
+  }, [selectedPage, persistPageState])
 
   // Animate product cards on initial mount
   useEffect(() => {
     if (!hasMounted.current) {
       const validRefs = Array.from(cardRefs.current).filter(
         (ref) => ref !== null
-      );
+      )
       if (validRefs.length > 0) {
         gsap.fromTo(
           validRefs,
@@ -231,11 +232,11 @@ function Dashboard({ storeId }) {
             duration: 1,
             ease: "power3.out",
           }
-        );
+        )
       }
-      hasMounted.current = true; // Set the flag to true after initial mount
+      hasMounted.current = true // Set the flag to true after initial mount
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     // Animate down arrow on hover
@@ -244,16 +245,16 @@ function Dashboard({ storeId }) {
         opacity: 1,
         y: 10,
         duration: 0.3,
-      });
+      })
     } else {
       arrowRefs.current.forEach((arrow) =>
         gsap.to(arrow, { opacity: 0, y: 0, duration: 0.3 })
-      );
+      )
     }
-  }, [hoveredIndex]);
+  }, [hoveredIndex])
 
   //REVIEW If the page is loading display a loader
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>
 
   //ANCHOR If the user is not authenticated, display the login form
   if (!user) {
@@ -266,17 +267,17 @@ function Dashboard({ storeId }) {
           <Login />
         </div>
       </div>
-    );
+    )
   }
 
   const openSidebar = () => {
-    setShowSidebar(true);
+    setShowSidebar(true)
     gsap.fromTo(
       ".admin-sidebar",
       { x: "-100%" },
       { x: "0%", duration: 0.2, ease: "power3.inOut" }
-    );
-  };
+    )
+  }
 
   return (
     <div className="min-h-screen p-4 bg-blue-900 container-fluid bg-opacity-30 ">
@@ -284,7 +285,7 @@ function Dashboard({ storeId }) {
         <div className="w-screen">
           {/* <Logout user={user} role={reverseRoleMap[user.role]} /> */}
         </div>
-        <h1 className="text-4xl font-bold text-center  text-slate-300">
+        <h1 className="text-4xl font-bold text-center text-slate-300">
           Admin Dashboard
         </h1>
         {/* hr tag */}
@@ -349,7 +350,7 @@ function Dashboard({ storeId }) {
                         setShowModal={setShowModal}
                       />
                     </div>
-                  );
+                  )
                 })}
 
                 {/* Delete Confirmation Modal */}
@@ -389,6 +390,7 @@ function Dashboard({ storeId }) {
               </div>
             </>
           )}
+          {selectedPage === "lore-editor" && <LoreEditor />}
           {selectedPage === "add-product" && <AddProduct />}
           {selectedPage === "users-manager" && (
             <UsersManager
@@ -406,11 +408,11 @@ function Dashboard({ storeId }) {
 
       {/* <BandsInTownEvents artistName="Metallica" /> */}
     </div>
-  );
+  )
 }
 
 Dashboard.propTypes = {
   storeId: propTypes.number,
-};
+}
 
-export default Dashboard;
+export default Dashboard
