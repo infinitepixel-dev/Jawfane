@@ -1,4 +1,11 @@
-import React, { useState } from "react"
+//Bookings.jsx
+
+/*
+A component to manage booking requests
+*/
+
+//INFO React Libraries
+import { useState } from "react";
 
 const Booking = () => {
   const [formData, setFormData] = useState({
@@ -6,25 +13,25 @@ const Booking = () => {
     email: "",
     company: "",
     message: "",
-  })
-  const [messageformCounter, setMessageformCounter] = useState(0)
+  });
+  const [messageformCounter, setMessageformCounter] = useState(0);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }))
+    }));
     if (name === "message") {
-      setMessageformCounter(value.length)
+      setMessageformCounter(value.length);
     }
-  }
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     // Add form submission logic here
-    console.log("Form submitted:", formData)
-  }
+    console.log("Form submitted:", formData);
+  };
 
   return (
     <div
@@ -110,7 +117,7 @@ const Booking = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Booking
+export default Booking;

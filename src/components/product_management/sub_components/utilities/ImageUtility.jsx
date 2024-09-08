@@ -1,3 +1,10 @@
+//ImageUtility.jsx
+
+/*
+A utility component to manage image upload and image URL input
+*/
+
+//INFO React Libraries
 import { useState } from "react";
 
 function ImageUtility() {

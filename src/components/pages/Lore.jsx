@@ -4,33 +4,36 @@
 A component that displays information about the band members
 */
 
-import { useRef, useState, useEffect } from "react"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+//INFO React Libraries
+import { useRef, useState, useEffect } from "react";
 
-gsap.registerPlugin(ScrollTrigger)
+//INFO Animation Libraries
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 function Lore() {
-  const panels = useRef([])
-  const [activeIndex, setActiveIndex] = useState(null)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const panels = useRef([]);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Handle screen resizing and detect if the user is on mobile or desktop
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Set initial positions and image scaling for each panel based on device type (mobile/desktop)
   useEffect(() => {
     panels.current.forEach((panel, index) => {
-      const image = panel.querySelector(".bg-image")
+      const image = panel.querySelector(".bg-image");
       const position = isMobile
         ? bandData[index].position.mobile
-        : bandData[index].position.desktop
+        : bandData[index].position.desktop;
 
       // Set the initial image properties such as scale and position
       gsap.set(image, {
@@ -38,59 +41,59 @@ function Lore() {
         y: `${position.y}px`,
         scale: 1.1,
         transformOrigin: "center top",
-      })
-    })
-  }, [isMobile])
+      });
+    });
+  }, [isMobile]);
 
   // Handle click event on a panel, expanding the bio and triggering scrolling
   const handleClick = (index) => {
-    const panel = panels.current[index]
-    const bio = panel.querySelector(".bio")
-    const image = panel.querySelector(".bg-image")
+    const panel = panels.current[index];
+    const bio = panel.querySelector(".bio");
+    const image = panel.querySelector(".bg-image");
 
     if (activeIndex === index) {
       // Close the active bio
-      setActiveIndex(null)
+      setActiveIndex(null);
       gsap.to(image, {
         scale: 1,
         x: 0,
         y: 0,
         duration: 0.5,
         ease: "power2.inOut",
-      })
+      });
       gsap.to(bio, {
         height: 0,
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => (bio.style.display = "none"),
-      })
+      });
     } else {
       // Close any previously opened bio
       if (activeIndex !== null) {
-        const prevPanel = panels.current[activeIndex]
-        const prevBio = prevPanel.querySelector(".bio")
-        const prevImage = prevPanel.querySelector(".bg-image")
+        const prevPanel = panels.current[activeIndex];
+        const prevBio = prevPanel.querySelector(".bio");
+        const prevImage = prevPanel.querySelector(".bg-image");
         gsap.to(prevImage, {
           scale: 1,
           x: 0,
           y: 0,
           duration: 0.5,
           ease: "power2.inOut",
-        })
+        });
         gsap.to(prevBio, {
           height: 0,
           opacity: 0,
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => (prevBio.style.display = "none"),
-        })
+        });
       }
 
-      setActiveIndex(index)
+      setActiveIndex(index);
       const position = isMobile
         ? bandData[index].position.mobile
-        : bandData[index].position.desktop
+        : bandData[index].position.desktop;
 
       // Animate the image within the panel using pixel-based movement
       gsap.to(image, {
@@ -100,8 +103,8 @@ function Lore() {
         transformOrigin: "center top",
         duration: 0.5,
         ease: "power2.inOut",
-      })
-      bio.style.display = "block"
+      });
+      bio.style.display = "block";
       gsap.fromTo(
         bio,
         { height: 0, opacity: 0 },
@@ -111,16 +114,16 @@ function Lore() {
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => {
-            startScrolling(bio) // Trigger scrolling after the bio is expanded
+            startScrolling(bio); // Trigger scrolling after the bio is expanded
           },
         }
-      )
+      );
     }
-  }
+  };
 
   // Start the scrolling effect on the bio section
   const startScrolling = (bio) => {
-    const scrollHeight = bio.scrollHeight - bio.clientHeight // Calculate scrollable height
+    const scrollHeight = bio.scrollHeight - bio.clientHeight; // Calculate scrollable height
     if (scrollHeight > 0) {
       gsap.to(bio, {
         scrollTo: { y: scrollHeight },
@@ -129,9 +132,9 @@ function Lore() {
         delay: 2, // Delay before scrolling starts
         repeat: -1, // Infinite looping
         yoyo: true, // Scroll back and forth
-      })
+      });
     }
-  }
+  };
 
   // Handle image scaling on hover
   const handleMouseEnter = (index) => {
@@ -140,9 +143,9 @@ function Lore() {
         scale: 1.1,
         duration: 0.15,
         ease: "power2.inOut",
-      })
+      });
     }
-  }
+  };
 
   // Reset image scaling when mouse leaves
   const handleMouseLeave = (index) => {
@@ -151,9 +154,9 @@ function Lore() {
         scale: 1,
         duration: 0.15,
         ease: "power2.inOut",
-      })
+      });
     }
-  }
+  };
 
   return (
     <div
@@ -210,7 +213,7 @@ function Lore() {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 const bandData = [
@@ -278,6 +281,6 @@ Across the distance, Frodo and Sam journeyed. I have been, and like them, I saw 
       desktop: { x: "0", y: "0" },
     },
   },
-]
+];
 
-export default Lore
+export default Lore;

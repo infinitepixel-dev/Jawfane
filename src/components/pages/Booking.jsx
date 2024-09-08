@@ -1,5 +1,14 @@
-import React, { useState } from "react"
-import axios from "axios"
+//Booking.jsx
+
+/*
+A component to manage the booking section of the website
+*/
+
+//INFO React Libraries
+import { useState } from "react";
+
+//INFO API Libraries
+import axios from "axios";
 
 const ContactForm = () => {
   const [state, setState] = useState({
@@ -7,39 +16,39 @@ const ContactForm = () => {
     email: "",
     subject: "",
     message: "",
-  })
+  });
 
-  const [result, setResult] = useState(null)
+  const [result, setResult] = useState(null);
 
   const sendEmail = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     axios
       .post("/send", { ...state })
       .then((response) => {
-        setResult(response.data)
+        setResult(response.data);
         setState({
           name: "",
           email: "",
           subject: "",
           message: "",
-        })
+        });
       })
       .catch(() => {
         setResult({
           success: false,
           message: "Something went wrong. Try again later",
-        })
-      })
-  }
+        });
+      });
+  };
 
   const onInputChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
     setState({
       ...state,
       [name]: value,
-    })
-  }
+    });
+  };
 
   return (
     <div className="max-w-md mx-auto mt-8">
@@ -117,7 +126,7 @@ const ContactForm = () => {
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default ContactForm
+export default ContactForm;

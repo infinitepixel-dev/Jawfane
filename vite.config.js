@@ -20,48 +20,108 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      /*
+      General
+      */
+      //public
       "@public": resolve(__dirname, "public"),
+
+      //components
       "@components": resolve(__dirname, "src/components"),
+
+      //assets
       "@assets": resolve(__dirname, "src/assets"),
+
+      //pages
+      "@pages": resolve(__dirname, "src/components/pages"),
+
+      /*
+      Product Management
+      */
+      //admin
       "@admin_product_management": resolve(
         __dirname,
         "src/components/product_management/admin"
       ),
+
+      //assets
       "@assets_product_management": resolve(
         __dirname,
         "src/components/product_management/assets"
       ),
+
+      //pages
       "@pages_product_management": resolve(
         __dirname,
         "src/components/product_management/pages"
       ),
+      /*
+      Sub Components
+      */
+      //Apis
       "@apis_product_management": resolve(
         __dirname,
         "src/components/product_management/sub_components/apis"
       ),
+
+      //audio
+      "@audio_product_management": resolve(
+        __dirname,
+        "src/components/product_management/sub_components/audio"
+      ),
+
+      //buttons
+      "@buttons_product_management": resolve(
+        __dirname,
+        "src/components/product_management/sub_components/buttons"
+      ),
+
+      //contexts
       "@contexts_product_management": resolve(
         __dirname,
         "src/components/product_management/sub_components/contexts"
       ),
+
+      //logos
+      "@logos_product_management": resolve(
+        __dirname,
+        "src/components/product_management/sub_components/logos"
+      ),
+
+      //navigation
+      "@navigation_product_management": resolve(
+        __dirname,
+        "src/components/product_management/sub_components/navigation"
+      ),
+
+      //sub-menus
       "@sub-menus_product_management": resolve(
         __dirname,
         "src/components/product_management/sub_components/sub-menus"
       ),
-      "@tailwindModules_product_management": resolve(
+
+      //tailwind modules
+      "@tailwind-modules_product_management": resolve(
         __dirname,
         "src/components/product_management/sub_components/tailwindModules"
       ),
+
+      //themes
+      "@themes_product_management": resolve(
+        __dirname,
+        "src/components/product_management/sub_components/themes"
+      ),
+
+      //utilities
       "@utilities_product_management": resolve(
         __dirname,
         "src/components/product_management/sub_components/utilities"
       ),
+
+      //widgets
       "@widgets_product_management": resolve(
         __dirname,
         "src/components/product_management/sub_components/widgets"
-      ),
-      "@shipping_product_management": resolve(
-        __dirname,
-        "src/components/product_management/sub_components/apis/shipping"
       ),
     },
   },

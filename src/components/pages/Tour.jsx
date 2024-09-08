@@ -1,11 +1,21 @@
-import BandsInTownEvents from "../sub-components/BandsInTownEvents";
+//Tour.jsx
 
+/*
+A component to manage the tour section of the website
+*/
+
+//INFO React Libraries
 import { useEffect, useRef } from "react";
+import propTypes from "prop-types";
+
+//INFO React Animation Libraries
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
 gsap.registerPlugin(ScrollToPlugin);
 
-import propTypes from "prop-types";
+//INFO Sub-components
+import BandsInTownEvents from "@widgets_product_management/BandsInTownEvents";
 
 const Tour = ({ theme }) => {
   const isUserInteracting = useRef(false);

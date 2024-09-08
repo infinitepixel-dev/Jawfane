@@ -1,7 +1,18 @@
+//BackToTop.jsx
+
+/*
+A component to manage the back-to-top button
+*/
+
+//INFO React Libraries
 import { useState, useEffect, useRef } from "react";
+
+//INFO Animation Libraries
+import { gsap } from "gsap";
+
+//INFO Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import { gsap } from "gsap";
 
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);

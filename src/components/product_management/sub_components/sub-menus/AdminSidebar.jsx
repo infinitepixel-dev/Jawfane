@@ -1,26 +1,29 @@
+//AdminSidebar.jsx
+
 /*
 A sidebar component for the admin dashboard.
 Ensures menu items never overlap with the logout or footer sections.
 */
 
-import { useNavigate } from "react-router-dom"
-import propTypes from "prop-types"
+//INFO React Libraries
+import { useNavigate } from "react-router-dom";
+import propTypes from "prop-types";
 
 //INFO Animation Libraries
-import { gsap } from "gsap"
+import { gsap } from "gsap";
 
 //INFO Icons
-import { FaTimes, FaPlus, FaUsers, FaHome, FaEye } from "react-icons/fa"
-import { FaBoxesPacking } from "react-icons/fa6"
-import { LiaShippingFastSolid } from "react-icons/lia"
-import { BsCashCoin } from "react-icons/bs"
-import { BookOpen } from "react-feather"
+import { FaTimes, FaPlus, FaUsers, FaHome, FaEye } from "react-icons/fa";
+import { FaBoxesPacking } from "react-icons/fa6";
+import { LiaShippingFastSolid } from "react-icons/lia";
+import { BsCashCoin } from "react-icons/bs";
+import { BookOpen } from "react-feather";
 
-//INFO Assets
-import DevelopedByInfinitePixel from "../widgets/DevelopedByInfinitePixel"
+//INFO Sub-components
+import DevelopedByInfinitePixel from "@widgets_product_management/DevelopedByInfinitePixel";
 
 //INFO Admin
-import Logout from "@admin_product_management/Logout"
+import Logout from "@buttons_product_management/Logout";
 
 const AdminSidebar = ({
   showSidebar,
@@ -29,16 +32,16 @@ const AdminSidebar = ({
   user,
   role,
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const closeSidebar = () => {
     gsap.to(".admin-sidebar", {
       x: "-100%",
       duration: 0.2,
       ease: "power3.inOut",
-    })
-    setTimeout(() => setShowSidebar(false), 500)
-  }
+    });
+    setTimeout(() => setShowSidebar(false), 500);
+  };
 
   const menuItems = [
     {
@@ -81,7 +84,7 @@ const AdminSidebar = ({
       label: "Shipping",
       onClick: () => setSelectedPage("shipping"),
     },
-  ]
+  ];
 
   return (
     <div
@@ -110,8 +113,8 @@ const AdminSidebar = ({
                 <button
                   className="flex items-center space-x-2 text-lg font-extrabold text-slate-200 hover:text-indigo-500"
                   onClick={() => {
-                    closeSidebar()
-                    item.onClick()
+                    closeSidebar();
+                    item.onClick();
                   }}
                 >
                   {item.icon}
@@ -138,8 +141,8 @@ const AdminSidebar = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 AdminSidebar.propTypes = {
   showSidebar: propTypes.bool.isRequired,
@@ -147,6 +150,6 @@ AdminSidebar.propTypes = {
   setSelectedPage: propTypes.func.isRequired,
   user: propTypes.object.isRequired,
   role: propTypes.string.isRequired,
-}
+};
 
-export default AdminSidebar
+export default AdminSidebar;

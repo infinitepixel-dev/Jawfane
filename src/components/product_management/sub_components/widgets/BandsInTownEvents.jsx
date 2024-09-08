@@ -1,105 +1,200 @@
-import { useState, useEffect, useRef } from 'react'
-import propTypes from 'prop-types'
-import axios from 'axios'
-import { gsap } from 'gsap'
+//BandInTownEvents.jsx
+
+/*
+A component to display the upcoming events for a given artist using the BandsInTown API
+*/
+
+// React Libraries
+import { useState, useEffect, useRef } from "react";
+import propTypes from "prop-types";
+
+//INFO Animation Libraries
+import { gsap } from "gsap";
+
+//INFO APIS
+import axios from "axios";
 
 const BandsInTownEvents = ({ artistName }) => {
-    const [events, setEvents] = useState([])
-    const [eventDates, setEventDates] = useState([])
-    const eventListRef = useRef(null)
+  const [events, setEvents] = useState([]);
+  const eventListRef = useRef(null);
+  const widgetRef = useRef(null); // Ref for the BandsInTown widget
 
-    useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const appId = 'YOUR_APP_ID' // Replace with your Bandsintown App ID
-                const response = await axios.get(
-                    `https://rest.bandsintown.com/artists/${artistName}/events?app_id=${appId}`
-                )
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const appId = "YOUR_APP_ID"; // Replace with your Bandsintown App ID
+        const response = await axios.get(
+          `https://rest.bandsintown.com/artists/${artistName}/events?app_id=${appId}`
+        );
 
-                setEvents(response.data)
-                const dates = response.data.map(
-                    (event) => new Date(event.datetime)
-                )
-                setEventDates(dates)
-            } catch (error) {
-                console.error('Error fetching events:', error)
-            }
-        }
+        setEvents(response.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
 
-        fetchEvents()
-    }, [artistName])
+    fetchEvents();
+  }, [artistName]);
 
-    useEffect(() => {
-        // GSAP animation when events load
-        if (events.length > 0) {
+  // Animation for the events list
+  useEffect(() => {
+    if (events.length > 0) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
             gsap.fromTo(
-                eventListRef.current.children,
-                { opacity: 0, y: 50 },
-                { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 }
-            )
-        }
-    }, [events])
+              entry.target.children,
+              { opacity: 0, y: 50 },
+              { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 }
+            );
+            observer.unobserve(entry.target);
+          }
+        });
+      });
 
-    return (
-        <div className="mt-4 min-h-screen rounded-lg bg-gray-900 px-4 py-10 text-white">
-            <h1 className="mb-8 text-center text-4xl font-bold">
-                Events for {artistName}
-            </h1>
-            <div className="mx-auto max-w-4xl">
-                <ul ref={eventListRef}>
-                    {events.length > 0 ? (
-                        events.map((event) => (
-                            <li
-                                key={event.id}
-                                className="relative mb-6 rounded-lg bg-gray-800 p-6 shadow-lg"
-                            >
-                                <p className="text-xl font-semibold">
-                                    {event.venue.name} -{' '}
-                                    {new Date(
-                                        event.datetime
-                                    ).toLocaleDateString()}
-                                </p>
-                                <p className="text-lg">
-                                    {event.venue.city}, {event.venue.country}
-                                </p>
-                                {/* RSVP Button */}
-                                <a
-                                    href={event.url} // RSVP link provided by the event object
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="rsvp-button absolute right-6 top-6 inline-block transform rounded-lg bg-green-500 px-4 py-2 font-bold text-white transition duration-300 hover:scale-105 hover:bg-green-600"
-                                >
-                                    RSVP
-                                </a>
-                            </li>
-                        ))
-                    ) : (
-                        <p className="text-center text-xl">
-                            No upcoming events found.
-                        </p>
-                    )}
-                </ul>
+      const currentRef = eventListRef.current;
 
-                <h2 className="mb-4 mt-10 text-center text-2xl font-semibold">
-                    Event Dates
-                </h2>
-                <ul className="flex flex-wrap justify-center gap-4">
-                    {eventDates.map((date, index) => (
-                        <li
-                            key={index}
-                            className="rounded-lg bg-indigo-500 px-4 py-2 text-lg font-medium"
-                        >
-                            {date.toLocaleDateString()}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </div>
-    )
-}
+      if (currentRef) {
+        observer.observe(currentRef);
+      }
+
+      return () => {
+        if (currentRef) observer.unobserve(currentRef);
+      };
+    }
+  }, [events]);
+
+  // GSAP animation for the widget
+  useEffect(() => {
+    const widgetElement = widgetRef.current;
+
+    if (widgetElement) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            gsap.fromTo(
+              entry.target,
+              { opacity: 0, scale: 0.8 },
+              { opacity: 1, scale: 1, duration: 1 }
+            );
+            observer.unobserve(entry.target);
+          }
+        });
+      });
+
+      observer.observe(widgetElement);
+
+      return () => {
+        if (widgetElement) observer.unobserve(widgetElement);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://widgetv3.bandsintown.com/main.min.js";
+    script.charset = "utf-8";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <div className="px-4 py-10 text-gray-600 bg-gray-200">
+      <h1 className="mb-8 text-3xl font-bold text-center md:text-4xl">
+        {artistName} Tour Dates
+      </h1>
+      <div className="max-w-[62%] mx-auto">
+        {/* Bandsintown Widget Code */}
+        <a
+          ref={widgetRef}
+          className="bit-widget-initializer max-w-[62%] mx-auto"
+          data-artist-name="id_15556436"
+          data-background-color="rgba(230,230,230,1)"
+          data-separator-color="rgba(47,99,33,1)"
+          data-text-color="#424242"
+          data-font="Helvetica"
+          data-auto-style="true"
+          data-button-label-capitalization="capitalize"
+          data-header-capitalization="undefined"
+          data-location-capitalization="capitalize"
+          data-venue-capitalization="capitalize"
+          data-display-local-dates="true"
+          data-local-dates-position="tab"
+          data-display-past-dates="true"
+          data-display-details="false"
+          data-display-lineup="true"
+          data-display-start-time="true"
+          data-social-share-icon="false"
+          data-display-limit="all"
+          data-date-format="MMM. D, YYYY"
+          data-date-orientation="horizontal"
+          data-date-border-color="#4A4A4A"
+          data-date-border-width="1px"
+          data-date-capitalization="undefined"
+          data-date-border-radius="10px"
+          data-event-ticket-cta-size="medium"
+          data-event-custom-ticket-text="undefined"
+          data-event-ticket-text="TICKETS"
+          data-event-ticket-icon=""
+          data-event-ticket-cta-text-color="#FFFFFF"
+          data-event-ticket-cta-bg-color="rgba(47,99,33,1)"
+          data-event-ticket-cta-border-color="#4A4A4A"
+          data-event-ticket-cta-border-width="0px"
+          data-event-ticket-cta-border-radius="4px"
+          data-sold-out-button-text-color="#FFFFFF"
+          data-sold-out-button-background-color="#4A4A4A"
+          data-sold-out-button-border-color="#4A4A4A"
+          data-sold-out-button-clickable="true"
+          data-event-rsvp-position="left"
+          data-event-rsvp-cta-size="medium"
+          data-event-rsvp-only-show-icon="undefined"
+          data-event-rsvp-text="REMIND ME"
+          data-event-rsvp-icon=""
+          data-event-rsvp-cta-text-color="#4A4A4A"
+          data-event-rsvp-cta-bg-color="#FFFFFF"
+          data-event-rsvp-cta-border-color="#4A4A4A"
+          data-event-rsvp-cta-border-width="1px"
+          data-event-rsvp-cta-border-radius="4px"
+          data-follow-section-position="hidden"
+          data-follow-section-alignment="center"
+          data-follow-section-header-text="Get updates on new shows, new music, and more."
+          data-follow-section-cta-size="medium"
+          data-follow-section-cta-text="FOLLOW"
+          data-follow-section-cta-icon="true"
+          data-follow-section-cta-text-color="#FFFFFF"
+          data-follow-section-cta-bg-color="#4A4A4A"
+          data-follow-section-cta-border-color="#4A4A4A"
+          data-follow-section-cta-border-width="0px"
+          data-follow-section-cta-border-radius="4px"
+          data-play-my-city-position="hidden"
+          data-play-my-city-alignment="Center"
+          data-play-my-city-header-text="Don’t see a show near you?"
+          data-play-my-city-cta-size="medium"
+          data-play-my-city-cta-text="REQUEST A SHOW"
+          data-play-my-city-cta-icon="true"
+          data-play-my-city-cta-text-color="#FFFFFF"
+          data-play-my-city-cta-bg-color="#4A4A4A"
+          data-play-my-city-cta-border-color="#4A4A4A"
+          data-play-my-city-cta-border-width="0px"
+          data-play-my-city-cta-border-radius="4px"
+          data-language="en"
+          data-layout-breakpoint="900"
+          data-app-id=""
+          data-affil-code=""
+          data-bit-logo-position="bottomRight"
+          data-bit-logo-color="#CCCCCC"
+        ></a>
+      </div>
+    </div>
+  );
+};
 
 BandsInTownEvents.propTypes = {
-    artistName: propTypes.string.isRequired,
-}
+  artistName: propTypes.string.isRequired,
+};
 
-export default BandsInTownEvents
+export default BandsInTownEvents;

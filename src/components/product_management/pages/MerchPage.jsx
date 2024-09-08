@@ -1,9 +1,22 @@
+//MerchPage.jsx
+
+/*
+A component to manage the merch page
+*/
+
+//INFO React Libraries
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import propTypes from "prop-types";
+import { Link } from "react-router-dom";
+
+//INFO Animation Libraries
 import { gsap } from "gsap";
+
+//INFO Meta Tag Libraries
 import { Helmet } from "react-helmet-async"; // Import Helmet for meta tags
-import CartPopOut from "@/components/Product_Management/sub_components/sub-menus/CartPopOut";
+
+//INFO Sub-components
+import CartPopOut from "@sub-menus_product_management/CartPopOut";
 
 function MerchPage({ addToCart, cartItems, storeId }) {
   const [products, setProducts] = useState([]);

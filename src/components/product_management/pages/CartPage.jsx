@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import USPSApi from "@apis_product_management//shipping/usps/USPSApi";
 
 //INFO Sub-components imports
-import Navigation from "@components/sub-components/navigation/Navigation";
+import Navigation from "@navigation_product_management/Navigation";
 
 function CartPage({
   cartItems,

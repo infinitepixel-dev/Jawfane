@@ -1,11 +1,25 @@
+//Merch.jsx
+
+/*
+A component to manage the merch page of the website
+*/
+
+//INFO React Libraries
 import { useState, useEffect, useRef } from "react";
-// import { Link } from "react-router-dom";
 import propTypes from "prop-types";
+// import { Link } from "react-router-dom";
+
+//INFO Animation Libraries
 import { gsap } from "gsap";
+
+//INFO Meta Tag Libraries
 // import { Helmet } from "react-helmet-async"; // Import Helmet for meta tags
 
+//INFO Image Assets
 import noImage from "@assets/images/no-image.webp";
-import Variants from "../product_management/sub_components/widgets/Variants";
+
+//INFO Widgets
+import Variants from "@widgets_product_management/Variants";
 
 // eslint-disable-next-line no-unused-vars
 function MerchPage({ addToCart, cartItems, storeId, isMobile }) {

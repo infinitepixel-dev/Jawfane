@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "testDev": "npm run build && node ./node-apps/uploadDev.js",
+    "testDev": "npm run build && node ./node-apps/upload_to_sftp/uploadDev.js",
     "serve": "vite",
     "dev": "vite",
     "build": "vite build",

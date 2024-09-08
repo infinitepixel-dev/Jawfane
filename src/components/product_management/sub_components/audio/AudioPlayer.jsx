@@ -1,13 +1,30 @@
+//AudioPlayer.jsx
+
+/*
+A component to manage the audio player for the store
+*/
+
+//INFO React Libraries
 import { useEffect, useState } from "react";
-import bgMusic from "@public/DamagedGoods.wav";
-import { gsap } from "gsap";
 import propTypes from "prop-types";
+
+//INFO Animation Libraries
+import { gsap } from "gsap";
+
+//INFO Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
+
+//INFO Custom CSS
 import "./AudioPlayer.module.css";
+
+//INFO Audio files
+import bgMusic from "@assets/audio/DamagedGoods.wav";
 
 const AudioPlayer = ({ theme }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const minVolume = "0.00";
+  const maxVolume = "0.09";
 
   useEffect(() => {
     const audioPlayer = document.getElementById("audioPlayer");
@@ -79,7 +96,7 @@ const AudioPlayer = ({ theme }) => {
       <div className="flex justify-center md:justify-end">
         <button
           id="playPauseBtn"
-          className="p-2 text-white bg-blue-500 rounded-full shadow-lg audio-button flex items-center justify-center w-12 h-12"
+          className="flex items-center justify-center w-12 h-12 p-2 text-white rounded-full shadow-lg bg-lime-700 hover:bg-lime-600 audio-button"
         >
           <FontAwesomeIcon
             icon={isPlaying ? faPause : faPlay}
@@ -87,12 +104,12 @@ const AudioPlayer = ({ theme }) => {
           />
         </button>
       </div>
-      <div className="flex justify-center md:justify-start items-center">
+      <div className="flex items-center justify-center md:justify-start">
         <input
           id="audioPlayer-volume"
           type="range"
-          min="0.01"
-          max="0.05"
+          min={minVolume}
+          max={maxVolume}
           step="0.001"
           className="w-full max-w-xs"
         />
