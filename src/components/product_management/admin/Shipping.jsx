@@ -5,7 +5,7 @@ A component to manage shipping options available to the store
 */
 
 //INFO React Libraries
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import propTypes from "prop-types";
 
 //INFO Animation Libraries
@@ -18,7 +18,7 @@ import FlatRateShipping from "@components/product_management/sub_components/apis
 import AnimatedCheckbox from "@components/product_management/sub_components/widgets/AnimatedCheckbox";
 
 function Shipping({ storeId }) {
-  console.log("Shipping:", storeId);
+  // console.log("Shipping:", storeId);
 
   const [shippingOptions, setShippingOptions] = useState({
     flatRate: true, //for dev set to true for force enable
@@ -28,28 +28,24 @@ function Shipping({ storeId }) {
   const flatRateRef = useRef(null); //For Dev set to true or false null
   const flatRateCheckboxRef = useRef(null);
 
-  useEffect(() => {
-    // Animate the shipping options when they become visible
-    if (shippingOptions.flatRate) {
+  //INFO Run GSAP animation for the shipping options when they are rendered
+  useLayoutEffect(() => {
+    if (shippingOptions.flatRate && flatRateRef.current) {
       gsap.from(flatRateRef.current, { opacity: 0, y: -20, duration: 0.5 });
     }
-  }, [shippingOptions]);
+  }, [shippingOptions.flatRate]);
 
-  useEffect(() => {
-    // Custom checkbox animation for flat rate shipping
-    if (shippingOptions.flatRate) {
+  //INFO Custom checkbox animation for flat rate shipping
+  useLayoutEffect(() => {
+    if (flatRateCheckboxRef.current) {
       gsap.to(flatRateCheckboxRef.current, {
-        backgroundColor: "#10b981",
-        duration: 0.3,
-      });
-    } else {
-      gsap.to(flatRateCheckboxRef.current, {
-        backgroundColor: "#4b5563",
+        backgroundColor: shippingOptions.flatRate ? "#10b981" : "#4b5563",
         duration: 0.3,
       });
     }
   }, [shippingOptions.flatRate]);
 
+  //ANCHOR Toggle shipping option
   const toggleShipping = (shippingType) => {
     setShippingOptions((prev) => ({
       ...prev,
@@ -105,8 +101,6 @@ function Shipping({ storeId }) {
             </div>
           )}
         </div>
-
-        {/*  */}
       </div>
     </div>
   );
