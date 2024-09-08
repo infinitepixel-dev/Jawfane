@@ -14,6 +14,9 @@ import { gsap } from "gsap";
 //INFO Sub-components
 import FlatRateShipping from "@components/product_management/sub_components/apis/shipping/FlatRateShipping";
 
+//INFO Widgets
+import AnimatedCheckbox from "@components/product_management/sub_components/widgets/AnimatedCheckbox";
+
 function Shipping({ storeId }) {
   console.log("Shipping:", storeId);
 
@@ -82,30 +85,10 @@ function Shipping({ storeId }) {
       <div className="shipping-options space-y-4">
         {/* Flat Rate Shipping */}
         <div className="shipping-option flex items-center space-x-4">
-          <div
-            ref={flatRateCheckboxRef}
-            onClick={() => toggleShipping("flatRate")}
-            className={`w-6 h-6 rounded-full flex justify-center items-center cursor-pointer transition-all duration-300 ${
-              shippingOptions.flatRate ? "bg-green-500" : "bg-gray-600"
-            }`}
-          >
-            {shippingOptions.flatRate && (
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-            )}
-          </div>
+          <AnimatedCheckbox
+            isSelected={shippingOptions.flatRate}
+            onSelect={() => toggleShipping("flatRate")}
+          />
           <label
             htmlFor="flatRate"
             className="text-lg cursor-pointer"

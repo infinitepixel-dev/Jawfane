@@ -1,18 +1,18 @@
-import propTypes from "prop-types"
+import propTypes from "prop-types";
 
 //INFO Pages imports
 
-import Tour from "./Tour"
-import Merch from "./Merch"
-import MusicVideos from "./MusicVideos"
-import Footer from "../sub-components/Footer"
-import Lore from "./Lore"
-import Booking from "../product_management/pages/Booking"
+import Tour from "./Tour";
+import Merch from "./Merch";
+import MusicVideos from "./MusicVideos";
+import Footer from "../sub-components/Footer";
+import Lore from "./Lore";
+import Booking from "../product_management/pages/Booking";
 
 //INFO Sub-components imports
-import Navigation from "../sub-components/navigation/Navigation"
-import BackToTop from "@components/sub-components/BackToTop"
-import CanvasLogo from "../sub-components/CanvasLogo"
+import Navigation from "../sub-components/navigation/Navigation";
+import BackToTop from "@components/sub-components/BackToTop";
+import CanvasLogo from "../sub-components/CanvasLogo";
 
 function Home({
   theme,
@@ -37,15 +37,17 @@ function Home({
         toggleTheme={toggleTheme}
         isMobile={isMobile}
         setIsMobile={setIsMobile}
+        cartItems={cartItems}
       />
       {/* <div id="main-app" className="w-screen"> */}
       <div id="home" className="w-screen overflow-x-hidden">
         <CanvasLogo theme={theme} isMobile={isMobile} />
         <Merch
+          storeId={storeId}
           theme={theme}
           cartItems={cartItems}
           addToCart={addToCart}
-          storeId={storeId}
+          isMobile={isMobile}
         />
         <MusicVideos theme={theme} />
         <Tour theme={theme} />
@@ -55,7 +57,7 @@ function Home({
       </div>
       <BackToTop />
     </>
-  )
+  );
 }
 
 Home.propTypes = {
@@ -70,4 +72,4 @@ Home.propTypes = {
   storeId: propTypes.number,
 };
 
-export default Home
+export default Home;

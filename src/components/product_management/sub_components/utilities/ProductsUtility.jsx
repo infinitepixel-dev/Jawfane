@@ -22,7 +22,7 @@ function ProductsUtility(storeId) {
       description: product.description ?? "",
       category: product.category ?? "",
       product_id: product.product_id ?? "",
-      created_at: product.created_at ?? "",
+      created_at: product.created_at ?? null,
       image_url: product.image_url ?? "",
       image: product.image ?? "",
       product_weight: product.product_weight ?? "",
@@ -35,14 +35,15 @@ function ProductsUtility(storeId) {
       featured: product.featured ?? "",
       sale: product.sale ?? "",
       discount_price: product.discount_price ?? "",
-      discount_start: product.discount_start ?? "",
-      discount_end: product.discount_end ?? "",
+      discount_start: product.discount_start ?? null,
+      discount_end: product.discount_end ?? null,
     });
     setImageOption(product.image_url ? "image_url" : "image_upload" ?? "");
     setImageUrl(product.image_url ?? "");
     setImageFile(null);
     setEditProduct(product.id);
   };
+  const [modalMessage, setModalMessage] = useState("");
 
   // Input change handler for form fields
   const handleInputChange = (e, setEditedData) => {
@@ -67,12 +68,15 @@ function ProductsUtility(storeId) {
     imageUrl
   ) => {
     console.log("Saving changes...", id);
-
-    const updateUrl = `${apiUrl}/api/products/${id}`;
+    const testUrl = "http://66.128.253.47:3082";
+    // const updateUrl = `${apiUrl}/api/products/${id}`;
+    const updateUrl = `${testUrl}/api/products/${id}`;
     const formData = new FormData();
 
     // Add form data excluding image_url
     for (const key in editedData) {
+      // console.log("Edited data:", editedData);
+
       if (key !== "image_url") {
         formData.append(key, editedData[key]);
       }
@@ -82,10 +86,19 @@ function ProductsUtility(storeId) {
     if (imageOption === "image_upload" && imageFile) {
       formData.append("image", imageFile);
     } else if (imageOption === "image_url" && imageUrl) {
+      //determine of image is a url and if so show the alert model and return
+      if (!imageUrl.includes("http") || !imageUrl.includes("https")) {
+        setModalMessage("Please enter a valid image URL");
+        return;
+      }
+
       formData.append("image_url", imageUrl);
     }
 
     try {
+      console.log("Store id:", storeId);
+      console.log("Form data:", formData);
+
       const response = await fetch(updateUrl, {
         method: "PUT",
         headers: {
@@ -97,8 +110,11 @@ function ProductsUtility(storeId) {
         const errorData = await response.json();
         console.error("Error:", errorData);
       } else {
-        fetchProducts();
+        // console.log("after PUT: ", editProduct);
+
         setEditProduct(null);
+
+        await fetchProducts();
       }
     } catch (err) {
       console.error(err);
@@ -115,7 +131,7 @@ function ProductsUtility(storeId) {
       description: "",
       category: "",
       product_id: "",
-      created_at: "",
+      created_at: null,
       image_url: "",
       image: "",
       product_weight: "",
@@ -128,8 +144,8 @@ function ProductsUtility(storeId) {
       featured: "",
       sale: "",
       discount_price: "",
-      discount_start: "",
-      discount_end: "",
+      discount_start: null,
+      discount_end: null,
     });
     setImageFile(null);
     setImageUrl("");
@@ -141,6 +157,7 @@ function ProductsUtility(storeId) {
     setShowModal(true); // Show the modal when delete is clicked
   };
 
+  //Not used in place of bulk deleting
   const confirmDelete = async (
     selectedProduct,
     trashIconRefs,
@@ -185,6 +202,7 @@ function ProductsUtility(storeId) {
     handleDeleteClick,
     confirmDelete,
     closeModal,
+    modalMessage,
   };
 }
 
