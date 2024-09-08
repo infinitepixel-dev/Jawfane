@@ -43,7 +43,7 @@ const App = () => {
   //import the base from vite config
   const [base, setBase] = useState("");
   const [theme, setTheme] = useState("dark");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768 ?? false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   // Cart Items
   const [cartItems, setCartItems] = useState([]);
 
