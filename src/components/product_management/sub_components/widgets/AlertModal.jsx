@@ -12,6 +12,9 @@ import propTypes from "prop-types";
 import { gsap } from "gsap";
 
 const AlertModal = ({ message, closeModal }) => {
+  console.log("AlertModal message:", message);
+  console.log("AlertModal closeModal:", closeModal);
+
   const modalRef = useRef(null);
 
   useEffect(() => {

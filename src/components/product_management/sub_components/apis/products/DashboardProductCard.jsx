@@ -3,13 +3,21 @@
 A component that displays product information in a card format and allows editing and deletion of products
 */
 
+//INFO React Libraries
+import { useEffect, useRef } from "react";
 import propTypes from "prop-types";
+
+//INFO Animation Libraries
+import { gsap } from "gsap";
 
 //INFO Icons
 import { FaTrash, FaArrowDown } from "react-icons/fa";
 
 //INFO Custom Tailwind Modules
 import CustomHRTagV1 from "../../tailwindModules/CustomHRTagV1";
+
+//INFO Widgets
+import AnimatedCheckbox from "@widgets_product_management/AnimatedCheckbox";
 
 function DashboardProductCard({
   product,
@@ -21,7 +29,6 @@ function DashboardProductCard({
   handleFileChange,
   handleImageUrlChange,
   handleImageOptionChange,
-  handleDeleteClick,
   handleInputChange,
   cardRefs,
   trashIconRefs,
@@ -38,21 +45,41 @@ function DashboardProductCard({
   convertBlobToBase64,
   handleEditClick,
   setImageOption,
-  setSelectedProduct,
+  // setSelectedProduct,
   setShowModal,
+  isSelected,
+  onSelect,
+  // eslint-disable-next-line no-unused-vars
+  storeId,
 }) {
+  const checkboxRef = useRef(null); // Ref for the checkbox container background
+
+  // Handle the checkbox animation when it is selected
+  useEffect(() => {
+    if (isSelected) {
+      gsap.to(checkboxRef.current, {
+        backgroundColor: "#10b981", // Green background when selected
+        duration: 0.3,
+      });
+    } else {
+      gsap.to(checkboxRef.current, {
+        backgroundColor: "#4b5563", // Gray background when not selected
+        duration: 0.3,
+      });
+    }
+  }, [isSelected]);
+
+  //for testing
   // useEffect(() => {
-  //     console.log('editedData:', editedData)
-  //     console.log('imageOption:', imageOption)
-  //     console.log('imageUrl:', imageUrl)
-  //     console.log('imageFile:', imageFile)
-  // }, [imageOption, imageUrl, imageFile, editedData])
-  // console.log('Rendering DashboardProductCard:', { title: editedData.title })
+  //   console.log("Edited Data:", editedData);
+  //   console.log("Image Option:", imageOption);
+  //   console.log("Image URL:", imageUrl);
+  // }, [editedData, imageOption, imageUrl]);
 
   return (
     <div
       key={product.id}
-      ref={(el) => (cardRefs.current[index] = el)}
+      ref={(el) => (cardRefs.current[product.id] = el)} // Use product.id for refs
       className={`group relative flex flex-col justify-between rounded-lg border border-gray-300 bg-white p-2 shadow-md transition-transform duration-300 ${
         editProduct === product.id
           ? "hover:scale-105 hover:shadow-lg"
@@ -64,17 +91,25 @@ function DashboardProductCard({
         overflow: editProduct === product.id ? "visible" : "hidden", // Ensure content is visible when editing
       }}
     >
+      {/* Custom Checkbox with GSAP animation */}
+      <AnimatedCheckbox
+        isSelected={isSelected}
+        onSelect={onSelect}
+        className="absolute  left-2/3"
+      />
+
       <button
-        onClick={() =>
-          handleDeleteClick(product.id, index, setSelectedProduct, setShowModal)
-        }
         onMouseEnter={() => setHoveredIndex(index)}
         onMouseLeave={() => setHoveredIndex(null)}
+        onClick={() => {
+          // setSelectedProduct(product.id);
+          setShowModal(true);
+        }}
         className="absolute right-1 top-1 text-red-500 transition-colors duration-300 hover:text-red-700"
-        aria-label={`Delete ${product.title}`}
       >
         {/* Trash Icon - Wrap it in a span for ref */}
-        <span ref={(el) => (trashIconRefs.current[index] = el)}>
+        <span ref={(el) => (trashIconRefs.current[product.id] = el)}>
+          {/* Use product.id for refs */}
           <FaTrash className="h-8 w-8" />
         </span>
 
@@ -86,6 +121,8 @@ function DashboardProductCard({
           <FaArrowDown />
         </span>
       </button>
+
+      {/* og button was here.. */}
 
       {/* Edit Mode */}
       {editProduct === product.id ? (
@@ -101,9 +138,9 @@ function DashboardProductCard({
               type="text"
               id="title"
               name="title"
-              value={editedData.title ?? ""}
+              value={editedData.title ?? ""} // Fallback to empty string if undefined
               onChange={(e) => handleInputChange(e, setEditedData)}
-              className="mb-1.5 w-full rounded-lg border border-gray-300 "
+              className="mb-1.5 w-full rounded-lg border border-gray-300"
             />
           </div>
           {CustomHRTagV1()}
@@ -118,7 +155,7 @@ function DashboardProductCard({
             <select
               id="imageOption"
               name="imageOption"
-              value={imageOption ?? ""}
+              value={imageOption ?? ""} // Use empty string if imageOption is undefined
               onChange={(e) =>
                 handleImageOptionChange(e, editedData, setEditedData)
               }
@@ -131,7 +168,7 @@ function DashboardProductCard({
 
           {imageOption === "image_url" ? (
             <div className="mb-4">
-              <label htmlFor="image_url" className="mb-1 block  font-medium">
+              <label htmlFor="image_url" className="mb-1 block font-medium">
                 Image URL
               </label>
 
@@ -140,7 +177,7 @@ function DashboardProductCard({
                 type="text"
                 id="image_url"
                 name="image_url"
-                value={imageUrl ?? ""}
+                value={imageUrl ?? ""} // Ensure fallback to empty string
                 onChange={(e) => handleImageUrlChange(e, setEditedData)}
                 className="w-full rounded-lg border border-gray-300 p-2"
               />
@@ -262,6 +299,7 @@ function DashboardProductCard({
                   imageOption,
                   imageFile,
                   imageUrl
+                  // close the edit
                 )
               }
               className="rounded-lg bg-green-600 px-4 py-2 text-white transition duration-300 hover:bg-green-800"
@@ -374,6 +412,7 @@ function DashboardProductCard({
 }
 
 DashboardProductCard.propTypes = {
+  storeId: propTypes.number,
   product: propTypes.object.isRequired,
   editProduct: propTypes.number,
   editedData: propTypes.object.isRequired,
@@ -400,8 +439,39 @@ DashboardProductCard.propTypes = {
   convertBlobToBase64: propTypes.func.isRequired,
   handleEditClick: propTypes.func.isRequired,
   setImageOption: propTypes.func.isRequired,
-  setSelectedProduct: propTypes.func.isRequired,
+  // setSelectedProduct: propTypes.func.isRequired,
   setShowModal: propTypes.func.isRequired,
+  isSelected: propTypes.bool.isRequired,
+  onSelect: propTypes.func.isRequired,
 };
 
 export default DashboardProductCard;
+
+// <button
+// onClick={() => {
+//   handleDeleteClick(
+//     product.id,
+//     index,
+//     setSelectedProduct,
+//     setShowModal,
+//     storeId
+//   );
+// }}
+// onMouseEnter={() => setHoveredIndex(index)}
+// onMouseLeave={() => setHoveredIndex(null)}
+// className="absolute right-1 top-1 text-red-500 transition-colors duration-300 hover:text-red-700"
+// aria-label={`Delete ${product.title}`}
+// >
+// {/* Trash Icon - Wrap it in a span for ref */}
+// <span ref={(el) => (trashIconRefs.current[index] = el)}>
+//   <FaTrash className="h-8 w-8" />
+// </span>
+
+// {/* Down Arrow - Wrap it in a span for ref */}
+// <span
+//   ref={(el) => (arrowRefs.current[index] = el)}
+//   className="absolute left-2 top-0 h-4 w-4 text-white opacity-0"
+// >
+//   <FaArrowDown />
+// </span>
+// </button>

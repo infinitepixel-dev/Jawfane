@@ -9,6 +9,8 @@ import { useCallback } from "react";
 import { gsap } from "gsap";
 
 function ProductsAPI(apiUrl, setProducts, storeId) {
+  // console.log("Products API Initialized", storeId);
+
   // Fetch updated products list
   /*
     Using Memoization to prevent unnecessary re-renders
@@ -31,60 +33,121 @@ function ProductsAPI(apiUrl, setProducts, storeId) {
       );
   }, [apiUrl, setProducts, storeId]); // Memoize based on apiUrl and setProducts
 
-  // Handle product deletion
-  const handleDelete = async (id, index, trashIconRefs, cardRefs) => {
-    // console.log(
-    //     'Products API handleDelete: ',
-    //     id,
-    //     index,
-    //     trashIconRefs,
-    //     cardRefs
-    // )
+  // Handle bulk deletion of selected products
+  const deleteMultipleProducts = async (
+    selectedProductIds,
+    trashIconRefs,
+    cardRefs
+  ) => {
+    const deletePromises = selectedProductIds.map((productId) => {
+      const deleteProduct = async () => {
+        const trashIconRef = trashIconRefs.current[productId];
+        const cardRef = cardRefs.current[productId];
 
-    // Animate only the trash icon and the specific card before deletion
-    await gsap.to(trashIconRefs.current[index], {
-      rotate: 90,
-      repeat: 3,
-      yoyo: true,
-      duration: 0.1,
+        if (!trashIconRef || !cardRef) return;
+
+        // Animate the trash icon
+        await gsap.to(trashIconRef, {
+          rotate: 90,
+          repeat: 3,
+          yoyo: true,
+          duration: 0.1,
+        });
+
+        const deleteUrl = `${apiUrl}/api/products/${productId}`;
+        try {
+          const response = await fetch(deleteUrl, {
+            method: "DELETE",
+            headers: {
+              store_id: storeId,
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error:", errorData);
+          } else {
+            // Animate the card itself before removing it
+            await gsap.to(cardRef, {
+              opacity: 0,
+              y: -50,
+              duration: 0.5,
+              onComplete: () => {
+                setProducts((prevProducts) =>
+                  prevProducts.filter((product) => product.id !== productId)
+                );
+              },
+            });
+          }
+        } catch (err) {
+          console.error("Uh oh! There was an error deleting the product!", err);
+        }
+      };
+
+      return deleteProduct();
     });
 
-    const deleteUrl = `${apiUrl}/api/products/${id}`;
-    try {
-      const response = await fetch(deleteUrl, {
-        method: "DELETE",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // Include credentials (cookies, etc.) if needed
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-      } else {
-        // Animate the card itself before removing it
-        await gsap.to(cardRefs.current[index], {
-          opacity: 0,
-          y: -50,
-          duration: 0.5,
-          onComplete: () => {
-            // Once the animation completes, remove the card from the DOM
-            setProducts((prevProducts) =>
-              prevProducts.filter((product) => product.id !== id)
-            );
-          },
-        });
-      }
-    } catch (err) {
-      console.error("Uh oh! There was an error deleting things!!", err);
-    }
+    // Wait for all delete operations to complete
+    await Promise.all(deletePromises);
   };
+
+  // Handle product deletion
+  // const handleDelete = async (id, index, trashIconRefs, cardRefs) => {
+  //   // console.log(
+  //   //     'Products API handleDelete: ',
+  //   //     id,
+  //   //     index,
+  //   //     trashIconRefs,
+  //   //     cardRefs
+  //   // )
+
+  //   // Animate only the trash icon and the specific card before deletion
+  //   await gsap.to(trashIconRefs.current[index], {
+  //     rotate: 90,
+  //     repeat: 3,
+  //     yoyo: true,
+  //     duration: 0.1,
+  //   });
+
+  //   const deleteUrl = `${apiUrl}/api/products/${id}`;
+  //   try {
+  //     const response = await fetch(deleteUrl, {
+  //       method: "DELETE",
+
+  //       headers: {
+  //         store_id: storeId,
+  //         "Content-Type": "application/json",
+  //       },
+  //       credentials: "include", // Include credentials (cookies, etc.) if needed
+  //     });
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       console.error("Error:", errorData);
+  //     } else {
+  //       // Animate the card itself before removing it
+  //       await gsap.to(cardRefs.current[index], {
+  //         opacity: 0,
+  //         y: -50,
+  //         duration: 0.5,
+  //         onComplete: () => {
+  //           // Once the animation completes, remove the card from the DOM
+  //           setProducts((prevProducts) =>
+  //             prevProducts.filter((product) => product.id !== id)
+  //           );
+  //         },
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error("Uh oh! There was an error deleting things!!", err);
+  //   }
+  // };
 
   //returns functions to be used in other components
   return {
     fetchProducts,
-    handleDelete,
+    deleteMultipleProducts, // Renamed function
   };
 }
 

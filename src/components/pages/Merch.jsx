@@ -3,12 +3,12 @@ import { useState, useEffect, useRef } from "react";
 import propTypes from "prop-types";
 import { gsap } from "gsap";
 // import { Helmet } from "react-helmet-async"; // Import Helmet for meta tags
-import CartPopOut from "@sub-menus_product_management/CartPopOut";
 
 import noImage from "@assets/images/no-image.webp";
 import Variants from "../product_management/sub_components/widgets/Variants";
 
-function MerchPage({ addToCart, cartItems, storeId }) {
+// eslint-disable-next-line no-unused-vars
+function MerchPage({ addToCart, cartItems, storeId, isMobile }) {
   const apiUrl = `https://vps.infinitepixel.dev:3082/api/store/${storeId}/products`;
   //TODO: use product apiURL
   //REVIEW temp apiUrl
@@ -276,157 +276,166 @@ function MerchPage({ addToCart, cartItems, storeId }) {
   let addToCartButton = "bg-lime-600 hover:bg-lime-500";
 
   return (
-    <div
-      id="merch"
-      className="container z-10 min-h-screen p-4 mx-auto overflow-y-auto"
-    >
-      {/* <Helmet>
+    <>
+      {isMobile ? (
+        <div className="absolute top-20 cart-pop-out">
+          {/* <CartPopOut cartItems={cartItems} /> */}
+        </div>
+      ) : (
+        <div className="absolute top-52 cart-pop-out">
+          {/* <CartPopOut cartItems={cartItems} /> */}
+        </div>
+      )}
+
+      <div
+        id="merch"
+        className="container z-10 min-h-screen p-4 mx-auto overflow-y-auto"
+      >
+        {/* <Helmet>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
         <meta name="keywords" content={metaKeywords} />
       </Helmet> */}
 
-      <div className="absolute top-24 cart-pop-out">
-        <CartPopOut cartItems={cartItems} />
-      </div>
+        <h1 className="mb-8 text-4xl font-bold text-center">Merch</h1>
 
-      <h1 className="mb-8 text-4xl font-bold text-center">Merch</h1>
-
-      {/* Confirmation Message Popup */}
-      <div
-        ref={confirmRef}
-        className="absolute z-50 p-2 text-center text-white bg-green-500 rounded shadow-lg"
-        style={{
-          top: `${messagePosition.top}px`,
-          left: `${messagePosition.left}px`,
-          transform: "translate(-50%, -50%)",
-          opacity: 0,
-        }}
-        role="alert"
-        aria-live="assertive"
-      >
-        {confirmationMessage}
-      </div>
-
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 gap-6 auto-rows-min sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((product, index) => (
-          <div
-            key={product.id}
-            ref={(el) => (cardRefs.current[index] = el)}
-            className={`duration-50 group relative flex transform flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-transform hover:scale-105 hover:shadow-xl`}
-            style={{
-              height: "auto",
-              alignSelf: "start",
-              overflow: "hidden",
-            }}
-            role="region"
-            aria-labelledby={`product-title-${product.id}`}
-          >
-            <h2
-              id={`product-title-${product.id}`}
-              className="mb-2 text-2xl font-semibold text-gray-900 transition-colors duration-200 group-hover:text-blue-600"
-            >
-              {product.title}
-            </h2>
-
-            {product.image_url ? (
-              <img
-                className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
-                src={product.image_url}
-                alt={`${product.title} product image`}
-                onClick={() => handleImageClick(product)}
-              />
-            ) : product.image ? (
-              <img
-                className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
-                src={convertBlobToBase64(product.image)}
-                alt={`${product.title} product image`}
-                onClick={() => handleImageClick(product)}
-              />
-            ) : (
-              <img
-                className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
-                src={noImage}
-                alt="No image available"
-              />
-            )}
-            <Variants />
-            <p className="mb-4 text-sm leading-relaxed text-gray-700">
-              {/* only show a portion of the description and show ... */}
-              {product.description.length > 20
-                ? product.description.substring(0, 30) + "..."
-                : product.description}
-            </p>
-            <p className="mb-4 text-lg font-bold text-gray-900">
-              Price: ${product.price}
-            </p>
-            <button
-              onClick={() => handleAddToCart(product, index)}
-              className={`w-full rounded bg-gradient-to-r ${addToCartButton} py-2 text-white transition-all duration-400 hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                isAnimating[index] ? "cursor-not-allowed opacity-50" : ""
-              }`}
-              disabled={isAnimating[index]}
-              aria-disabled={isAnimating[index]}
-              aria-label={`Add ${product.title} to cart`}
-            >
-              Add to Cart
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* Modal for viewing product image */}
-      {isModalOpen && selectedProduct && (
+        {/* Confirmation Message Popup */}
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
+          ref={confirmRef}
+          className="absolute z-50 p-2 text-center text-white bg-green-500 rounded shadow-lg"
+          style={{
+            top: `${messagePosition.top}px`,
+            left: `${messagePosition.left}px`,
+            transform: "translate(-50%, -50%)",
+            opacity: 0,
+          }}
+          role="alert"
+          aria-live="assertive"
         >
-          <div
-            className="relative w-full max-w-lg max-h-screen p-4 mx-auto overflow-y-auto text-black bg-white rounded-lg shadow-lg md:p-6"
-            ref={modalRef}
-            role="document"
-          >
-            <button
-              onClick={handleCloseModal}
-              className="absolute p-2 text-2xl font-bold right-4 top-4 md:text-lg"
-              aria-label="Close modal"
-            >
-              &times;
-            </button>
-            <img
-              className="object-contain w-full h-60 md:h-96"
-              src={
-                selectedProduct.image_url ||
-                convertBlobToBase64(selectedProduct.image)
-              }
-              alt={selectedProduct.title}
-            />
-            <h2
-              id="modal-title"
-              className="mt-4 text-xl font-semibold text-center md:text-2xl"
-            >
-              {selectedProduct.title}
-            </h2>
-            <p className="mt-2 text-sm text-center md:text-base">
-              {selectedProduct.description}
-            </p>
-            <p className="mt-2 text-lg font-bold text-center">
-              Price: ${selectedProduct.price}
-            </p>
-          </div>
+          {confirmationMessage}
         </div>
-      )}
-    </div>
+
+        {/* Product Grid */}
+        <div className="grid grid-cols-1 gap-6 auto-rows-min sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {products.map((product, index) => (
+            <div
+              key={product.id}
+              ref={(el) => (cardRefs.current[index] = el)}
+              className={`duration-50 group relative flex transform flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-transform hover:scale-105 hover:shadow-xl`}
+              style={{
+                height: "auto",
+                alignSelf: "start",
+                overflow: "hidden",
+              }}
+              role="region"
+              aria-labelledby={`product-title-${product.id}`}
+            >
+              <h2
+                id={`product-title-${product.id}`}
+                className="mb-2 text-2xl font-semibold text-gray-900 transition-colors duration-200 group-hover:text-blue-600"
+              >
+                {product.title}
+              </h2>
+
+              {product.image_url ? (
+                <img
+                  className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
+                  src={product.image_url}
+                  alt={`${product.title} product image`}
+                  onClick={() => handleImageClick(product)}
+                />
+              ) : product.image ? (
+                <img
+                  className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
+                  src={convertBlobToBase64(product.image)}
+                  alt={`${product.title} product image`}
+                  onClick={() => handleImageClick(product)}
+                />
+              ) : (
+                <img
+                  className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
+                  src={noImage}
+                  alt="No image available"
+                />
+              )}
+              <Variants />
+              <p className="mb-4 text-sm leading-relaxed text-gray-700">
+                {/* only show a portion of the description and show ... */}
+                {product.description.length > 20
+                  ? product.description.substring(0, 30) + "..."
+                  : product.description}
+              </p>
+              <p className="mb-4 text-lg font-bold text-gray-900">
+                Price: ${product.price}
+              </p>
+              <button
+                onClick={() => handleAddToCart(product, index)}
+                className={`w-full rounded bg-gradient-to-r ${addToCartButton} py-2 text-white transition-all duration-400 hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                  isAnimating[index] ? "cursor-not-allowed opacity-50" : ""
+                }`}
+                disabled={isAnimating[index]}
+                aria-disabled={isAnimating[index]}
+                aria-label={`Add ${product.title} to cart`}
+              >
+                Add to Cart
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Modal for viewing product image */}
+        {isModalOpen && selectedProduct && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+          >
+            <div
+              className="relative w-full max-w-lg max-h-screen p-4 mx-auto overflow-y-auto text-black bg-white rounded-lg shadow-lg md:p-6"
+              ref={modalRef}
+              role="document"
+            >
+              <button
+                onClick={handleCloseModal}
+                className="absolute p-2 text-2xl font-bold right-4 top-4 md:text-lg"
+                aria-label="Close modal"
+              >
+                &times;
+              </button>
+              <img
+                className="object-contain w-full h-60 md:h-96"
+                src={
+                  selectedProduct.image_url ||
+                  convertBlobToBase64(selectedProduct.image)
+                }
+                alt={selectedProduct.title}
+              />
+              <h2
+                id="modal-title"
+                className="mt-4 text-xl font-semibold text-center md:text-2xl"
+              >
+                {selectedProduct.title}
+              </h2>
+              <p className="mt-2 text-sm text-center md:text-base">
+                {selectedProduct.description}
+              </p>
+              <p className="mt-2 text-lg font-bold text-center">
+                Price: ${selectedProduct.price}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
 MerchPage.propTypes = {
+  storeId: propTypes.number.isRequired,
   addToCart: propTypes.func.isRequired,
   cartItems: propTypes.array.isRequired,
-  storeId: propTypes.number.isRequired,
+  isMobile: propTypes.bool.isRequired,
 };
 
 export default MerchPage;

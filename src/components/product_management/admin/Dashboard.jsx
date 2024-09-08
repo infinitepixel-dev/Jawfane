@@ -22,7 +22,7 @@ import { FaRegListAlt } from "react-icons/fa";
 //ANCHOR Product Management Components
 
 //INFO Admin Pages
-import AddProduct from "@admin_product_management/AddProductForm";
+import AddProductForm from "@admin_product_management/AddProductForm";
 import Login from "@admin_product_management/Login";
 // import Logout from "@admin_product_management/Logout";
 import UsersManager from "@admin_product_management/UsersManager";
@@ -46,6 +46,7 @@ import ProductsUtility from "../sub_components/utilities/ProductsUtility";
 
 //INFO Sub-components - widgets
 // import BandsInTownEvents from "../sub_components/widgets/BandsInTownEvents";
+// import AlertModal from "@widgets_product_management/AlertModal";
 
 function Dashboard({ storeId }) {
   // console.log("Store ID: ", storeId);
@@ -67,7 +68,13 @@ function Dashboard({ storeId }) {
 
   const [products, setProducts] = useState([]);
 
-  const { fetchProducts, handleDelete } = ProductsAPI(
+  // const { fetchProducts, handleDelete } = ProductsAPI(
+  //   apiUrl,
+  //   setProducts,
+  //   storeId
+  // );3
+
+  const { fetchProducts, deleteMultipleProducts } = ProductsAPI(
     apiUrl,
     setProducts,
     storeId
@@ -80,8 +87,9 @@ function Dashboard({ storeId }) {
     handleSave,
     handleCancel,
     handleDeleteClick,
-    confirmDelete,
-    closeModal,
+    // modalMessage, //example display a message if the image url is wrong
+    // confirmDelete,
+    // closeModal,
   } = ProductsUtility(storeId);
 
   const {
@@ -119,7 +127,9 @@ function Dashboard({ storeId }) {
   const arrowRefs = useRef([]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  // const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+
   // Admin Sidebar state and functions
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -132,6 +142,20 @@ function Dashboard({ storeId }) {
     },
     reverseRoleMap: {},
   });
+
+  const handleProductSelect = (productId) => {
+    if (selectedProducts.includes(productId)) {
+      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
+    } else {
+      setSelectedProducts([...selectedProducts, productId]);
+    }
+  };
+
+  const handleBulkDelete = () => {
+    deleteMultipleProducts(selectedProducts, trashIconRefs, cardRefs); // Correct function call
+    setSelectedProducts([]);
+    setShowModal(false);
+  };
 
   useEffect(() => {
     // Generate reverseRoleMap only if roles have changed
@@ -278,6 +302,8 @@ function Dashboard({ storeId }) {
     );
   };
 
+  // console.log("Products: ", products);
+
   return (
     <div className="min-h-screen p-4 bg-blue-900 container-fluid bg-opacity-30 ">
       <div className="p-4 container-fluid">
@@ -345,8 +371,11 @@ function Dashboard({ storeId }) {
                         convertBlobToBase64={convertBlobToBase64}
                         handleEditClick={handleEditClick}
                         setImageOption={setImageOption}
-                        setSelectedProduct={setSelectedProduct}
+                        // setSelectedProduct={setSelectedProduct}
                         setShowModal={setShowModal}
+                        storeId={storeId}
+                        isSelected={selectedProducts.includes(product.id)}
+                        onSelect={() => handleProductSelect(product.id)}
                       />
                     </div>
                   );
@@ -357,29 +386,21 @@ function Dashboard({ storeId }) {
                   <div className="fixed inset-0 flex items-center justify-center text-black bg-black bg-opacity-50 payment-modal">
                     <div className="p-8 text-center bg-white rounded-lg shadow-lg">
                       <h2 className="mb-4 text-2xl font-bold">
-                        Delete Product
+                        Delete Products
                       </h2>
                       <p className="mb-4">
-                        Are you sure you want to delete this product?
+                        Are you sure you want to delete{" "}
+                        {selectedProducts.length} products?
                       </p>
                       <button
-                        className="px-4 py-2 mr-4 text-white transition bg-red-500 rounded-lg shadow hover:bg-red-700"
-                        onClick={() =>
-                          confirmDelete(
-                            selectedProduct,
-                            trashIconRefs,
-                            handleDelete,
-                            cardRefs,
-                            setShowModal,
-                            setSelectedProduct
-                          )
-                        }
+                        className="px-4 py-2 mr-4 text-white bg-red-500 rounded-lg"
+                        onClick={handleBulkDelete}
                       >
                         Confirm
                       </button>
                       <button
-                        className="px-4 py-2 text-white transition bg-gray-500 rounded-lg shadow hover:bg-gray-700"
-                        onClick={() => closeModal(setShowModal)}
+                        className="px-4 py-2 text-white bg-gray-500 rounded-lg"
+                        onClick={() => setShowModal(false)}
                       >
                         Cancel
                       </button>
@@ -389,7 +410,13 @@ function Dashboard({ storeId }) {
               </div>
             </>
           )}
-          {selectedPage === "add-product" && <AddProduct />}
+          {selectedPage === "add-product" && (
+            <AddProductForm
+              storeId={storeId}
+              products={products}
+              setProducts={setProducts}
+            />
+          )}
           {selectedPage === "users-manager" && (
             <UsersManager
               storeId={storeId}
