@@ -33,6 +33,8 @@ function CartPage({
   isMobile,
   setIsMobile,
 }) {
+  console.log("Cart Page Items:", cartItems);
+
   const itemRefs = useRef([]); // Initialize with an empty array
   const [isModalVisible, setIsModalVisible] = useState(false); // Track modal visibility
   const [itemToDelete, setItemToDelete] = useState(null); // Track which item to delete
@@ -134,6 +136,8 @@ function CartPage({
   const handleEmptyCartCancel = () => {
     setIsEmptyCartModalVisible(false);
   };
+
+  console.log("Cart Items:", cartItems);
 
   return (
     <>

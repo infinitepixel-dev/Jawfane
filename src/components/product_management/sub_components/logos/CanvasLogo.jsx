@@ -25,10 +25,12 @@ const CanvasLogo = ({ theme, isMobile }) => {
   const interval = colorChangeSpeed; // Interval between color changes
 
   useEffect(() => {
+    if (!logoRef.current) return; // Ensure that the logoRef is not null
+
     const newColor = theme === "dark" ? "#000000" : "#FFFFFF";
     gsap.to(document.body, { backgroundColor: newColor, duration: 1 });
 
-    //TODO adjust colors and set theme of the site
+    // Adjust colors and set the theme of the site
     const colors = [
       "#1d7d7b",
       "#4caf50 ",
@@ -45,17 +47,22 @@ const CanvasLogo = ({ theme, isMobile }) => {
     let currentColorIndex = 0;
 
     const changeColor = () => {
+      if (!logoRef.current) return; // Ensure the logoRef is still available
       const nextColorIndex = (currentColorIndex + 1) % colors.length;
       const nextColor = colors[nextColorIndex];
 
-      gsap.to(logoRef.current.querySelectorAll("path"), {
-        duration: colorChangeSpeed / 1000,
-        fill: nextColor,
-        onComplete: () => {
-          currentColorIndex = nextColorIndex;
-          setTimeout(changeColor, interval);
-        },
-      });
+      // Only try to access the paths if logoRef.current exists
+      const paths = logoRef.current.querySelectorAll("path");
+      if (paths.length > 0) {
+        gsap.to(paths, {
+          duration: colorChangeSpeed / 1000,
+          fill: nextColor,
+          onComplete: () => {
+            currentColorIndex = nextColorIndex;
+            setTimeout(changeColor, interval);
+          },
+        });
+      }
     };
 
     changeColor();

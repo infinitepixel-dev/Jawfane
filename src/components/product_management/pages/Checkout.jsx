@@ -1,71 +1,63 @@
-//Checkout.jsx
-
-/*
-A component to manage the checkout process
-*/
-
-//INFO React Libraries
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import propTypes from "prop-types";
-import { useNavigate } from "react-router-dom"; // To handle navigation
-
-//INFO Animation Libraries
-import { gsap } from "gsap";
-
-//INFO Stripe Libraries
+import { useNavigate, Link } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  useStripe,
-  useElements,
-  CardElement,
-  // TODO: Add PaymentElement
-} from "@stripe/react-stripe-js";
+import { Elements, useStripe, useElements } from "@stripe/react-stripe-js";
+import { gsap } from "gsap";
 
 // Load Stripe with your publishable key
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-const CheckoutForm = ({ cartItems }) => {
-  const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/payment`;
-
+const CheckoutForm = ({ cartItems, clientSecret }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
-  const navigate = useNavigate(); // For redirecting on successful payment
+
+  const navigate = useNavigate();
+
+  // Initialize Stripe Elements when stripe, elements, and clientSecret are available
+  useEffect(() => {
+    if (!stripe || !elements || !clientSecret) return;
+
+    const options = {
+      buttonHeight: 45,
+      buttonTheme: {
+        googlePay: "black",
+        paypal: "gold",
+      },
+      paymentMethods: {
+        googlePay: "always",
+        applePay: "never", // Ensure these methods are properly enabled and tested
+        link: "auto",
+        paypal: "auto",
+      },
+    };
+
+    const expressCheckoutElement = elements.create("expressCheckout", options);
+
+    // Mount the element in the div
+    expressCheckoutElement.mount("#express-checkout-element");
+
+    return () => {
+      if (expressCheckoutElement) {
+        expressCheckoutElement.destroy();
+      }
+    };
+  }, [stripe, elements, clientSecret]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!stripe || !elements) return;
+    if (!stripe || !elements || !clientSecret) return;
 
     setLoading(true);
 
-    // Request payment intent from your backend with cart item total
-    const totalAmountCents = calculateTotalInCents(cartItems);
-    const data = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/payment-confirmation`, // Redirect after payment confirmation
       },
-      body: JSON.stringify({
-        amount: totalAmountCents, // Send the amount in cents to Stripe
-        currency: "usd",
-        description: "Your purchase description",
-      }),
     });
-
-    const dataResponse = await data.json();
-    console.log("Stripe response: ", dataResponse);
-
-    const cardElement = elements.getElement(CardElement);
-    const { error, paymentIntent } = await stripe.confirmCardPayment(
-      dataResponse.clientSecret,
-      {
-        payment_method: {
-          card: cardElement,
-        },
-      }
-    );
 
     if (error) {
       setPaymentStatus("failed");
@@ -79,20 +71,13 @@ const CheckoutForm = ({ cartItems }) => {
     showModal(); // Trigger GSAP modal animation
   };
 
-  const calculateTotalInDollars = (cartItems) => {
-    return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2); // Round to 2 decimal places for display
-  };
-
   const calculateTotalInCents = (cartItems) => {
     return Math.round(
       cartItems.reduce((total, item) => total + item.price * item.quantity, 0) *
         100
-    ); // Convert dollars to cents and round
+    );
   };
 
-  // Show the modal on Pay
   const showModal = () => {
     gsap.to(".payment-modal", {
       opacity: 1,
@@ -103,7 +88,6 @@ const CheckoutForm = ({ cartItems }) => {
     });
   };
 
-  // Hide the modal on Ok, clicking outside, or pressing Esc
   const hideModal = () => {
     gsap.to(".payment-modal", {
       opacity: 0,
@@ -114,35 +98,34 @@ const CheckoutForm = ({ cartItems }) => {
     });
   };
 
-  // Handle the "OK" button click based on payment status
   const handleOkClick = () => {
     hideModal();
     if (paymentStatus === "success") {
-      navigate("/dashboard"); // Redirect to dashboard after successful payment
+      navigate("/dashboard");
     }
   };
 
-  console.log("cartItems:", cartItems);
-
   return (
     <>
-      {/* if carItems is empty */}
-      {`${cartItems.length}` > 0 ? (
+      {cartItems.length > 0 ? (
         <>
           <form onSubmit={handleSubmit} className="rounded-md p-8 shadow-md">
-            {/* Card Element */}
-            <CardElement className="rounded-md border  p-4" />
+            {/* Express Checkout Element */}
+            <div
+              id="express-checkout-element"
+              className="rounded-md border p-4"
+            ></div>
 
             <button
               type="submit"
-              disabled={!stripe || loading}
+              disabled={!stripe || !clientSecret || loading}
               className={`mt-4 rounded-lg bg-blue-500 px-4 py-2 text-white shadow transition hover:bg-blue-700 ${
                 loading ? "cursor-not-allowed opacity-50" : ""
               }`}
             >
               {loading
                 ? "Processing..."
-                : `Pay $${calculateTotalInDollars(cartItems)}`}
+                : `Pay $${calculateTotalInCents(cartItems) / 100}`}
             </button>
           </form>
 
@@ -173,38 +156,86 @@ const CheckoutForm = ({ cartItems }) => {
       ) : (
         <div className="text-center">
           <p className="mb-4">Your cart is empty.</p>
-          <button
+
+          <Link
+            to="/#merch"
             className="rounded-lg bg-blue-500 px-4 py-2 text-white shadow transition hover:bg-blue-700"
-            onClick={() => navigate("/merch")}
           >
             Go Shopping
-          </button>
+          </Link>
         </div>
       )}
     </>
   );
 };
 
-// eslint-disable-next-line react/prop-types, no-unused-vars
-function CheckoutPage({ cartItems, clearCart }) {
+// eslint-disable-next-line react/prop-types
+function CheckoutPage({ cartItems }) {
+  const apiUrl = `${window.location.protocol}//${window.location.hostname}:3040/api/payment`;
+  const [clientSecret, setClientSecret] = useState(null); // State for clientSecret
+
+  const calculateTotalInCents = (cartItems) => {
+    return Math.round(
+      cartItems.reduce((total, item) => total + item.price * item.quantity, 0) *
+        100
+    );
+  };
+
+  // Fetch clientSecret from backend
+  useEffect(() => {
+    const fetchPaymentIntent = async () => {
+      if (!cartItems.length) return;
+
+      const totalAmountCents = calculateTotalInCents(cartItems);
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: totalAmountCents,
+          currency: "usd",
+          description: "Your purchase description",
+        }),
+      });
+
+      const data = await response.json();
+      setClientSecret(data.clientSecret); // Set the clientSecret in state
+    };
+
+    fetchPaymentIntent();
+  }, [cartItems, apiUrl]);
+
+  // Define the options to be passed into Elements
+  const options = {
+    clientSecret, // Include the clientSecret
+  };
+
   return (
-    <Elements stripe={stripePromise}>
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md">
-          <h2 className="mb-8 text-center text-2xl font-bold">Checkout</h2>
-          <CheckoutForm cartItems={cartItems} />
-        </div>
-      </div>
-    </Elements>
+    <>
+      {clientSecret ? (
+        <Elements stripe={stripePromise} options={options}>
+          <div className="flex min-h-screen items-center justify-center bg-gray-50">
+            <div className="w-full max-w-md">
+              <h2 className="mb-8 text-center text-2xl font-bold">Checkout</h2>
+              <CheckoutForm cartItems={cartItems} clientSecret={clientSecret} />
+            </div>
+          </div>
+        </Elements>
+      ) : (
+        <p>Loading payment details...</p> // Optionally show a loading state
+      )}
+    </>
   );
 }
 
-CheckoutForm.propTypes = {
+CheckoutPage.propTypes = {
   cartItems: propTypes.array.isRequired,
 };
 
-CheckoutPage.propTypes = {
+CheckoutForm.propTypes = {
   cartItems: propTypes.array.isRequired,
+  clientSecret: propTypes.string,
 };
 
 export default CheckoutPage;

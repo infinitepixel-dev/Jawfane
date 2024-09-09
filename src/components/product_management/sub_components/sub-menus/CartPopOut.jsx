@@ -151,12 +151,9 @@ function CartPopOut({ cartItems }) {
                 {/* hr tag */}
                 <hr className="border-gray-400 mb-4" />
                 <ul className="mt-16">
-                  {cartItems.map((item, index) => (
-                    <>
-                      <li
-                        key={index}
-                        className="mb-4 border-b border-gray-200 pb-4"
-                      >
+                  {cartItems.map((item) => (
+                    <div key={item.id}>
+                      <li className="mb-4 border-b border-gray-200 pb-4">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-semibold text-black">
@@ -170,7 +167,7 @@ function CartPopOut({ cartItems }) {
                         </div>
                       </li>
                       <hr className="border-gray-400 mb-4" />
-                    </>
+                    </div>
                   ))}
                 </ul>
               </>
