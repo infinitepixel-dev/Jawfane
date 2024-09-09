@@ -47,7 +47,34 @@ const App = () => {
     window.innerWidth < 768 ? true : false
   );
   // Cart Items
-  const [cartItems, setCartItems] = useState([]);
+  //REVIEW - added test product to cartItems
+  const [cartItems, setCartItems] = useState([
+    {
+      id: 1,
+      title: "Product 1",
+      price: "19.99",
+      quantity: 1,
+      description: "Description of product 1",
+      category: "Category 1",
+      product_id: "P001",
+      created_at: "2024-09-07T17:08:19.000Z",
+      image_url:
+        "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSpqwW2DCVf862oiFLcesO0FuaUhZkrwczFiEoXLjoWaBad5-74aFTP-TKMmn5eh8IUy4CdtKC-g5VsRiU31wXEVMvokvhbsfy8r2KVTwsgzDIt6uvh-fX2BGPs7Ad_WgWdis6EhltuVA&usqp=CAc",
+      image: null,
+      product_weight: "0.50",
+      weight_unit: "kg",
+      product_dimensions: "10x5x2 cm",
+      meta_title: "Meta Title 1",
+      meta_description: "Meta Description 1",
+      meta_keywords: "keyword1, keyword2, keyword3",
+      status: 1,
+      featured: 1,
+      sale: 1,
+      discount_price: "15.99",
+      discount_start: "2024-09-07T04:00:00.000Z",
+      discount_end: "2024-09-07T04:00:00.000Z",
+    },
+  ]);
 
   useEffect(() => {
     if (DevMode) {
@@ -69,6 +96,8 @@ const App = () => {
     } else {
       setCartItems([...cartItems, { ...product, quantity: 1 }]);
     }
+
+    // console.log("Cart Items:", cartItems);
   };
 
   const removeFromCart = (id) => {
