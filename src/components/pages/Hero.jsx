@@ -15,7 +15,7 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 gsap.registerPlugin(ScrollToPlugin);
 
 //INFO Images
-import hero_bg from "@public/hero_bg.webp";
+import hero_bg from "/images/hero_bg.webp";
 
 const Hero = ({ theme }) => {
   const isUserInteracting = useRef(false);

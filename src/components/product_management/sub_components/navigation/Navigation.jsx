@@ -1,5 +1,3 @@
-//Navigation.jsx
-
 /*
 A component to manage the navigation bar for the store
 */
@@ -40,30 +38,37 @@ const Navigation = ({
   const hamburgerRef = useRef(null); // Ref for the mobile hamburger button
   const toggleArrowRef = useRef(null); // Ref for the desktop toggle arrow
   const [navHeight, setNavHeight] = useState(0); // Track the height of the nav
+  const [isSidebarOpen, setSidebarOpen] = useState(false); // Track the state of the sidebar
 
   // Adjusts navbar state based on screen size
   useEffect(() => {
-    if (isMobile) {
-      setIsCollapsed(true); // Collapse the navbar when switching to mobile view
-    }
+    // Collapse the navbar when switching to mobile view
+    isMobile ? setIsCollapsed(true) : setIsCollapsed(false);
   }, [isMobile]);
 
   // Handle resize to detect mobile vs desktop
   useEffect(() => {
+    const mobile_breakpoint = 768;
     const handleResize = () => {
-      const isNowMobile = window.innerWidth < 768;
+      const isNowMobile = window.innerWidth < mobile_breakpoint;
       setIsMobile(isNowMobile);
 
       if (!isNowMobile) {
-        // Ensure the menu is always visible on desktop
-        gsap.set(navBarRef.current, { opacity: 1 });
-        gsap.set(navRef.current, {
-          opacity: 1,
-          backgroundColor: "rgba(0, 3, 4, 0.95)",
-          backdropFilter: "blur(10px)",
-        });
+        if (navBarRef.current) {
+          gsap.to(navBarRef.current, { opacity: 1 });
+        }
+
+        if (navRef.current) {
+          gsap.to(navRef.current, {
+            opacity: 1,
+            backgroundColor: "rgba(0, 3, 4, 0.95)",
+            backdropFilter: "blur(10px)",
+          });
+        }
       } else {
-        gsap.set(navBarRef.current, { opacity: 1 });
+        if (navBarRef.current) {
+          gsap.set(navBarRef.current, { opacity: 1 });
+        }
       }
     };
 
@@ -90,100 +95,139 @@ const Navigation = ({
     }
   }, [location]);
 
+  //v1
+  // Handle navbar visibility and fade on scroll or inactivity
+  // useEffect(() => {
+  //   if (isMobile) return;
+
+  //   const handleScroll = () => {
+  //     if (inactivityTimeoutRef.current) {
+  //       clearTimeout(inactivityTimeoutRef.current);
+  //     }
+
+  //     if (navBarRef.current && navRef.current) {
+  //       gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
+  //       gsap.to(navRef.current, { opacity: 1, duration: 0.5 });
+  //     }
+
+  //     setIsCollapsed(false);
+
+  //     inactivityTimeoutRef.current = setTimeout(() => {
+  //       if (!isMobile && !isUserClosed && navBarRef.current && navRef.current) {
+  //         gsap.to(navBarRef.current, { opacity: 0, duration: 0.8 });
+  //         gsap.to(navRef.current, { opacity: 0, duration: 0.8 });
+  //         setIsCollapsed(true);
+  //       }
+  //     }, 5000);
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //     clearTimeout(inactivityTimeoutRef.current);
+  //   };
+  // }, [isMobile, isUserClosed]);
+
+  //REVIEW v2
   // Handle navbar visibility and fade on scroll or inactivity
   useEffect(() => {
-    // Only if not on mobile
-    if (isMobile) return;
-
     const handleScroll = () => {
+      if (isMobile) return;
+
+      // Clear any existing timeout if the user is scrolling
       if (inactivityTimeoutRef.current) {
         clearTimeout(inactivityTimeoutRef.current);
       }
 
-      // Show the menu when scrolling
-      gsap.to(navBarRef.current, {
-        opacity: 1,
-        duration: 0.5,
-        pointerEvents: "auto",
-      });
-      gsap.to(navRef.current, {
-        opacity: 1,
-        backgroundColor: "rgba(0, 3, 4, 0.95)",
-        duration: 0.5,
-        backdropFilter: "blur(10px)",
-        pointerEvents: "auto", // Enable pointer events when navbar is visible
-      });
+      // If the user hasn't manually closed the navbar, show it on scroll
+      if (navBarRef.current && navRef.current && !isUserClosed) {
+        gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
+        gsap.to(navRef.current, { opacity: 1, duration: 0.5 });
+        setIsCollapsed(false);
+      }
 
-      setIsCollapsed(false); // Update collapse state when navbar fades in
-
-      // Set timeout to hide navigation if user is inactive for 5 seconds
+      // Set a timeout to automatically close the navbar after 5 seconds of inactivity
       inactivityTimeoutRef.current = setTimeout(() => {
-        if (!isMobile && !isUserClosed) {
-          gsap.to(navBarRef.current, {
-            opacity: 0,
-            duration: 0.5,
-            pointerEvents: "none",
-          });
-          gsap.to(navRef.current, {
-            opacity: 0,
-            backgroundColor: "transparent",
-            duration: 0.5,
-            pointerEvents: "none", // Disable pointer events when navbar is hidden
-          });
-          setIsCollapsed(true); // Collapse when hiding due to inactivity
+        if (!isMobile && !isUserClosed && navBarRef.current && navRef.current) {
+          gsap.to(navBarRef.current, { opacity: 0, duration: 0.8 });
+          gsap.to(navRef.current, { opacity: 0, duration: 0.8 });
+          setIsCollapsed(true);
         }
-      }, 5000); // 5-second delay
+      }, 3000); // Auto-close after 5 seconds of inactivity
     };
 
     window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      if (inactivityTimeoutRef.current) {
-        clearTimeout(inactivityTimeoutRef.current);
-      }
+      clearTimeout(inactivityTimeoutRef.current);
     };
   }, [isMobile, isUserClosed]);
 
-  // Toggle navbar with GSAP (for mobile and desktop)
+  /*
+  Toggle navbar with GSAP (for mobile and desktop)
+  Update toggleNavbar to close the sidebar if it's open
+ */
   const toggleNavbar = useCallback(() => {
     if (isCollapsed) {
-      gsap.to(navBarRef.current, {
-        opacity: 1,
-        height: "auto",
-        duration: 0.5,
-        ease: "power2.out",
-        display: "flex",
-        pointerEvents: "auto", // Enable pointer events when navbar is visible
-      });
-      gsap.to(navRef.current, {
-        backgroundColor: "rgba(0, 3, 4, 0.95)",
-        opacity: 1,
-        duration: 0.5,
-        backdropFilter: "blur(10px)",
-        pointerEvents: "auto", // Enable pointer events when navbar is visible
-      });
+      // Open Navbar
+      if (navBarRef.current) {
+        gsap.to(navBarRef.current, {
+          opacity: 1,
+          height: "auto",
+          duration: 0.5,
+          ease: "power2.out",
+          display: "flex",
+          pointerEvents: "auto",
+        });
+      }
+      if (navRef.current) {
+        gsap.to(navRef.current, {
+          backgroundColor: "rgba(0, 3, 4, 0.95)",
+          opacity: 1,
+          duration: 0.5,
+          backdropFilter: "blur(10px)",
+          pointerEvents: "auto",
+        });
+      }
       setIsUserClosed(false);
     } else {
-      gsap.to(navBarRef.current, {
-        opacity: isMobile ? 1 : 0,
-        duration: 0.5,
-        ease: "power2.in",
-        height: 0,
-        display: "none",
-        pointerEvents: "none", // Disable pointer events when navbar is hidden
-      });
-      gsap.to(navRef.current, {
-        backgroundColor: "transparent",
-        opacity: isMobile ? 1 : 0,
-        duration: 0.5,
-        pointerEvents: "none", // Disable pointer events when navbar is hidden
-      });
+      // Close Navbar
+      if (navBarRef.current) {
+        gsap.to(navBarRef.current, {
+          opacity: isMobile ? 1 : 0,
+          duration: 0.5,
+          ease: "power2.in",
+          height: 0,
+          display: "none",
+          pointerEvents: "none",
+        });
+      }
+      if (navRef.current) {
+        gsap.to(navRef.current, {
+          backgroundColor: "transparent",
+          opacity: isMobile ? 1 : 0,
+          duration: 0.5,
+          pointerEvents: "none",
+        });
+      }
       setIsUserClosed(true);
     }
 
-    setIsCollapsed(!isCollapsed); // Toggle the state between collapsed and expanded
-  }, [isCollapsed, isMobile]);
+    // Always close the sidebar when toggling the navbar
+    if (isSidebarOpen) {
+      setSidebarOpen(false);
+    }
+
+    setIsCollapsed(!isCollapsed); // Toggle the navbar state
+  }, [isCollapsed, isMobile, isSidebarOpen]);
+
+  // Pass the toggleNavbar function to the parent component if needed
+  useEffect(() => {
+    if (setToggleNavbar) {
+      setToggleNavbar(() => toggleNavbar);
+    }
+  }, [setToggleNavbar, toggleNavbar]);
 
   useEffect(() => {
     if (setToggleNavbar) {
@@ -224,9 +268,21 @@ const Navigation = ({
 
   // Update the height of the navigation bar dynamically
   useEffect(() => {
-    if (navRef.current) {
-      setNavHeight(navRef.current.offsetHeight);
-    }
+    const handleResizeAndNavHeight = () => {
+      if (navRef.current) {
+        setNavHeight(navRef.current.offsetHeight); // Update nav height dynamically on resize
+      }
+    };
+
+    // Update nav height on resize
+    window.addEventListener("resize", handleResizeAndNavHeight);
+
+    // Ensure nav height is set properly on initial load
+    handleResizeAndNavHeight();
+
+    return () => {
+      window.removeEventListener("resize", handleResizeAndNavHeight);
+    };
   }, [isCollapsed, isMobile]);
 
   return (
@@ -356,21 +412,26 @@ const Navigation = ({
         </ul>
       </nav>
 
-      {/* Cart Popout */}
       <div
-        className="fixed right-4 transition-all duration-300 ease-in-out"
+        className="fixed transition-all duration-300 ease-in-out"
         style={{
           top: isMobile
             ? isCollapsed
-              ? "5rem" // Mobile collapsed
-              : `${navHeight + 76}px` // Mobile expanded
+              ? "5rem"
+              : `${navHeight + 76}px`
             : isCollapsed
-            ? "5rem" // Desktop collapsed
-            : `${navHeight + 76}px`, // Desktop expanded
+            ? "5rem"
+            : `${navHeight + 76}px`,
           zIndex: 1000,
         }}
       >
-        <CartPopOut theme={theme} cartItems={cartItems} isMobile={isMobile} />
+        <CartPopOut
+          theme={theme}
+          cartItems={cartItems}
+          isMobile={isMobile}
+          isSidebarOpen={isSidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
       </div>
     </>
   );
@@ -384,6 +445,7 @@ Navigation.propTypes = {
   isMobile: propTypes.bool.isRequired,
   setIsMobile: propTypes.func.isRequired,
   cartItems: propTypes.array.isRequired,
+  setSidebarOpen: propTypes.func,
 };
 
 export default Navigation;

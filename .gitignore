@@ -30,3 +30,7 @@ node-apps
 .env
 **/.env
 **/.htaccess
+
+# files
+*.dist.tar.gz
+*dist.zip
