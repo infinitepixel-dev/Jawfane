@@ -21,5 +21,6 @@
 }
 
 html {
+  height: "100dvh";
   scroll-behavior: auto;
 }

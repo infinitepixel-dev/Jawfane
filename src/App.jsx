@@ -34,6 +34,9 @@ import CheckoutPage from "@pages_product_management/Checkout";
 // INFO Sub-components
 // import CartPopOut from "@sub-menus_product_management/CartPopOut";
 
+//REVIEW Payments Completion Tests
+import Completion from "@pages_product_management/Completion";
+
 import "./App.css";
 
 const App = () => {
@@ -75,6 +78,13 @@ const App = () => {
       discount_end: "2024-09-07T04:00:00.000Z",
     },
   ]);
+
+  // eslint-disable-next-line no-unused-vars
+  const [enabledPayments, setEnabledPayments] = useState({
+    stripe: true,
+    paypal: true,
+    googlePay: true,
+  });
 
   useEffect(() => {
     if (DevMode) {
@@ -229,7 +239,19 @@ const App = () => {
           />
           <Route
             path={`/checkout`}
-            element={<CheckoutPage cartItems={cartItems} storeId={storeId} />}
+            element={
+              <CheckoutPage
+                cartItems={cartItems}
+                storeId={storeId}
+                enabledPayments={enabledPayments}
+                DevMode={DevMode}
+                base={base}
+                theme={theme}
+                toggleTheme={toggleTheme}
+                isMobile={isMobile}
+                setIsMobile={setIsMobile}
+              />
+            }
           />
 
           {/* Product Management Routes */}
@@ -243,6 +265,9 @@ const App = () => {
             path={`/dashboard`}
             element={<Dashboard storeId={storeId} />}
           />
+
+          {/* Payments Completion */}
+          <Route path={`/completion`} element={<Completion theme={theme} />} />
         </Routes>
       </div>
     </Router>

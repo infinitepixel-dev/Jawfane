@@ -1,95 +1,129 @@
-//CartPopOut.jsx
-
-/*
-A component to display a mini cart sidebar that slides in from the right
-*/
-
-//INFO React Libraries
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import propTypes from "prop-types";
-
-//INFO Animation Libraries
 import { gsap } from "gsap";
-
-//INFO React Router
-import { NavLink } from "react-router-dom";
-
-//INFO Icons
 import { ShoppingCart, ChevronLeft, ChevronRight } from "react-feather";
 
-function CartPopOut({ cartItems }) {
-  const [isVisible, setIsVisible] = useState(false);
-  const cartButtonRef = useRef(null); // Ref to access the button element
+function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const cartButtonRef = useRef(null);
+  const sidebarRef = useRef(null);
 
-  // Function to toggle the cart sidebar
-  const toggleCart = () => {
-    if (cartItems.length === 0) return; // Do nothing if the cart is empty
-
-    if (isVisible) {
-      // Close cart
-      gsap.to(".cart-sidebar", {
-        x: "100%", // Move sidebar out of view
+  useEffect(() => {
+    if (isSidebarOpen) {
+      // Sidebar opens
+      gsap.to(sidebarRef.current, {
+        x: 0,
         duration: 0.5,
-        ease: "power3.in",
-        onComplete: () => setIsVisible(false), // Set to false after animation
+        ease: "power3.out",
       });
 
-      // Animate button from fixed to absolute
+      // Fix the cart button to the upper-right corner
       gsap.to(cartButtonRef.current, {
-        top: "auto", // Back to absolute position
+        top: "1em", // Always position the button to the top
         right: "2em",
         duration: 0.5,
-        ease: "power3.in",
+        ease: "power3.out",
+        position: "fixed", // Ensure it's fixed in place
       });
     } else {
-      // Open cart
-      setIsVisible(true);
+      // Sidebar closes
+      gsap.to(sidebarRef.current, {
+        x: "100%",
+        duration: 0.5,
+        ease: "power3.in",
+      });
 
-      // Move button to a fixed position
+      // Reset the cart button to follow the navbar or its default position
       gsap.to(cartButtonRef.current, {
-        top: "1em", // Fix button to top when cart is visible
+        top: "auto", // Position it back to the default when sidebar is closed
+        right: "2em",
+        duration: 0.5,
+        ease: "power3.in",
+        position: "fixed", // Ensure the button stays fixed
+      });
+    }
+  }, [isSidebarOpen]);
+
+  const toggleCart = () => {
+    if (cartItems.length === 0 || isAnimating) return;
+
+    setIsAnimating(true);
+
+    if (isSidebarOpen) {
+      setSidebarOpen(false);
+    } else {
+      setSidebarOpen(true);
+    }
+
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 500);
+  };
+
+  useEffect(() => {
+    if (isSidebarOpen) {
+      // Sidebar opens
+      gsap.to(sidebarRef.current, {
+        x: 0,
+        duration: 0.5,
+        ease: "power3.out",
+      });
+
+      // Fix the cart button to the upper-right corner
+      gsap.to(cartButtonRef.current, {
+        top: "1em", // Always position the button to the top
         right: "2em",
         duration: 0.5,
         ease: "power3.out",
+        position: "fixed", // Ensure it's fixed in place
+      });
+    } else {
+      // Sidebar closes
+      gsap.to(sidebarRef.current, {
+        x: "100%",
+        duration: 0.5,
+        ease: "power3.in",
       });
 
-      gsap.to(".cart-sidebar", {
-        x: 0, // Move sidebar into view
+      // Reset the cart button to follow the navbar or its default position
+      gsap.to(cartButtonRef.current, {
+        top: "auto", // Position it back to the default when sidebar is closed
+        right: "2em",
         duration: 0.5,
-        ease: "power3.out",
+        ease: "power3.in",
+        position: "fixed", // Ensure the button stays fixed
       });
     }
-  };
+  }, [
+    isSidebarOpen,
+    cartItems,
+    isAnimating,
+    setSidebarOpen,
+    cartButtonRef,
+    sidebarRef,
+  ]);
 
   return (
-    <div
-      className="absolute bottom-16 right-8"
-      style={{
-        position: isVisible ? "fixed" : "absolute", // Switch between fixed and absolute
-        top: isVisible ? "1em" : "auto", // Set top based on visibility
-      }}
-    >
-      {/* Button to open/close the cart sidebar */}
+    <div className="absolute bottom-16 right-8">
       <button
-        ref={cartButtonRef} // Attach ref to the button
+        ref={cartButtonRef}
         style={{
-          right: "2em", // Adjust position for visibility
-          zIndex: 800, // Ensure the button is above the sidebar
-          opacity: cartItems.length === 0 ? 0.5 : 0.9, // Reduce opacity if the cart is empty
-          cursor: cartItems.length === 0 ? "not-allowed" : "pointer", // Change cursor style if empty
+          right: "2em",
+          zIndex: 800,
+          opacity: cartItems.length === 0 ? 0.5 : 0.9,
+          cursor: cartItems.length === 0 ? "not-allowed" : "pointer",
         }}
         onClick={toggleCart}
         className={`fixed rounded px-2 py-2 text-white ${
           cartItems.length === 0 ? "bg-gray-400" : "bg-blue-500"
-        }`} // Change background color if empty
-        disabled={cartItems.length === 0} // Disable the button if the cart is empty
+        }`}
+        disabled={cartItems.length === 0}
       >
-        {isVisible ? (
+        {isSidebarOpen ? (
           <div>
             <span className="flex items-center">
               <ShoppingCart />
-
-              {/* Badge to show number of items */}
               {cartItems.length > 0 && (
                 <span
                   className="absolute ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full"
@@ -108,8 +142,6 @@ function CartPopOut({ cartItems }) {
           <div>
             <span className="flex items-center">
               <ShoppingCart />
-
-              {/* Badge to show number of items */}
               {cartItems.length > 0 && (
                 <span
                   className="absolute ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full"
@@ -127,33 +159,28 @@ function CartPopOut({ cartItems }) {
         )}
       </button>
 
-      {/* Cart Sidebar */}
       <div
-        className={`cart-sidebar fixed right-0 top-0 h-full transform bg-opacity-80 bg-white shadow-lg ${
-          isVisible ? "" : "translate-x-full"
-        }`}
+        ref={sidebarRef}
+        className="cart-sidebar fixed right-0 top-0 h-full transform bg-opacity-80 bg-white shadow-lg"
         style={{
           backdropFilter: "blur(2em)",
-          width: isVisible ? "80vw" : "100vw",
-          maxWidth: "320px", // Max width for larger screens
+          width: "80vw",
+          maxWidth: "320px",
           transform: "translateX(100%)",
-          zIndex: 750, // Ensure the cart sidebar is just below the button
+          zIndex: 750,
         }}
       >
+        {/* Sidebar content */}
         <div className="flex h-full flex-col">
-          {/* Cart Items Section (Scrollable) */}
           <div className="flex-1 overflow-y-auto p-4">
             <h2 className="mb-4 text-2xl font-bold text-black">Mini Cart</h2>
-
-            {/* List cart items */}
             {cartItems.length > 0 ? (
               <>
-                {/* hr tag */}
                 <hr className="border-gray-400 mb-4" />
                 <ul className="mt-16">
                   {cartItems.map((item) => (
                     <div key={item.id}>
-                      <li className="mb-4 border-b border-gray-200 pb-4">
+                      <li className="mb-4  pb-4">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-semibold text-black">
@@ -176,10 +203,9 @@ function CartPopOut({ cartItems }) {
             )}
           </div>
 
-          {/* Cart Footer (Fixed at the Bottom) */}
+          {/* Cart Footer */}
           {cartItems.length > 0 && (
             <div className="sticky bottom-16 bg-white p-4 shadow-lg">
-              {/* cart total */}
               <div className="mt-4">
                 <p className="text-lg font-semibold text-black">
                   Total: $
@@ -188,10 +214,8 @@ function CartPopOut({ cartItems }) {
                     .toFixed(2)}
                 </p>
               </div>
-
-              {/* Button to go to the full cart view */}
               <button className="mt-4 w-full rounded bg-green-500 py-2 text-white hover:bg-green-600">
-                <NavLink to="/cart">View Full Cart</NavLink>
+                <Link to="/cart">View Full Cart</Link>
               </button>
             </div>
           )}
@@ -209,6 +233,9 @@ CartPopOut.propTypes = {
       quantity: propTypes.number.isRequired,
     })
   ).isRequired,
+  isSidebarOpen: propTypes.bool.isRequired,
+  setSidebarOpen: propTypes.func.isRequired,
+  isCollapsed: propTypes.bool.isRequired,
 };
 
 export default CartPopOut;

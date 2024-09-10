@@ -34,20 +34,23 @@ const Variants = () => {
   };
 
   const toggleDropdown = (isOpen, dropdownRef) => {
-    if (isOpen) {
-      gsap.to(dropdownRef.current, {
-        height: "auto",
-        opacity: 1,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    } else {
-      gsap.to(dropdownRef.current, {
-        height: 0,
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.in",
-      });
+    if (dropdownRef.current) {
+      // Ensure the ref is not null
+      if (isOpen) {
+        gsap.to(dropdownRef.current, {
+          height: "auto",
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(dropdownRef.current, {
+          height: 0,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+        });
+      }
     }
   };
 
