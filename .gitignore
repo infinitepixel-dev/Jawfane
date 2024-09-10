@@ -32,5 +32,5 @@ node-apps
 **/.htaccess
 
 # files
-*.dist.tar.gz
+*dist.tar.gz
 *dist.zip

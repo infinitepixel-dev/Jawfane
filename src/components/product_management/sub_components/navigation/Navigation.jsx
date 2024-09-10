@@ -29,8 +29,9 @@ const Navigation = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [selected, setSelected] = useState(""); // Tracks the currently selected menu item
-  const [isCollapsed, setIsCollapsed] = useState(true); // Tracks the state of the navbar (collapsed/expanded)
+  const [isCollapsed, setIsCollapsed] = useState(null); // Tracks the state of the navbar (collapsed/expanded)
   const [isUserClosed, setIsUserClosed] = useState(false); // Tracks if the user manually closed the navbar
   const navBarRef = useRef(null); // Ref for the navbar element
   const navRef = useRef(null); // Ref for the navigation container element
@@ -39,12 +40,6 @@ const Navigation = ({
   const toggleArrowRef = useRef(null); // Ref for the desktop toggle arrow
   const [navHeight, setNavHeight] = useState(0); // Track the height of the nav
   const [isSidebarOpen, setSidebarOpen] = useState(false); // Track the state of the sidebar
-
-  // Adjusts navbar state based on screen size
-  useEffect(() => {
-    // Collapse the navbar when switching to mobile view
-    isMobile ? setIsCollapsed(true) : setIsCollapsed(false);
-  }, [isMobile]);
 
   // Handle resize to detect mobile vs desktop
   useEffect(() => {
@@ -95,40 +90,6 @@ const Navigation = ({
     }
   }, [location]);
 
-  //v1
-  // Handle navbar visibility and fade on scroll or inactivity
-  // useEffect(() => {
-  //   if (isMobile) return;
-
-  //   const handleScroll = () => {
-  //     if (inactivityTimeoutRef.current) {
-  //       clearTimeout(inactivityTimeoutRef.current);
-  //     }
-
-  //     if (navBarRef.current && navRef.current) {
-  //       gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 });
-  //       gsap.to(navRef.current, { opacity: 1, duration: 0.5 });
-  //     }
-
-  //     setIsCollapsed(false);
-
-  //     inactivityTimeoutRef.current = setTimeout(() => {
-  //       if (!isMobile && !isUserClosed && navBarRef.current && navRef.current) {
-  //         gsap.to(navBarRef.current, { opacity: 0, duration: 0.8 });
-  //         gsap.to(navRef.current, { opacity: 0, duration: 0.8 });
-  //         setIsCollapsed(true);
-  //       }
-  //     }, 5000);
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //     clearTimeout(inactivityTimeoutRef.current);
-  //   };
-  // }, [isMobile, isUserClosed]);
-
-  //REVIEW v2
   // Handle navbar visibility and fade on scroll or inactivity
   useEffect(() => {
     const handleScroll = () => {

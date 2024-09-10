@@ -244,6 +244,12 @@ const App = () => {
                 cartItems={cartItems}
                 storeId={storeId}
                 enabledPayments={enabledPayments}
+                DevMode={DevMode}
+                base={base}
+                theme={theme}
+                toggleTheme={toggleTheme}
+                isMobile={isMobile}
+                setIsMobile={setIsMobile}
               />
             }
           />

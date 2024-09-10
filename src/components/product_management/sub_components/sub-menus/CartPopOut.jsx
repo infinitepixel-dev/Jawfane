@@ -61,6 +61,49 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
     }, 500);
   };
 
+  useEffect(() => {
+    if (isSidebarOpen) {
+      // Sidebar opens
+      gsap.to(sidebarRef.current, {
+        x: 0,
+        duration: 0.5,
+        ease: "power3.out",
+      });
+
+      // Fix the cart button to the upper-right corner
+      gsap.to(cartButtonRef.current, {
+        top: "1em", // Always position the button to the top
+        right: "2em",
+        duration: 0.5,
+        ease: "power3.out",
+        position: "fixed", // Ensure it's fixed in place
+      });
+    } else {
+      // Sidebar closes
+      gsap.to(sidebarRef.current, {
+        x: "100%",
+        duration: 0.5,
+        ease: "power3.in",
+      });
+
+      // Reset the cart button to follow the navbar or its default position
+      gsap.to(cartButtonRef.current, {
+        top: "auto", // Position it back to the default when sidebar is closed
+        right: "2em",
+        duration: 0.5,
+        ease: "power3.in",
+        position: "fixed", // Ensure the button stays fixed
+      });
+    }
+  }, [
+    isSidebarOpen,
+    cartItems,
+    isAnimating,
+    setSidebarOpen,
+    cartButtonRef,
+    sidebarRef,
+  ]);
+
   return (
     <div className="absolute bottom-16 right-8">
       <button
@@ -192,6 +235,7 @@ CartPopOut.propTypes = {
   ).isRequired,
   isSidebarOpen: propTypes.bool.isRequired,
   setSidebarOpen: propTypes.func.isRequired,
+  isCollapsed: propTypes.bool.isRequired,
 };
 
 export default CartPopOut;

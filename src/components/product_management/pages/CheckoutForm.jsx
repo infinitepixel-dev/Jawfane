@@ -6,15 +6,16 @@ import {
 } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
-import { gsap } from "gsap";
-import { useNavigate } from "react-router-dom";
 
-const CheckoutForm = ({ clientSecret }) => {
+//REVIEW use GSAP to slightly slow the checkout process and make it more visually appealing
+// eslint-disable-next-line no-unused-vars
+import { gsap } from "gsap";
+
+const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

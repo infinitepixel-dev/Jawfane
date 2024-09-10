@@ -5,10 +5,22 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./CheckoutForm";
 
+//INFO Sub-components imports
+import Navigation from "@navigation_product_management/Navigation";
+
 // Load Stripe with your publishable key
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-const CheckoutPage = ({ cartItems, enabledPayments }) => {
+const CheckoutPage = ({
+  cartItems,
+  enabledPayments,
+  DevMode,
+  base,
+  theme,
+  toggleTheme,
+  isMobile,
+  setIsMobile,
+}) => {
   const [clientSecret, setClientSecret] = useState(null);
   const apiUrl = `${window.location.protocol}//${window.location.hostname}:3040/api/payment`;
 
@@ -52,6 +64,16 @@ const CheckoutPage = ({ cartItems, enabledPayments }) => {
 
   return (
     <>
+      <Navigation
+        DevMode={DevMode}
+        base={base}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        isMobile={isMobile}
+        setIsMobile={setIsMobile}
+        cartItems={cartItems}
+      />
+
       {enabledPayments.stripe && clientSecret ? (
         <Elements stripe={stripePromise} options={options}>
           <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -71,6 +93,12 @@ const CheckoutPage = ({ cartItems, enabledPayments }) => {
 CheckoutPage.propTypes = {
   cartItems: propTypes.array.isRequired,
   enabledPayments: propTypes.object.isRequired,
+  DevMode: propTypes.bool.isRequired,
+  base: propTypes.string.isRequired,
+  theme: propTypes.string.isRequired,
+  toggleTheme: propTypes.func.isRequired,
+  isMobile: propTypes.bool.isRequired,
+  setIsMobile: propTypes.func.isRequired,
 };
 
 export default CheckoutPage;
