@@ -57,7 +57,7 @@ const Navigation = ({
         if (navRef.current) {
           gsap.to(navRef.current, {
             opacity: 1,
-            backgroundColor: "rgba(0, 3, 4, 0.95)",
+            backgroundColor: "rgba(0, 3, 4, 1)",
             backdropFilter: "blur(10px)",
           })
         }
@@ -145,7 +145,7 @@ const Navigation = ({
       }
       if (navRef.current) {
         gsap.to(navRef.current, {
-          backgroundColor: "rgba(0, 3, 4, 0.95)",
+          backgroundColor: "rgba(0, 3, 4, 1)",
           opacity: 1,
           duration: 0.5,
           backdropFilter: "blur(10px)",
@@ -302,10 +302,8 @@ const Navigation = ({
         role="navigation"
         aria-label="Main Navigation"
         className={`fixed top-0 w-full border-b-2 shadow-lg shadow-border-bottom border-lime-600 z-50 transition-all duration-300 ease-in-out ${
-          !isCollapsed && !isMobile
-            ? "bg-black bg-opacity-60"
-            : "bg-transparent"
-        } ${theme === "dark" ? " text-white" : "bg-gray-100"}`}
+          theme === "dark" ? " text-white" : "bg-gray-100"
+        }`}
         style={{ opacity: 1, zIndex: 900 }}
       >
         <ul
@@ -332,7 +330,7 @@ const Navigation = ({
               </span>
               <span
                 className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
-                  selected === item ? "bg-lime-500" : "bg-transparent"
+                  selected === item ? "bg-lime-500" : null
                 } transition-all duration-300 ease-in-out hover:bg-lime-600`}
               ></span>
             </li>
@@ -366,7 +364,7 @@ const Navigation = ({
               </a>
               <span
                 className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
-                  selected === "dev" ? "bg-lime-500" : "bg-transparent"
+                  selected === "dev" ? "bg-lime-500" : null
                 } transition-all duration-300 ease-in-out`}
               ></span>
             </li>
