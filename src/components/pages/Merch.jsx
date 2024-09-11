@@ -152,6 +152,8 @@ function MerchPage({ addToCart, cartItems, storeId, isMobile }) {
         return res.json();
       })
       .then((data) => {
+        console.log("Products fetched:", data);
+
         setProducts(data);
         setIsAnimating(new Array(data.length).fill(false)); // Initialize animation status for each product
         cardRefs.current = Array(data.length).fill(null); // Initialize refs for each product card
@@ -333,7 +335,7 @@ function MerchPage({ addToCart, cartItems, storeId, isMobile }) {
         <div className="grid grid-cols-1 gap-6 auto-rows-min sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product, index) => (
             <div
-              key={product.id}
+              key={index}
               ref={(el) => (cardRefs.current[index] = el)}
               className={`duration-50 group relative flex transform flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-transform hover:scale-105 hover:shadow-xl`}
               style={{
