@@ -152,8 +152,6 @@ function MerchPage({ addToCart, cartItems, storeId, isMobile }) {
         return res.json();
       })
       .then((data) => {
-        console.log("Products fetched:", data);
-
         setProducts(data);
         setIsAnimating(new Array(data.length).fill(false)); // Initialize animation status for each product
         cardRefs.current = Array(data.length).fill(null); // Initialize refs for each product card
@@ -374,15 +372,12 @@ function MerchPage({ addToCart, cartItems, storeId, isMobile }) {
                   alt="No image available"
                 />
               )}
-              <Variants />
+              <Variants product={product} setProducts={setProducts} />
               <p className="mb-4 text-sm leading-relaxed text-gray-700">
                 {/* only show a portion of the description and show ... */}
                 {product.description.length > 20
                   ? product.description.substring(0, 30) + "..."
                   : product.description}
-              </p>
-              <p className="mb-4 text-lg font-bold text-gray-900">
-                Price: ${product.price}
               </p>
               <button
                 onClick={() => handleAddToCart(product, index)}
