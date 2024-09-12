@@ -8,7 +8,7 @@ const ConfirmationMessage = ({ message, position, cardRef }) => {
   useEffect(() => {
     if (message && cardRef) {
       const tl = gsap.timeline();
-      tl.to(cardRef, { opacity: 0.5, duration: 0.3 });
+      tl.to(cardRef, { opacity: 0.1, duration: 0.3 });
       tl.fromTo(
         confirmRef.current,
         { opacity: 0, y: -20 },

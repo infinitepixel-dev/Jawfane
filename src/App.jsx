@@ -1,4 +1,4 @@
-const DevMode = false;
+const DevMode = true;
 //Be sure to change the base in vite.config.js to the correct path
 //Home.jx
 

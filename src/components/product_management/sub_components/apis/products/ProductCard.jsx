@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Variants from "@apis_product_management/products/Variants";
 import propTypes from "prop-types";
 
@@ -11,6 +11,7 @@ const ProductCard = ({
   handleImageClick,
   isAnimating,
   cardRefs,
+  style,
   // finalPrice,
   // setFinalPrice,
 }) => {
@@ -29,6 +30,13 @@ const ProductCard = ({
     setSelectedColor(color);
   };
 
+  // if a variant isn't selected when adding to cart, display an error message
+  useEffect(() => {
+    if (!selectedSize || !selectedColor) {
+      //prevent add to cart button
+    }
+  }, [selectedSize, selectedColor, setFinalPrice]);
+
   // useEffect(() => {
   //   setFinalPrice(parseFloat(product.price).toFixed(2));
   // }, [product.price, setFinalPrice]);
@@ -36,7 +44,8 @@ const ProductCard = ({
   return (
     <div
       ref={(el) => (cardRefs.current[index] = el)}
-      className="group relative flex flex-col justify-between rounded-lg border bg-white p-4 shadow-lg hover:scale-105"
+      className="group relative flex flex-col justify-between rounded-lg border bg-white p-4 shadow-lg hover:scale-105 "
+      style={style}
     >
       <h2 className="text-2xl font-semibold text-gray-900">{product.title}</h2>
       <img
@@ -78,8 +87,9 @@ ProductCard.propTypes = {
   handleImageClick: propTypes.func.isRequired,
   isAnimating: propTypes.array.isRequired,
   cardRefs: propTypes.object.isRequired,
-  finalPrice: propTypes.number.isRequired,
-  setFinalPrice: propTypes.func.isRequired,
+  // finalPrice: propTypes.number.isRequired,
+  // setFinalPrice: propTypes.func.isRequired,
+  style: propTypes.object,
 };
 
 export default ProductCard;
