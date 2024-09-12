@@ -89,41 +89,46 @@ function MerchPage({ addToCart, storeId }) {
       });
   }, [apiUrl, storeId]);
 
+  //
   const handleAddToCart = (product, index) => {
+    // Prevent adding to cart if the animation is still playing
     if (isAnimating[index]) return;
 
+    // Disable animation for this product
     setIsAnimating((prev) => {
       const updated = [...prev];
       updated[index] = true;
       return updated;
     });
 
-    // Make sure to pass the finalPrice to your cart logic
+    // Add product to the cart with final price
     addToCart({
       ...product,
-      price: product.finalPrice, // Ensure the cart uses the updated final price
+      price: product.finalPrice, // Ensure you're passing the right finalPrice
     });
 
+    // Display confirmation message
     setConfirmationMessage(`${product.title} added to cart!`);
     setActiveCardIndex(index);
 
+    // Get card reference for positioning the confirmation message
     const card = cardRefs.current[index];
     if (card) {
       const rect = card.getBoundingClientRect();
       setMessagePosition({
-        top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX,
+        top: rect.top + window.scrollY + rect.height / 2,
+        left: rect.left + window.scrollX + rect.width / 2,
       });
     }
 
-    //reset ability to add to cart
+    // Reset the isAnimating flag after animation completes
     setTimeout(() => {
       setIsAnimating((prev) => {
         const updated = [...prev];
-        updated[index] = false;
+        updated[index] = false; // Allow the product to be added again
         return updated;
       });
-    }, 1000);
+    }, 2000); // Adjust timeout duration as needed
   };
 
   return (
