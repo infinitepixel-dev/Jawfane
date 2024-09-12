@@ -31,9 +31,11 @@ const AudioPlayer = ({ theme }) => {
     const storedVolume = localStorage.getItem("audioVolume");
     if (audioPlayer) {
       audioPlayer.volume = storedVolume ? parseFloat(storedVolume) : 0.02;
-      audioPlayer.play().catch((error) => {
-        console.log("Autoplay was prevented:", error);
-      });
+
+      //INFO enabled or disable autoplay
+      // audioPlayer.play().catch((error) => {
+      //   console.log("Autoplay was prevented:", error);
+      // });
 
       // Check if the audio player is playing initially
       audioPlayer.onplay = () => setIsPlaying(true);

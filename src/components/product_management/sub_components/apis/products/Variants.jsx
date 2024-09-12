@@ -1,25 +1,27 @@
-// Variants.jsx
-
 // INFO React Libraries
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react";
+import propTypes from "prop-types";
 
 // INFO Animation Libraries
-import { gsap } from "gsap"
+import { gsap } from "gsap";
 
-const Variants = ({ product, setProducts }) => {
-  console.log("variant", product)
-
+const Variants = ({
+  onSizeChange,
+  onColorChange,
+  // finalPrice,
+  // setFinalPrice,
+}) => {
   // State for managing selected size and color
-  const [selectedSize, setSelectedSize] = useState("")
-  const [selectedColor, setSelectedColor] = useState("")
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
 
   // State for managing open/closed state of dropdowns
-  const [openDropdown, setOpenDropdown] = useState(null)
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   // Refs for dropdown elements
-  const sizeDropdownRef = useRef(null)
-  const colorDropdownRef = useRef(null)
-  const colorSelectRef = useRef(null)
+  const sizeDropdownRef = useRef(null);
+  const colorDropdownRef = useRef(null);
+  const colorSelectRef = useRef(null);
 
   // Example size costs
   const sizeCosts = {
@@ -29,50 +31,55 @@ const Variants = ({ product, setProducts }) => {
     XL: 5,
     "2XL": 8,
     "3XL": 10,
-  }
+  };
 
   // Lists of available sizes and colors
-  const availableSizes = ["S", "M", "L", "XL", "2XL", "3XL"]
-  const availableColors = ["Red", "Blue", "Green", "Yellow"]
+  const availableSizes = ["S", "M", "L", "XL", "2XL", "3XL"];
+  const availableColors = ["Red", "Blue", "Green", "Yellow"];
 
   // Function to handle size selection
   const handleSizeSelect = (size) => {
-    setSelectedSize(size)
-    setOpenDropdown(null) // Close all dropdowns
-  }
+    setSelectedSize(size);
+    setOpenDropdown(null); // Close all dropdowns
+    onSizeChange(size, sizeCosts[size] || 0); // Pass size and cost to parent component
+  };
 
   // Function to handle color selection
   const handleColorSelect = (color) => {
-    setSelectedColor(color)
-    setOpenDropdown(null) // Close all dropdowns
-  }
+    setSelectedColor(color);
+    setOpenDropdown(null); // Close all dropdowns
+    onColorChange(color); // Pass color to parent component
+  };
 
   // Function to toggle dropdown visibility
   const toggleDropdown = (dropdownType) => {
-    setOpenDropdown(openDropdown === dropdownType ? null : dropdownType)
-  }
+    setOpenDropdown(openDropdown === dropdownType ? null : dropdownType);
+  };
 
   // Function to animate dropdowns
-  const animateDropdown = (dropdownType, dropdownRef) => {
-    if (dropdownRef.current) {
-      gsap.to(dropdownRef.current, {
-        height: dropdownType === openDropdown ? "auto" : 0,
-        opacity: dropdownType === openDropdown ? 1 : 0,
-        duration: 0.3,
-        ease: "power2.out",
-      })
-    }
-  }
+  const animateDropdown = useCallback(
+    (dropdownType, dropdownRef) => {
+      if (dropdownRef.current) {
+        gsap.to(dropdownRef.current, {
+          height: dropdownType === openDropdown ? "auto" : 0,
+          opacity: dropdownType === openDropdown ? 1 : 0,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      }
+    },
+    [openDropdown]
+  );
 
   // Animate size dropdown
   useEffect(() => {
-    animateDropdown("size", sizeDropdownRef)
-  }, [openDropdown])
+    animateDropdown("size", sizeDropdownRef);
+  }, [openDropdown, animateDropdown]);
 
   // Animate color dropdown
   useEffect(() => {
-    animateDropdown("color", colorDropdownRef)
-  }, [openDropdown])
+    animateDropdown("color", colorDropdownRef);
+  }, [openDropdown, animateDropdown]);
 
   // Animate color select element when a size is selected
   useEffect(() => {
@@ -81,20 +88,12 @@ const Variants = ({ product, setProducts }) => {
         colorSelectRef.current,
         { opacity: 0, height: 0, overflow: "hidden" },
         { opacity: 1, height: "auto", duration: 0.5, ease: "power2.out" }
-      )
+      );
     }
-  }, [selectedSize])
-
-  // Calculate the final price
-  const finalPrice = product.price + (sizeCosts[selectedSize] || 0).toFixed(2)
-  console.log(product.price)
-  console.log("size Cost / Selected Size", sizeCosts[selectedSize])
+  }, [selectedSize]);
 
   return (
     <div className="mb-4">
-      {/* Display Final Price */}
-      <div className="mb-4 text-xl font-bold">${finalPrice}</div>
-
       {/* Size Dropdown */}
       <div className="relative">
         <button
@@ -197,6 +196,15 @@ const Variants = ({ product, setProducts }) => {
         </div>
       )}
     </div>
-  )
-}
-export default Variants
+  );
+};
+
+Variants.propTypes = {
+  product: propTypes.object.isRequired,
+  onSizeChange: propTypes.func.isRequired,
+  onColorChange: propTypes.func.isRequired,
+  // finalPrice: propTypes.number.isRequired,
+  // setFinalPrice: propTypes.func.isRequired,
+};
+
+export default Variants;
