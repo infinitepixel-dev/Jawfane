@@ -3,21 +3,29 @@ import propTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 const Completion = ({ stripePromise }) => {
+  console.log("Completion component is rendering"); // Add this line
   const [messageBody, setMessageBody] = useState("");
 
   useEffect(() => {
-    if (!stripePromise) return;
+    if (!stripePromise) {
+      console.log("Stripe.js hasn't loaded yet.");
+      return;
+    }
 
     stripePromise.then(async (stripe) => {
       const url = new URL(window.location);
       const clientSecret = url.searchParams.get("payment_intent_client_secret");
+      console.log("Client Secret:", clientSecret);
+
       const { error, paymentIntent } = await stripe.retrievePaymentIntent(
         clientSecret
       );
 
       if (error) {
+        console.error("Error in retrieving payment intent:", error);
         setMessageBody(`> ${error.message}`);
       } else {
+        console.log("Payment intent retrieved successfully:", paymentIntent);
         setMessageBody(
           `> Payment ${paymentIntent.status}: ${paymentIntent.id}`
         );

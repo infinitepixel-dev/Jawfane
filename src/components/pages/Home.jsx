@@ -52,6 +52,7 @@ function Home({
           storeId={storeId}
           theme={theme}
           cartItems={cartItems}
+          setCartItems={addToCart}
           addToCart={addToCart}
           isMobile={isMobile}
         />

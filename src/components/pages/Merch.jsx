@@ -1,452 +1,176 @@
-//Merch.jsx
+import { useState, useEffect, useRef, useMemo } from "react";
+import propTypes from "prop-types";
 
-/*
-A component to manage the merch page of the website
-*/
+import gsap from "gsap";
 
-//INFO React Libraries
-import { useState, useEffect, useRef } from "react"
-import propTypes from "prop-types"
-// import { Link } from "react-router-dom";
+import ConfirmationMessage from "@apis_product_management/products/ConfirmationMessage";
+import ProductModal from "@apis_product_management/products/ProductModal";
+import ProductGrid from "@apis_product_management/products/ProductGrid";
 
-//INFO Animation Libraries
-import { gsap } from "gsap"
+function MerchPage({ addToCart, storeId }) {
+  const apiUrl = `https://vps.infinitepixel.dev:3082/api/store/${storeId}/products`;
 
-//INFO Meta Tag Libraries
-// import { Helmet } from "react-helmet-async"; // Import Helmet for meta tags
+  const [products, setProducts] = useState([]);
+  const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [messagePosition, setMessagePosition] = useState({ top: 0, left: 0 });
+  const [activeCardIndex, setActiveCardIndex] = useState(null);
+  const [isAnimating, setIsAnimating] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-//INFO Image Assets
-import noImage from "@assets/images/no-image.webp"
+  let [finalPrice, setFinalPrice] = useState(0);
 
-//INFO Widgets
-import Variants from "@widgets_product_management/Variants"
+  const cardRefs = useRef([]);
 
-// eslint-disable-next-line no-unused-vars
-function MerchPage({ addToCart, cartItems, storeId, isMobile }) {
-  const apiUrl = `https://vps.infinitepixel.dev:3082/api/store/${storeId}/products`
-  //TODO: use product apiURL
-  //REVIEW temp apiUrl
-  // const apiUrl = "http://66.128.253.47:3082/api/products";
-
-  const [products, setProducts] = useState([])
-  const [confirmationMessage, setConfirmationMessage] = useState("")
-  const [messagePosition, setMessagePosition] = useState({ top: 0, left: 0 })
-  const [activeCardIndex, setActiveCardIndex] = useState(null)
-  const [isAnimating, setIsAnimating] = useState([]) // Track animation status for each card
-  const [selectedProduct, setSelectedProduct] = useState(null) // State to track selected product for modal
-  const [isModalOpen, setIsModalOpen] = useState(false) // State for modal visibility
-
-  // eslint-disable-next-line no-unused-vars
-  const [metaTitle, setMetaTitle] = useState("Merch - Bow to the Corgi") // Default meta title
-  // const [metaDescription, setMetaDescription] = useState(""); // Default meta description
-  // const [metaKeywords, setMetaKeywords] = useState(""); // Default meta keywords
-
-  // GSAP Ref for the confirmation message
-  const confirmRef = useRef(null)
-  const cardRefs = useRef([])
-  // Ref for the modal
-  const modalRef = useRef(null) //determines if the image modal is open or not
-
-  const convertBlobToBase64 = (blob) => {
-    if (!blob) return null
-
-    const byteArray = new Uint8Array(blob.data)
-    const base64String = btoa(
-      byteArray.reduce((data, byte) => data + String.fromCharCode(byte), "")
-    )
-
-    return `data:image/jpeg;base64,${base64String}`
-  }
-
-  //only show cartPopOut on the merch component while it's in the viewport
-  useEffect(() => {
-    const cartPopOut = document.querySelector(".cart-pop-out")
-    const merch = document.getElementById("merch")
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            cartPopOut.style.display = "block"
-          } else {
-            cartPopOut.style.display = "none"
-          }
-        })
-      },
-      { threshold: [0.1, 0.5, 0.9] } // Adjusted thresholds for different levels of visibility
-    )
-
-    observer.observe(merch)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [])
-
-  // Function to open modal when clicking on a product image
   const handleImageClick = (product) => {
     if (product.image || product.image_url) {
-      setSelectedProduct(product) // Set selected product for the modal
-      setIsModalOpen(true) // Open the modal
+      setSelectedProduct(product);
+      setIsModalOpen(true);
     }
-  }
+  };
 
-  // Function to close the modal
   const handleCloseModal = () => {
-    setIsModalOpen(false)
-    setSelectedProduct(null)
-  }
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
 
-  // Detect clicks outside of the modal to close it
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handleCloseModal()
-      }
-    }
-
-    if (isModalOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [isModalOpen])
-
-  // Fetch products and set animations for each card
-  //v1
-  // useEffect(() => {
-  //   fetch(apiUrl)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setProducts(data);
-  //       setIsAnimating(new Array(data.length).fill(false)); // Initialize animation status for each product
-  //       cardRefs.current = Array(data.length).fill(null); // Initialize refs for each product card
-
-  //       // Set meta description and keywords based on the first product as an example
-  //       if (data.length > 0) {
-  //         // setMetaDescription(data[0].description || "The best pet ever!");
-  //         // setMetaKeywords(data[0].keywords || "Corgi, Ruler, Bork");
-  //       }
-  //     })
-  //     .catch((err) => console.error(err));
-  // }, [apiUrl]);
-
-  //v2
-  useEffect(() => {
-    console.log("fetching products...", storeId)
-
-    fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        store_id: storeId,
-      },
-      credentials: "include", // Include credentials (cookies, etc.) if needed
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`)
+    const validRefs = cardRefs.current.filter((ref) => ref !== null);
+    if (validRefs.length > 0) {
+      gsap.fromTo(
+        validRefs,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: "power3.out",
         }
-        return res.json()
-      })
-      .then((data) => {
-        setProducts(data)
-        setIsAnimating(new Array(data.length).fill(false)) // Initialize animation status for each product
-        cardRefs.current = Array(data.length).fill(null) // Initialize refs for each product card
-
-        // Set meta description and keywords based on the first product as an example
-        if (data.length > 0) {
-          // setMetaDescription(data[0].description || "The best pet ever!");
-          // setMetaKeywords(data[0].keywords || "Corgi, Ruler, Bork");
-        }
-      })
-      .catch((err) => console.error("Fetch error:", err))
-  }, [apiUrl, storeId])
-
-  // GSAP entrance animation for product cards
-  useEffect(() => {
-    if (products.length > 0) {
-      const validRefs = cardRefs.current.filter((ref) => ref !== null)
-      if (validRefs.length === products.length) {
-        gsap.fromTo(
-          validRefs,
-          { opacity: 0, y: 50 },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.1, // Reduced stagger for faster appearance
-            duration: 0.8, // Slightly increased duration for smoothness
-            ease: "power3.out", // Smooth easing for fluid animation
-          }
-        )
-      }
+      );
     }
-  }, [products])
+  }, [products]);
 
-  // GSAP animation for confirmation message
   useEffect(() => {
-    if (confirmationMessage && activeCardIndex !== null) {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          setIsAnimating((prev) => {
-            const updated = [...prev]
-            updated[activeCardIndex] = false
-            return updated
-          })
-        },
-      })
-
-      tl.to(cardRefs.current[activeCardIndex], {
-        opacity: 0.5,
-        duration: 0.3, // Slightly longer for smooth dimming
-        ease: "power2.out",
-      })
-      tl.fromTo(
-        confirmRef.current,
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" } // Slightly extended
-      )
-      tl.to(confirmRef.current, {
-        opacity: 0,
-        y: -20,
-        duration: 0.6, // Smooth hide animation
-        ease: "power2.out",
-        delay: 1.5,
-      })
-      tl.to(cardRefs.current[activeCardIndex], {
-        opacity: 1,
-        duration: 0.3, // Restores opacity smoothly
-        ease: "power2.out",
-      })
-    }
-  }, [confirmationMessage, activeCardIndex])
-
-  // GSAP hover effect for scaling cards on hover
-  useEffect(() => {
-    // Loop through each card ref and add GSAP hover animation
     cardRefs.current.forEach((card) => {
       if (card) {
-        // Set initial scale to 1
-        gsap.set(card, { scale: 1 })
+        gsap.set(card, { scale: 1 });
 
-        // Add hover effect: scale up on mouse enter
         card.addEventListener("mouseenter", () => {
           gsap.to(card, {
             scale: 1.05,
-            duration: 0.1, // Fast duration for scaling
+            duration: 0.1,
             ease: "power2.out",
-            immediateRender: true, // Ensures animation starts immediately
-            overwrite: "auto", // Cancels any existing animations on this element
-          })
-        })
+          });
+        });
 
-        // Scale back to normal on mouse leave
         card.addEventListener("mouseleave", () => {
           gsap.to(card, {
             scale: 1,
-            duration: 0.1, // Fast duration for scaling back
+            duration: 0.1,
             ease: "power2.out",
-            overwrite: "auto", // Ensure smooth transition back
-          })
-        })
+          });
+        });
       }
-    })
-  }, [products]) // Only run when products are updated
+    });
+  }, [products]);
 
-  // Handle adding product to the cart
+  useEffect(() => {
+    fetch(apiUrl, {
+      method: "GET",
+      headers: { "Content-Type": "application/json", store_id: storeId },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+        setIsAnimating(new Array(data.length).fill(false));
+        cardRefs.current = Array(data.length).fill(null);
+      });
+  }, [apiUrl, storeId]);
+
   const handleAddToCart = (product, index) => {
-    if (isAnimating[index]) return
+    if (isAnimating[index]) return;
 
     setIsAnimating((prev) => {
-      const updated = [...prev]
-      updated[index] = true
-      return updated
-    })
+      const updated = [...prev];
+      updated[index] = true;
+      return updated;
+    });
 
-    addToCart(product)
+    // Make sure to pass the finalPrice to your cart logic
+    addToCart({
+      ...product,
+      price: product.finalPrice, // Ensure the cart uses the updated final price
+    });
 
-    setConfirmationMessage("")
-    setTimeout(() => {
-      setConfirmationMessage(`${product.title} added to cart!`)
-    }, 0)
+    setConfirmationMessage(`${product.title} added to cart!`);
+    setActiveCardIndex(index);
 
-    setActiveCardIndex(index)
-
-    const card = cardRefs.current[index]
+    const card = cardRefs.current[index];
     if (card) {
-      const rect = card.getBoundingClientRect()
-      const cardCenterX = rect.left + rect.width / 2
-      const cardCenterY = rect.top + rect.height / 2
-
+      const rect = card.getBoundingClientRect();
       setMessagePosition({
-        top: cardCenterY + window.scrollY,
-        left: cardCenterX + window.scrollX,
-      })
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
     }
-  }
 
-  let addToCartButton = "bg-lime-600 hover:bg-lime-500"
+    //reset ability to add to cart
+    setTimeout(() => {
+      setIsAnimating((prev) => {
+        const updated = [...prev];
+        updated[index] = false;
+        return updated;
+      });
+    }, 1000);
+  };
 
   return (
-    <>
-      {isMobile ? (
-        <div className="absolute top-20 cart-pop-out">
-          {/* <CartPopOut cartItems={cartItems} /> */}
-        </div>
-      ) : (
-        <div className="absolute top-52 cart-pop-out">
-          {/* <CartPopOut cartItems={cartItems} /> */}
-        </div>
+    <div id="merch" className="container z-10 mx-auto p-4">
+      {/* Helmet for SEO */}
+
+      {/* Cart Pop Out */}
+      {/* <CartPopOut cartItems={cartItems} isSideBarOpen={isSideBarOpen} /> */}
+
+      {/* Page Title */}
+      <h1 className="mb-8 text-center text-4xl font-bold">Merch</h1>
+
+      {/* Confirmation Message Popup */}
+      <ConfirmationMessage
+        message={confirmationMessage}
+        position={messagePosition}
+        cardRef={cardRefs.current[activeCardIndex] || null}
+      />
+
+      {/* Product Grid */}
+      <ProductGrid
+        products={useMemo(() => products, [products])}
+        handleAddToCart={handleAddToCart}
+        handleImageClick={handleImageClick}
+        isAnimating={isAnimating}
+        cardRefs={cardRefs}
+        finalPrice={finalPrice}
+        setFinalPrice={setFinalPrice}
+      />
+
+      {/* Modal for viewing product image */}
+      {isModalOpen && selectedProduct && (
+        <ProductModal
+          isOpen={isModalOpen}
+          product={selectedProduct}
+          handleClose={handleCloseModal}
+          convertBlobToBase64={() => {}}
+        />
       )}
-
-      <div
-        id="merch"
-        className="container z-10 min-h-screen p-4 mx-auto overflow-y-auto"
-      >
-        {/* <Helmet>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <meta name="keywords" content={metaKeywords} />
-      </Helmet> */}
-
-        <h1 className="mb-8 text-4xl font-bold text-center">Merch</h1>
-
-        {/* Confirmation Message Popup */}
-        <div
-          ref={confirmRef}
-          className="absolute z-50 p-2 text-center text-white bg-green-500 rounded shadow-lg"
-          style={{
-            top: `${messagePosition.top}px`,
-            left: `${messagePosition.left}px`,
-            transform: "translate(-50%, -50%)",
-            opacity: 0,
-          }}
-          role="alert"
-          aria-live="assertive"
-        >
-          {confirmationMessage}
-        </div>
-
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 gap-6 auto-rows-min sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {products.map((product, index) => (
-            <div
-              key={product.id}
-              ref={(el) => (cardRefs.current[index] = el)}
-              className={`duration-50 group relative flex transform flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-lg transition-transform hover:scale-105 hover:shadow-xl`}
-              style={{
-                height: "auto",
-                alignSelf: "start",
-                overflow: "hidden",
-              }}
-              role="region"
-              aria-labelledby={`product-title-${product.id}`}
-            >
-              <h2
-                id={`product-title-${product.id}`}
-                className="mb-2 text-2xl font-semibold text-gray-900 transition-colors duration-200 group-hover:text-blue-600"
-              >
-                {product.title}
-              </h2>
-
-              {product.image_url ? (
-                <img
-                  className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
-                  src={product.image_url}
-                  alt={`${product.title} product image`}
-                  onClick={() => handleImageClick(product)}
-                />
-              ) : product.image ? (
-                <img
-                  className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
-                  src={convertBlobToBase64(product.image)}
-                  alt={`${product.title} product image`}
-                  onClick={() => handleImageClick(product)}
-                />
-              ) : (
-                <img
-                  className="object-cover w-full h-48 mb-4 transition-all duration-200 rounded-lg shadow-sm hover:shadow-md"
-                  src={noImage}
-                  alt="No image available"
-                />
-              )}
-              <Variants product={product} setProducts={setProducts} />
-              <p className="mb-4 text-sm leading-relaxed text-gray-700">
-                {/* only show a portion of the description and show ... */}
-                {product.description.length > 20
-                  ? product.description.substring(0, 30) + "..."
-                  : product.description}
-              </p>
-              <button
-                onClick={() => handleAddToCart(product, index)}
-                className={`w-full rounded bg-gradient-to-r ${addToCartButton} py-2 text-white transition-all duration-400 hover:bg-gradient-to-l focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  isAnimating[index] ? "cursor-not-allowed opacity-50" : ""
-                }`}
-                disabled={isAnimating[index]}
-                aria-disabled={isAnimating[index]}
-                aria-label={`Add ${product.title} to cart`}
-              >
-                Add to Cart
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Modal for viewing product image */}
-        {isModalOpen && selectedProduct && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-title"
-          >
-            <div
-              className="relative w-full max-w-lg max-h-screen p-4 mx-auto overflow-y-auto text-black bg-white rounded-lg shadow-lg md:p-6"
-              ref={modalRef}
-              role="document"
-            >
-              <button
-                onClick={handleCloseModal}
-                className="absolute p-2 text-2xl font-bold right-4 top-4 md:text-lg"
-                aria-label="Close modal"
-              >
-                &times;
-              </button>
-              <img
-                className="object-contain w-full h-60 md:h-96"
-                src={
-                  selectedProduct.image_url ||
-                  convertBlobToBase64(selectedProduct.image)
-                }
-                alt={selectedProduct.title}
-              />
-              <h2
-                id="modal-title"
-                className="mt-4 text-xl font-semibold text-center md:text-2xl"
-              >
-                {selectedProduct.title}
-              </h2>
-              <p className="mt-2 text-sm text-center md:text-base">
-                {selectedProduct.description}
-              </p>
-              <p className="mt-2 text-lg font-bold text-center">
-                Price: ${selectedProduct.price}
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-    </>
-  )
+    </div>
+  );
 }
 
 MerchPage.propTypes = {
-  storeId: propTypes.number.isRequired,
   addToCart: propTypes.func.isRequired,
-  cartItems: propTypes.array.isRequired,
+  storeId: propTypes.number.isRequired,
   isMobile: propTypes.bool.isRequired,
-}
+};
 
-export default MerchPage
+export default MerchPage;

@@ -235,7 +235,6 @@ CartPopOut.propTypes = {
   ).isRequired,
   isSidebarOpen: propTypes.bool.isRequired,
   setSidebarOpen: propTypes.func.isRequired,
-  isCollapsed: propTypes.bool.isRequired,
 };
 
 export default CartPopOut;

@@ -116,7 +116,7 @@ function AddProductForm({ storeId, products, setProducts }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const apiUrl = `${window.location.protocol}//${window.location.hostname}:3082/api/products`;
+    const apiUrl = `https://vps.infinitepixel.dev:3082/api/products`;
 
     const data = new FormData();
     data.append("title", formData.title);

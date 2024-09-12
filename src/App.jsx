@@ -1,4 +1,4 @@
-const DevMode = true;
+const DevMode = false;
 //Be sure to change the base in vite.config.js to the correct path
 //Home.jx
 
@@ -203,8 +203,9 @@ const App = () => {
             element={
               <Merch
                 theme={theme}
-                cartItems={cartItems}
                 addToCart={addToCart}
+                cartItems={cartItems}
+                setCartItems={setCartItems}
                 storeId={storeId}
                 isMobile={isMobile}
               />
