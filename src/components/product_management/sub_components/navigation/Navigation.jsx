@@ -2,19 +2,19 @@
 A component to manage the navigation bar for the store
 */
 
-//INFO React Libraries
+// INFO React Libraries
 import { useEffect, useState, useRef, useCallback } from "react";
 import propTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 
-//INFO Animation Libraries
+// INFO Animation Libraries
 import { gsap } from "gsap";
 
-//INFO Icons
+// INFO Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faBarsStaggered } from "@fortawesome/free-solid-svg-icons";
 
-//INFO Sub-components
+// INFO Sub-components
 import AudioPlayer from "@audio_product_management/AudioPlayer";
 import CartPopOut from "@sub-menus_product_management/CartPopOut";
 
@@ -105,7 +105,7 @@ const Navigation = ({
           gsap.to(navRef.current, { opacity: 0, duration: 0.5 });
           setIsCollapsed(true);
         }
-      }, 3000); // Auto-close after 5 seconds of inactivity
+      }, 3000); // Auto-close after 3 seconds of inactivity
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -120,16 +120,27 @@ const Navigation = ({
       const collapsedState = isCollapsed
         ? { opacity: 1, display: "flex", pointerEvents: "auto" }
         : {
-            opacity: isMobile ? 0.5 : 0,
+            opacity: 0,
             display: "none",
             pointerEvents: "none",
           };
-      gsap.to(navBarRef.current, {
-        ...collapsedState,
-        height: isCollapsed ? "auto" : 0,
-        duration: 0.5,
-        ease: "power2.out",
-      });
+
+      // Adjust visibility logic for desktop and mobile separately
+      if (!isMobile) {
+        gsap.to(navBarRef.current, {
+          opacity: isCollapsed ? 1 : 0,
+          display: isCollapsed ? "block" : "none",
+          duration: 0.5,
+          ease: "power2.out",
+        });
+      } else {
+        gsap.to(navBarRef.current, {
+          ...collapsedState,
+          height: isCollapsed ? "auto" : 0,
+          duration: 0.5,
+          ease: "power2.out",
+        });
+      }
 
       if (isCollapsed) {
         // Add blur class on expand
@@ -224,7 +235,7 @@ const Navigation = ({
         >
           <button
             onClick={toggleNavbar}
-            className="p-2 min-w-8 text-white rounded-lg bg-lime-600 hover:bg-lime-700"
+            className="p-2 text-slate-200 rounded-lg bg-lime-600 hover:bg-lime-700"
             aria-expanded={!isCollapsed}
           >
             <FontAwesomeIcon
@@ -240,10 +251,14 @@ const Navigation = ({
         id="navigation"
         role="navigation"
         aria-label="Main Navigation"
-        className={`fixed top-0 w-full border-b-2 shadow-lg shadow-border-bottom border-lime-600 z-50 transition-all duration-300 ease-in-out bg-black bg-opacity-90 backdrop-blur-xl ${
-          theme === "dark" ? " text-white" : "bg-gray-100"
+        className={`fixed top-0 w-full border-b-2 shadow-lg border-lime-600 z-50 transition-all duration-300 ease-in-out bg-black bg-opacity-90 backdrop-blur-lg ${
+          theme === "dark" ? "text-slate-200" : "bg-gray-100"
         }`}
-        style={{ opacity: 1, zIndex: 900 }}
+        style={{
+          opacity: isCollapsed && !isMobile ? 0 : 1,
+          display: isCollapsed && !isMobile ? "none" : "block",
+          zIndex: 900,
+        }}
       >
         <ul
           className={`px-8 ${
@@ -259,7 +274,7 @@ const Navigation = ({
                     ? "text-lime-500"
                     : "text-black"
                   : theme === "dark"
-                  ? "text-white"
+                  ? "text-slate-200"
                   : "text-black"
               }`}
               onClick={() => handleItemClick(item)}
@@ -288,12 +303,12 @@ const Navigation = ({
         </ul>
       </nav>
 
-      {/*REVIEW Dev Mode Dashboard Button  */}
+      {/* REVIEW Dev Mode Dashboard Button */}
       {/* TODO Remove in Production!!!! */}
       {DevMode && (
         <div
-          className={`fixed p-2 cursor-pointer  ${
-            selected === "dev" ? "text-lime-500" : "text-white"
+          className={`fixed p-2 cursor-pointer ${
+            selected === "dev" ? "text-lime-500" : "text-slate-200"
           }`}
           onClick={() => handleItemClick("dev")}
           role="menuitem"
