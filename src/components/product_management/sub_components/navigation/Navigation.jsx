@@ -202,9 +202,10 @@ const Navigation = ({
           aria-label="Open/Close Navigation Menu"
           role="button"
           tabIndex={0}
-          className="fixed top-[1em] left-8 transform -translate-x-1/2 z-50 cursor-pointer"
+          className="fixed top-[1em] left-8 transform -translate-x-1/2 cursor-pointer"
           onClick={toggleNavbar}
           onKeyDown={(e) => e.key === "Enter" && toggleNavbar()}
+          style={{ zIndex: 1000 }}
         >
           <FontAwesomeIcon
             color="#E2E8F0"
@@ -219,7 +220,7 @@ const Navigation = ({
           ref={hamburgerRef}
           aria-label="Open/Close Menu"
           className="fixed pl-4 top-4"
-          style={{ zIndex: 1000 }}
+          style={{ zIndex: 2000 }}
         >
           <button
             onClick={toggleNavbar}
@@ -239,9 +240,9 @@ const Navigation = ({
         id="navigation"
         role="navigation"
         aria-label="Main Navigation"
-        className={`fixed top-0 w-full border-b-2 shadow-lg shadow-border-bottom border-lime-600 z-50 transition-all duration-300 ease-in-out bg-black bg-opacity-90 ${
+        className={`fixed top-0 w-full border-b-2 shadow-lg shadow-border-bottom border-lime-600 z-50 transition-all duration-300 ease-in-out bg-black bg-opacity-90 backdrop-blur-xl ${
           theme === "dark" ? " text-white" : "bg-gray-100"
-        } backdrop-blur-xl`} // Adding Tailwind's backdrop-blur-lg class
+        }`}
         style={{ opacity: 1, zIndex: 900 }}
       >
         <ul
@@ -279,8 +280,8 @@ const Navigation = ({
           ))}
 
           <div
-            className={`relative top-[-1rem] ${isMobile ? "" : "right-12"}`}
-            style={{ minWidth: "5em" }}
+            className={`relative top-[-1rem] ${isMobile ? "" : "right-14"}`}
+            style={{ minWidth: "4em", maxWidth: "8em" }}
           >
             <AudioPlayer theme={theme} />
           </div>
