@@ -31,7 +31,7 @@ const Navigation = ({
   const location = useLocation();
 
   const [selected, setSelected] = useState(""); // Tracks the currently selected menu item
-  const [isCollapsed, setIsCollapsed] = useState(null); // Tracks the state of the navbar (collapsed/expanded)
+  const [isCollapsed, setIsCollapsed] = useState(true); // Tracks the state of the navbar (collapsed/expanded)
   const [isUserClosed, setIsUserClosed] = useState(false); // Tracks if the user manually closed the navbar
   const navBarRef = useRef(null); // Ref for the navbar element
   const navRef = useRef(null); // Ref for the navigation container element
@@ -247,7 +247,7 @@ const Navigation = ({
         <ul
           className={`px-8 ${
             isCollapsed && isMobile ? "hidden" : "flex"
-          } pt-4 flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
+          } pt-4 flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-8 font-extrabold transition-all duration-300 ease-in-out`}
         >
           {["home", "merch", "music", "tour", "lore", "booking"].map((item) => (
             <li
@@ -284,32 +284,35 @@ const Navigation = ({
           >
             <AudioPlayer theme={theme} />
           </div>
-
-          {DevMode && (
-            <li
-              className={`p-2 cursor-pointer relative ${
-                selected === "dev" ? "text-lime-500" : "text-white"
-              }`}
-              onClick={() => handleItemClick("dev")}
-              role="menuitem"
-              aria-label="Navigate to Developer Mode"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === "Enter" && handleItemClick("dev")}
-            >
-              <a href={`${base}/dashboard`} className="no-underline">
-                <span className="text-rose-700">(DevMode Enabled)</span>
-                <br />
-                Admin Dashboard
-              </a>
-              <span
-                className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
-                  selected === "dev" ? "bg-lime-500" : null
-                } transition-all duration-300 ease-in-out`}
-              ></span>
-            </li>
-          )}
         </ul>
       </nav>
+
+      {/*REVIEW Dev Mode Dashboard Button  */}
+      {/* TODO Remove in Production!!!! */}
+      {DevMode && (
+        <div
+          className={`fixed p-2 cursor-pointer  ${
+            selected === "dev" ? "text-lime-500" : "text-white"
+          }`}
+          onClick={() => handleItemClick("dev")}
+          role="menuitem"
+          aria-label="Navigate to Developer Mode"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && handleItemClick("dev")}
+          style={{ zIndex: 1000, bottom: 0 }}
+        >
+          <a href={`${base}/dashboard`} className="no-underline">
+            <span className="text-rose-700">(DevMode Enabled)</span>
+            <br />
+            Admin Dashboard
+          </a>
+          <span
+            className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
+              selected === "dev" ? "bg-lime-500" : null
+            } transition-all duration-300 ease-in-out`}
+          ></span>
+        </div>
+      )}
 
       <div
         className="fixed transition-all duration-300 ease-in-out"

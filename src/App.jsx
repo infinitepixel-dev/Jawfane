@@ -49,35 +49,22 @@ const App = () => {
   const [isMobile, setIsMobile] = useState(
     window.innerWidth < 768 ? true : false
   );
+
   // Cart Items
+  // Set whether to store cart items in localStorage
+  const enableLocalStorage = true; //INFO Toggle this to true or false
+
   //REVIEW - added test product to cartItems
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      title: "Product 1",
-      price: "19.99",
-      quantity: 1,
-      description: "Description of product 1",
-      category: "Category 1",
-      product_id: "P001",
-      created_at: "2024-09-07T17:08:19.000Z",
-      image_url:
-        "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSpqwW2DCVf862oiFLcesO0FuaUhZkrwczFiEoXLjoWaBad5-74aFTP-TKMmn5eh8IUy4CdtKC-g5VsRiU31wXEVMvokvhbsfy8r2KVTwsgzDIt6uvh-fX2BGPs7Ad_WgWdis6EhltuVA&usqp=CAc",
-      image: null,
-      product_weight: "0.50",
-      weight_unit: "kg",
-      product_dimensions: "10x5x2 cm",
-      meta_title: "Meta Title 1",
-      meta_description: "Meta Description 1",
-      meta_keywords: "keyword1, keyword2, keyword3",
-      status: 1,
-      featured: 1,
-      sale: 1,
-      discount_price: "15.99",
-      discount_start: "2024-09-07T04:00:00.000Z",
-      discount_end: "2024-09-07T04:00:00.000Z",
-    },
-  ]);
+  // const [cartItems, setCartItems] = useState([]);
+  //v2 w/ localStorage
+  const [cartItems, setCartItems] = useState(() => {
+    // Load cart from localStorage if enabled and exists
+    if (enableLocalStorage) {
+      const savedCart = localStorage.getItem("cartItems");
+      return savedCart ? JSON.parse(savedCart) : [];
+    }
+    return [];
+  });
 
   // eslint-disable-next-line no-unused-vars
   const [enabledPayments, setEnabledPayments] = useState({
@@ -93,32 +80,71 @@ const App = () => {
     }
   }, []);
 
+  // Effect to handle saving cart items to localStorage if enabled
+  useEffect(() => {
+    if (enableLocalStorage) {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    }
+  }, [cartItems]);
+
   const addToCart = (product) => {
-    const existingProduct = cartItems.find((item) => item.id === product.id);
+    // Function to check if a product with the same id and variant already exists in the cart
+    const isSameProductVariant = (item, product) => {
+      // Compare the id and all variants (or any other unique attributes like selectedSize or selectedColor)
+      return (
+        item.id === product.id &&
+        item.selectedSize === product.selectedSize &&
+        item.selectedColor === product.selectedColor
+      );
+    };
+
+    // Check if a product with the same id and variants exists in the cart
+    const existingProduct = cartItems.find((item) =>
+      isSameProductVariant(item, product)
+    );
+
     if (existingProduct) {
+      console.log("Product already exists in cart", existingProduct);
+
+      // If a product with the same variant exists, just update the quantity
       setCartItems(
         cartItems.map((item) =>
-          item.id === product.id
+          isSameProductVariant(item, product)
             ? { ...item, quantity: item.quantity + 1 }
             : item
         )
       );
     } else {
+      // If no matching product with the same variants exists, add as a new product object
       setCartItems([...cartItems, { ...product, quantity: 1 }]);
     }
-
-    // console.log("Cart Items:", cartItems);
   };
 
   const removeFromCart = (id) => {
     setCartItems(cartItems.filter((item) => item.id !== id));
   };
 
-  const updateQuantity = (id, quantity) => {
+  // const updateQuantity = (id, quantity) => {
+  //   setCartItems(
+  //     cartItems.map((item) =>
+  //       item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
+  //     )
+  //   );
+  // };
+
+  const updateQuantity = (id, quantity, selectedSize, selectedColor) => {
     setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-      )
+      cartItems.map((item) => {
+        // Compare both the id and the variant (selectedSize, selectedColor) to find the exact match
+        if (
+          item.id === id &&
+          item.selectedSize === selectedSize &&
+          item.selectedColor === selectedColor
+        ) {
+          return { ...item, quantity };
+        }
+        return item;
+      })
     );
   };
 
@@ -143,7 +169,7 @@ const App = () => {
   };
 
   return (
-    <Router basename="/dev">
+    <Router basename={DevMode ? "/dev" : ""}>
       <div
         id="main-app"
         className={`app-container ${theme} overflow-hidden bg-black`}

@@ -190,7 +190,7 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
                               Quantity: {item.quantity}
                             </p>
                           </div>
-                          <p className="text-black">${item.price}</p>
+                          <p className="text-black">${item.price}/ea</p>
                         </div>
                       </li>
                       <hr className="border-gray-400 mb-4" />

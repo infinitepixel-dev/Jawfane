@@ -22,7 +22,7 @@ const CheckoutPage = ({
   setIsMobile,
 }) => {
   const [clientSecret, setClientSecret] = useState(null);
-  const apiUrl = `${window.location.protocol}//${window.location.hostname}:3040/api/payment`;
+  const apiUrl = `https://vps.infinitepixel.dev:3040/api/payment`;
 
   // Calculate the total in cents for the payment
   const calculateTotalInCents = (cartItems) => {
@@ -79,7 +79,7 @@ const CheckoutPage = ({
           <div className="flex min-h-screen items-center justify-center bg-gray-50">
             <div className="w-full max-w-md">
               <h2 className="mb-8 text-center text-2xl font-bold">Checkout</h2>
-              <CheckoutForm clientSecret={clientSecret} />
+              <CheckoutForm clientSecret={clientSecret} cartItems={cartItems} />
             </div>
           </div>
         </Elements>
