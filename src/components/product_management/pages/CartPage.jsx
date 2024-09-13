@@ -1,25 +1,25 @@
-//CartPage.jsx
+// CartPage.jsx
 
 /*
-A component that displays the items in the cart
+A component that populates the cart page
 */
 
 //INFO React Libraries
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import propTypes from "prop-types";
-
-//INFO Animation Libraries
-import { gsap } from "gsap";
-
-//INFO Icons
-import { Trash, Trash2 } from "react-feather";
 import { Link } from "react-router-dom";
 
-//INFO Shipping API
-import USPSApi from "@apis_product_management//shipping/usps/USPSApi";
-
-//INFO Sub-components imports
+//INFO Sub-components
+import CartItem from "@apis_product_management/view-cart/CartItem";
+import DeleteModal from "@apis_product_management/view-cart/DeleteModal";
+import EmptyCartModal from "@apis_product_management/view-cart/EmptyCartModal";
 import Navigation from "@navigation_product_management/Navigation";
+
+//INFO Icons
+import { Trash2 } from "react-feather";
+
+//API Shipping API
+import USPSApi from "@apis_product_management/shipping/usps/USPSApi";
 
 function CartPage({
   cartItems,
@@ -33,111 +33,42 @@ function CartPage({
   isMobile,
   setIsMobile,
 }) {
-  console.log("Cart Page Items:", cartItems);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isEmptyCartModalVisible, setIsEmptyCartModalVisible] = useState(false);
 
-  const itemRefs = useRef([]); // Initialize with an empty array
-  const [isModalVisible, setIsModalVisible] = useState(false); // Track modal visibility
-  const [itemToDelete, setItemToDelete] = useState(null); // Track which item to delete
-  const [deletingItemIndex, setDeletingItemIndex] = useState(null); // Track the index of the item being deleted
-  const [isEmptyCartModalVisible, setIsEmptyCartModalVisible] = useState(false); // Track empty cart modal
-
-  const convertBlobToBase64 = (blob) => {
-    if (!blob) return null;
-
-    const byteArray = new Uint8Array(blob.data);
-    const base64String = btoa(
-      byteArray.reduce((data, byte) => data + String.fromCharCode(byte), "")
-    );
-
-    return `data:image/jpeg;base64,${base64String}`;
-  };
-
-  // This effect only runs once when the component mounts and when new items are added
-  useEffect(() => {
-    // Reset itemRefs based on the number of cart items
-    itemRefs.current = Array(cartItems.length)
-      .fill()
-      .map((_, i) => itemRefs.current[i] || null);
-
-    // Animate cart items only when they are first added
-    if (cartItems.length > 0 && itemRefs.current.every((ref) => ref !== null)) {
-      gsap.fromTo(
-        itemRefs.current,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.2,
-          duration: 1,
-          ease: "power3.out",
-        }
-      );
-    }
-  }, [cartItems.length]); // Only trigger this effect when the number of cart items changes
-
-  const calculateTotal = () => {
-    return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
-
-  const handleIncrease = (id, currentQuantity) => {
-    updateQuantity(id, currentQuantity + 1);
-  };
-
-  const handleDecrease = (id, currentQuantity) => {
-    if (currentQuantity > 1) {
-      updateQuantity(id, currentQuantity - 1);
-    }
-  };
-
-  const showDeleteModal = (item, index) => {
+  const showDeleteModal = (item) => {
     setItemToDelete(item);
-    setDeletingItemIndex(index);
     setIsModalVisible(true);
   };
 
   const handleDeleteConfirm = () => {
-    if (deletingItemIndex !== null) {
-      // Animate item removal
-      const tl = gsap.timeline({
-        onComplete: () => {
-          // Remove the item from the cart after animation completes
-          removeFromCart(itemToDelete.id);
-          setIsModalVisible(false); // Hide modal after deletion
-        },
-      });
-
-      tl.to(itemRefs.current[deletingItemIndex], {
-        opacity: 0,
-        y: -50,
-        duration: 0.5,
-        ease: "power3.in",
-      });
-    }
+    removeFromCart(itemToDelete.id);
+    setIsModalVisible(false);
   };
 
   const handleDeleteCancel = () => {
     setIsModalVisible(false);
   };
 
-  // Show the confirmation modal before emptying the cart
   const handleEmptyCartClick = () => {
     setIsEmptyCartModalVisible(true);
   };
 
-  // Confirm emptying the cart
   const handleEmptyCartConfirm = () => {
-    setCartItems([]); // Clear all cart items at once
-    setIsEmptyCartModalVisible(false); // Hide the modal
+    setCartItems([]);
+    setIsEmptyCartModalVisible(false);
   };
 
-  // Cancel emptying the cart
   const handleEmptyCartCancel = () => {
     setIsEmptyCartModalVisible(false);
   };
 
-  console.log("Cart Items:", cartItems);
+  const calculateTotal = () => {
+    return cartItems
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toFixed(2);
+  };
 
   return (
     <>
@@ -151,113 +82,61 @@ function CartPage({
         cartItems={cartItems}
       />
 
-      <div className="container-fluid mx-auto mb-20 mt-4 p-8 text-slate-200 bg-slate-800">
-        <h1 className="mb-8 text-center text-4xl font-bold">Shopping Cart</h1>
+      <div className="container-fluid min-h-screen mx-auto mb-20 mt-4 p-8 text-slate-200 bg-slate-800">
+        <h1 className="mb-8 text-center text-4xl font-bold text-white">
+          Your Shopping Cart
+        </h1>
 
-        <div className="grid grid-cols-1 gap-6 ">
-          {cartItems.length === 0 ? (
-            <p>Your cart is empty</p>
-          ) : (
-            cartItems.map((item, index) => (
-              <div
+        {cartItems.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <p className="text-lg font-medium text-gray-400">
+              Your cart is currently empty.
+            </p>
+            <Link
+              className="mt-4 rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
+              to={`/#merch`}
+            >
+              Continue Shopping
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6">
+            {cartItems.map((item, index) => (
+              <CartItem
                 key={item.id}
-                ref={(el) => (itemRefs.current[index] = el)} // Attach GSAP ref to each item
-                className="flex flex-col items-center justify-between rounded bg-slate-800 p-4 shadow md:flex-row"
-              >
-                <div className="flex w-full items-center space-x-4 md:w-auto">
-                  {item.image_url ? (
-                    <img
-                      className="mb-4 h-32 w-32 rounded-lg object-cover md:mb-0 md:h-48 md:w-48"
-                      src={item.image_url}
-                      alt={item.title}
-                    />
-                  ) : (
-                    item.image && (
-                      <img
-                        className="mb-4 h-32 w-32 rounded-lg object-cover md:mb-0 md:h-48 md:w-48"
-                        src={convertBlobToBase64(item.image)}
-                        alt={item.title}
-                      />
-                    )
-                  )}
-                  <div className="flex flex-col">
-                    <h2 className="text-center text-lg font-semibold md:text-left">
-                      {item.title}
-                    </h2>
-                    <p className="text-center text-gray-400 md:text-left">
-                      ${item.price}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4 flex flex-col items-center space-x-0 space-y-2 md:mt-0 md:flex-row md:space-x-4 md:space-y-0">
-                  <div className="flex items-center">
-                    {/* Quantity controls */}
-                    <button
-                      onClick={() => handleDecrease(item.id, item.quantity)}
-                      className="flex h-12 w-12 items-center justify-center rounded-l bg-gray-700 text-2xl text-white hover:bg-gray-600"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      readOnly
-                      className="h-12 w-16 border-0 bg-white text-center text-lg text-black"
-                    />
-                    <button
-                      onClick={() => handleIncrease(item.id, item.quantity)}
-                      className="flex h-12 w-12 items-center justify-center rounded-r bg-gray-700 text-2xl text-white hover:bg-gray-600"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  {/* Delete Button */}
-                  <button
-                    onClick={() => showDeleteModal(item, index)}
-                    className="relative text-red-500"
-                  >
-                    <Trash className="h-8 w-8" />
-                  </button>
-                </div>
-                <p className="mt-4 text-center text-gray-400 md:text-right ">
-                  Total: ${(item.price * item.quantity).toFixed(2)}
-                </p>
-
-                {/*REVIEW - USPS Calculate */}
-                <USPSApi />
-
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="text-red-500"
-                ></button>
-              </div>
-            ))
-          )}
-        </div>
+                item={item}
+                index={index}
+                updateQuantity={updateQuantity}
+                showDeleteModal={showDeleteModal}
+              />
+            ))}
+          </div>
+        )}
 
         {cartItems.length > 0 && (
-          <div className="flex items-center justify-between">
-            {/* Empty Cart */}
-            <div>
-              <span
-                onClick={handleEmptyCartClick} // Show confirmation modal
-                className="relative top-4 cursor-pointer text-rose-500"
+          <div className="mt-8 flex flex-col items-center justify-between space-y-6 md:flex-row md:space-y-0">
+            <div className="flex flex-col items-center space-y-2">
+              <button
+                onClick={handleEmptyCartClick}
+                className="flex items-center space-x-2 text-red-500 hover:text-red-700 duration-300"
               >
-                <div className="flex-between flex">
-                  Empty Cart <Trash2 className="h-8 w-8" />
-                </div>
-              </span>
+                <Trash2 className="h-6 w-6" />
+                <span>Empty Cart</span>
+              </button>
             </div>
 
-            {/* Proceed to Checkout */}
-            <div className="relative mt-8  top-0">
-              <h2 className="relative bottom-4 text-2xl font-bold">
+            {/* Shipping API */}
+            <div className="mt-8">
+              <USPSApi />
+            </div>
+
+            <div className="flex flex-col items-center">
+              <h2 className="text-3xl font-bold text-white">
                 Total: ${calculateTotal()}
               </h2>
               <Link
+                className="mt-4 w-full rounded-lg bg-green-700 px-6 py-3 text-lg font-bold text-white hover:bg-green-500 duration-300 md:w-auto"
                 to="/checkout"
-                className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               >
                 Proceed to Checkout
               </Link>
@@ -265,57 +144,20 @@ function CartPage({
           </div>
         )}
 
-        {/* Delete Confirmation Modal */}
+        {/* Modals */}
         {isModalVisible && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-96 rounded-lg bg-white bg-opacity-90 p-6 text-black shadow-lg">
-              <h2 className="mb-4 text-lg font-bold">Confirm Deletion</h2>
-              <p className="mb-4">
-                Are you sure you want to remove{" "}
-                <strong>{itemToDelete.title}</strong> from the cart?
-              </p>
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={handleDeleteCancel}
-                  className="rounded bg-gray-300 px-4 py-2 text-black hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDeleteConfirm}
-                  className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
+          <DeleteModal
+            itemToDelete={itemToDelete}
+            handleDeleteCancel={handleDeleteCancel}
+            handleDeleteConfirm={handleDeleteConfirm}
+          />
         )}
 
-        {/* Empty Cart Confirmation Modal */}
         {isEmptyCartModalVisible && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-96 rounded-lg bg-white bg-opacity-90 p-6 text-black shadow-lg">
-              <h2 className="mb-4 text-lg font-bold">Confirm Empty Cart</h2>
-              <p className="mb-4">
-                Are you sure you want to empty your entire cart?
-              </p>
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={handleEmptyCartCancel}
-                  className="rounded bg-gray-300 px-4 py-2 text-black hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleEmptyCartConfirm}
-                  className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-                >
-                  Empty Cart
-                </button>
-              </div>
-            </div>
-          </div>
+          <EmptyCartModal
+            handleEmptyCartCancel={handleEmptyCartCancel}
+            handleEmptyCartConfirm={handleEmptyCartConfirm}
+          />
         )}
       </div>
     </>

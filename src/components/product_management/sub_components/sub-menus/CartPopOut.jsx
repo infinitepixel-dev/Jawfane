@@ -89,7 +89,7 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
       // Reset the cart button to follow the navbar or its default position
       gsap.to(cartButtonRef.current, {
         top: "auto", // Position it back to the default when sidebar is closed
-        right: "2em",
+        right: "1em",
         duration: 0.5,
         ease: "power3.in",
         position: "fixed", // Ensure the button stays fixed
@@ -105,11 +105,11 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
   ]);
 
   return (
-    <div className="absolute bottom-16 right-8">
+    <div className="absolute bottom-16">
       <button
         ref={cartButtonRef}
         style={{
-          right: "2em",
+          right: "1em",
           zIndex: 800,
           opacity: cartItems.length === 0 ? 0.5 : 0.9,
           cursor: cartItems.length === 0 ? "not-allowed" : "pointer",
@@ -190,7 +190,7 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
                               Quantity: {item.quantity}
                             </p>
                           </div>
-                          <p className="text-black">${item.price}</p>
+                          <p className="text-black">${item.price}/ea</p>
                         </div>
                       </li>
                       <hr className="border-gray-400 mb-4" />

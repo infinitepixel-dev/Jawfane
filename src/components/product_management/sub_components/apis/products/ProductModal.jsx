@@ -26,7 +26,7 @@ const ProductModal = ({
   if (!isOpen || !product) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 backdrop-blur-md transition duration-500">
       <div
         ref={modalRef}
         className="relative p-4 bg-white rounded-lg shadow-lg"
@@ -37,7 +37,8 @@ const ProductModal = ({
         <img
           src={product.image_url || convertBlobToBase64(product.image)}
           alt={product.title}
-          className="w-full h-60"
+          className="w-min object-contain"
+          style={{ minHeight: "50vh" }}
         />
         <h2>{product.title}</h2>
         <p>{product.description}</p>
