@@ -91,6 +91,8 @@ function MerchPage({ addToCart, storeId }) {
 
   //
   const handleAddToCart = (product, index) => {
+    console.log("hAddToCart Product:", product);
+
     // Prevent adding to cart if the animation is still playing
     if (isAnimating[index]) return;
 
@@ -165,7 +167,6 @@ function MerchPage({ addToCart, storeId }) {
           isOpen={isModalOpen}
           product={selectedProduct}
           handleClose={handleCloseModal}
-          convertBlobToBase64={() => {}}
         />
       )}
     </div>

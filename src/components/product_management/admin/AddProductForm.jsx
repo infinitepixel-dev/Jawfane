@@ -1,48 +1,24 @@
-//AddProductForm.jsx
+// AddProductForm.jsx
 
 /*
-A form component to add a new product
+A form component to add a new product with AlertModal integration
 */
 
-//INFO React Libraries
+// INFO: React Libraries
 import { useState, useEffect, useRef } from "react";
 import propTypes from "prop-types";
 
-//INFO GSAP for animations
+// INFO: GSAP for animations
 import { gsap } from "gsap";
 
-//REVIEW
-// eslint-disable-next-line no-unused-vars
-function AddProductForm({ storeId, products, setProducts }) {
+// INFO: Sub-Components
+import AlertModal from "@widgets_product_management/AlertModal";
+
+function AddProductForm({ storeId, setProducts }) {
   console.log("AddProductForm storeId: ", storeId);
-  // console.log("AddProductForm products: ", setProducts);
 
-  /*
-    id: product.id,
-      title: product.title ?? "",
-      price: product.price ?? "",
-      quantity: product.quantity ?? 0,
-      description: product.description ?? "",
-      category: product.category ?? "",
-      product_id: product.product_id ?? "",
-      created_at: product.created_at ?? "",
-      image_url: product.image_url ?? "",
-      image: product.image ?? "",
-      product_weight: product.product_weight ?? "",
-      weight_unit: product.weight_unit ?? "",
-      product_dimensions: product.product_dimensions ?? "",
-      meta_title: product.meta_title ?? "",
-      meta_description: product.meta_description ?? "",
-      meta_keywords: product.meta_keywords ?? "",
-      status: product.status ?? "",
-      featured: product.featured ?? "",
-      sale: product.sale ?? "",
-      discount_price: product.discount_price ?? "",
-      discount_start: product.discount_start ?? "",
-      discount_end: product.discount_end ?? "",
-  */
-
-  const [formData, setFormData] = useState({
+  // Initial form data extracted for reusability
+  const initialFormData = {
     title: "",
     price: 0.0,
     quantity: 0,
@@ -64,14 +40,25 @@ function AddProductForm({ storeId, products, setProducts }) {
     discount_price: 0.0,
     discount_start: null,
     discount_end: null,
-  });
+  };
 
-  const [selectedImageType, setSelectedImageType] = useState("file"); // Track selected image type
-  const [preview, setPreview] = useState(""); // For image preview
+  // State for form data
+  const [formData, setFormData] = useState(initialFormData);
+
+  // Track selected image type ('file' or 'url')
+  const [selectedImageType, setSelectedImageType] = useState("file");
+
+  // For image preview
+  const [preview, setPreview] = useState("");
+
+  // State for AlertModal visibility and message
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   // Ref for GSAP animations
   const formRef = useRef(null);
 
+  // Handle file input change and image compression
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     const img = document.createElement("img");
@@ -87,6 +74,7 @@ function AddProductForm({ storeId, products, setProducts }) {
         let width = img.width;
         let height = img.height;
 
+        // Calculate new dimensions while preserving aspect ratio
         if (width > height) {
           if (width > MAX_WIDTH) {
             height *= MAX_WIDTH / width;
@@ -98,51 +86,50 @@ function AddProductForm({ storeId, products, setProducts }) {
             height = MAX_HEIGHT;
           }
         }
+
         canvas.width = width;
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
 
-        canvas.toBlob((blob) => {
-          setFormData({ ...formData, image: blob });
-          const reader = new FileReader();
-          reader.onloadend = () => setPreview(reader.result);
-          reader.readAsDataURL(blob);
-        }, file.type);
+        // Convert canvas to blob and update formData
+        canvas.toBlob(
+          (blob) => {
+            setFormData({ ...formData, image: blob });
+            const reader = new FileReader();
+            reader.onloadend = () => setPreview(reader.result);
+            reader.readAsDataURL(blob);
+          },
+          file.type,
+          0.9 // Optional: Adjust image quality
+        );
       };
     };
     reader.readAsDataURL(file);
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const apiUrl = `https://vps.infinitepixel.dev:3082/api/products`;
 
+    // Prepare form data for submission
     const data = new FormData();
-    data.append("title", formData.title);
-    data.append("price", formData.price);
-    data.append("quantity", formData.quantity);
-    data.append("description", formData.description);
-    data.append("category", formData.category);
-    data.append("product_id", formData.product_id);
-    data.append("created_at", formData.created_at);
-    data.append("product_weight", formData.product_weight);
-    data.append("weight_unit", formData.weight_unit);
-    data.append("product_dimensions", formData.product_dimensions);
-    data.append("meta_title", formData.meta_title);
-    data.append("meta_description", formData.meta_description);
-    data.append("meta_keywords", formData.meta_keywords);
-    data.append("status", formData.status);
-    data.append("featured", formData.featured);
-    data.append("sale", formData.sale);
-    data.append("discount_price", formData.discount_price);
-    data.append("discount_start", formData.discount_start);
-    data.append("discount_end", formData.discount_end);
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== null && formData[key] !== "") {
+        data.append(key, formData[key]);
+      }
+    });
 
-    if (formData.image_url) {
-      data.append("image_url", formData.image_url); // Append image URL
-    } else if (formData.image) {
-      data.append("image", formData.image); // Append image file
+    console.log("Form data:", formData);
+
+    //if no discount_start dates are set, set them to null
+    if (formData.discount_start === "") {
+      data.set("discount_start", null);
+    }
+
+    if (formData.discount_end === "") {
+      data.set("discount_end", null);
     }
 
     try {
@@ -151,47 +138,45 @@ function AddProductForm({ storeId, products, setProducts }) {
         headers: {
           store_id: storeId,
         },
-        body: data, // Use FormData for file upload
+        body: data,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error:", errorData);
-      } else {
-        //If successful, updates the products array
-        const { id } = await response.json(); // Get the new product ID from the response
 
-        // Build the new product object from formData and the returned ID
+        // Show error message in AlertModal
+        setAlertMessage(
+          `Error: ${errorData.message || "Failed to add product."}`
+        );
+        setShowAlertModal(true);
+      } else {
+        // Get the new product ID from the response
+        const { id } = await response.json();
+
+        // Build the new product object
         const newProduct = {
-          id, // Use the returned id from the response
-          title: formData.title,
-          price: formData.price,
-          quantity: formData.quantity,
-          description: formData.description,
-          category: formData.category,
-          product_id: formData.product_id,
-          created_at: formData.created_at,
-          product_weight: formData.product_weight,
-          weight_unit: formData.weight_unit,
-          product_dimensions: formData.product_dimensions,
-          meta_title: formData.meta_title,
-          meta_description: formData.meta_description,
-          meta_keywords: formData.meta_keywords,
-          status: formData.status,
-          featured: formData.featured,
-          sale: formData.sale,
-          discount_price: formData.discount_price,
-          discount_start: formData.discount_start,
-          discount_end: formData.discount_end,
-          image_url: formData.image_url, // If available
-          image: formData.image, // If available
+          id,
+          ...formData,
         };
 
-        // Append the new product to the current products state
+        // Update the products state
         setProducts((prevProducts) => [...prevProducts, newProduct]);
+
+        // Show success message in AlertModal
+        setAlertMessage("Product added successfully!");
+        setShowAlertModal(true);
+
+        // Reset form data and preview
+        setFormData(initialFormData);
+        setPreview("");
       }
     } catch (err) {
       console.error("Fetch error:", err);
+
+      // Show generic error message in AlertModal
+      setAlertMessage("An error occurred while adding the product.");
+      setShowAlertModal(true);
     }
   };
 
@@ -205,186 +190,206 @@ function AddProductForm({ storeId, products, setProducts }) {
   }, []);
 
   return (
-    <form
-      className="mx-auto max-w-3xl rounded-lg bg-slate-700 p-8 text-white shadow-lg"
-      onSubmit={handleSubmit}
-      ref={formRef} // Attach GSAP animation ref
-    >
-      <h2 className="mb-6 text-center text-3xl font-bold">Add New Product</h2>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {/* Title */}
-        <input
-          type="text"
-          placeholder="Title"
-          value={formData.title || ""} // Ensure the value is always a string
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div className="relative">
+      {/* AlertModal */}
+      {showAlertModal && (
+        <AlertModal
+          message={alertMessage}
+          closeModal={() => setShowAlertModal(false)}
         />
+      )}
 
-        {/* Price */}
-        <input
-          type="number"
-          placeholder="Price"
-          value={formData.price || ""} // Ensure the value is always a string or number
-          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-          className="w-full rounded-lg border  p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        {/* Description */}
-        <textarea
-          placeholder="Description"
-          value={formData.description || ""} // Ensure the value is always a string
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              description: e.target.value,
-            })
-          }
-          className="w-full rounded-lg border  p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 md:col-span-2"
-        />
-
-        {/* Category */}
-        <input
-          type="text"
-          placeholder="Category"
-          value={formData.category || ""} // Ensure the value is always a string
-          onChange={(e) =>
-            setFormData({ ...formData, category: e.target.value })
-          }
-          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        {/* Meta Title */}
-        <input
-          type="text"
-          placeholder="Meta Title"
-          value={formData.meta_title || ""} // Ensure the value is always a string
-          onChange={(e) =>
-            setFormData({ ...formData, meta_title: e.target.value })
-          }
-          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        {/* Meta Description */}
-        <textarea
-          placeholder="Meta Description"
-          value={formData.meta_description || ""} // Ensure the value is always a string
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              meta_description: e.target.value,
-            })
-          }
-          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 md:col-span-2"
-        />
-
-        {/* Meta Keywords */}
-        <input
-          type="text"
-          placeholder="Meta Keywords"
-          value={formData.meta_keywords || ""} // Ensure the value is always a string
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              meta_keywords: e.target.value,
-            })
-          }
-          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        {/* Product ID */}
-      </div>
-
-      <div className="my-6">
-        {/* Radio buttons to select between Image URL and File Upload */}
-        <div className="flex justify-center space-x-4">
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="imageType"
-              value="url"
-              checked={selectedImageType === "url"}
-              onChange={() => {
-                setSelectedImageType("url");
-                setFormData({
-                  ...formData,
-                  image: null,
-                  image_url: "",
-                }); // Clear image and set image_url
-                setPreview(""); // Clear preview
-              }}
-            />
-            <span>Image URL</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="imageType"
-              value="file"
-              checked={selectedImageType === "file"}
-              onChange={() => {
-                setSelectedImageType("file");
-                setFormData({
-                  ...formData,
-                  image_url: "",
-                  image: null,
-                }); // Clear image_url and set image
-                setPreview(""); // Clear preview
-              }}
-            />
-            <span>Upload Image</span>
-          </label>
-        </div>
-
-        {/* Conditionally render either the Image URL input or File input */}
-        {selectedImageType === "file" ? (
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="mt-4 w-full rounded-lg border bg-white p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-            defaultValue={""} // Ensure the value is always a controlled value
-          />
-        ) : (
+      {/* Form */}
+      <form
+        className="mx-auto max-w-3xl rounded-lg bg-slate-700 p-8 text-white shadow-lg"
+        onSubmit={handleSubmit}
+        ref={formRef}
+      >
+        <h2 className="mb-6 text-center text-3xl font-bold">Add New Product</h2>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* Title */}
           <input
             type="text"
-            placeholder="Image URL"
-            value={formData.image_url || ""} // Ensure the value is always a string
+            placeholder="Title"
+            value={formData.title}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
+            className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+
+          {/* Price */}
+          <input
+            type="number"
+            placeholder="Price"
+            value={formData.price}
             onChange={(e) =>
               setFormData({
                 ...formData,
-                image_url: e.target.value,
+                price: parseFloat(e.target.value) || 0,
               })
             }
-            className="mt-4 w-full rounded-lg border bg-white p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+            min="0"
+            step="0.01"
           />
-        )}
-      </div>
 
-      {/* Display image preview */}
-      {preview && (
-        <div className="my-6">
-          <img
-            src={preview}
-            alt="Image preview"
-            className="h-auto w-full rounded-lg"
+          {/* Description */}
+          <textarea
+            placeholder="Description"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                description: e.target.value,
+              })
+            }
+            className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 md:col-span-2"
           />
+
+          {/* Category */}
+          <input
+            type="text"
+            placeholder="Category"
+            value={formData.category}
+            onChange={(e) =>
+              setFormData({ ...formData, category: e.target.value })
+            }
+            className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          {/* Meta Title */}
+          <input
+            type="text"
+            placeholder="Meta Title"
+            value={formData.meta_title}
+            onChange={(e) =>
+              setFormData({ ...formData, meta_title: e.target.value })
+            }
+            className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          {/* Meta Description */}
+          <textarea
+            placeholder="Meta Description"
+            value={formData.meta_description}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                meta_description: e.target.value,
+              })
+            }
+            className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 md:col-span-2"
+          />
+
+          {/* Meta Keywords */}
+          <input
+            type="text"
+            placeholder="Meta Keywords"
+            value={formData.meta_keywords}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                meta_keywords: e.target.value,
+              })
+            }
+            className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          {/* Additional form fields can be added here */}
         </div>
-      )}
 
-      <button
-        type="submit"
-        className="w-full rounded-lg bg-blue-500 px-6 py-3 font-semibold text-white transition-colors duration-300 hover:bg-blue-600"
-      >
-        Add Product
-      </button>
-    </form>
+        <div className="my-6">
+          {/* Radio buttons to select between Image URL and File Upload */}
+          <div className="flex justify-center space-x-4">
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name="imageType"
+                value="url"
+                checked={selectedImageType === "url"}
+                onChange={() => {
+                  setSelectedImageType("url");
+                  setFormData({
+                    ...formData,
+                    image: null,
+                    image_url: "",
+                  });
+                  setPreview("");
+                }}
+              />
+              <span>Image URL</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name="imageType"
+                value="file"
+                checked={selectedImageType === "file"}
+                onChange={() => {
+                  setSelectedImageType("file");
+                  setFormData({
+                    ...formData,
+                    image_url: "",
+                    image: null,
+                  });
+                  setPreview("");
+                }}
+              />
+              <span>Upload Image</span>
+            </label>
+          </div>
+
+          {/* Conditionally render either the Image URL input or File input */}
+          {selectedImageType === "file" ? (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-4 w-full rounded-lg border bg-white p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          ) : (
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={formData.image_url}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  image_url: e.target.value,
+                })
+              }
+              className="mt-4 w-full rounded-lg border bg-white p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          )}
+        </div>
+
+        {/* Display image preview */}
+        {preview && (
+          <div className="my-6">
+            <img
+              src={preview}
+              alt="Image preview"
+              className="h-auto w-full rounded-lg"
+            />
+          </div>
+        )}
+
+        <button
+          type="submit"
+          className="w-full rounded-lg bg-blue-500 px-6 py-3 font-semibold text-white transition-colors duration-300 hover:bg-blue-600"
+        >
+          Add Product
+        </button>
+      </form>
+    </div>
   );
 }
 
 AddProductForm.propTypes = {
   storeId: propTypes.number.isRequired,
-  products: propTypes.array.isRequired,
   setProducts: propTypes.func.isRequired,
 };
 

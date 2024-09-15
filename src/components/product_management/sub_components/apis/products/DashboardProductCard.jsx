@@ -14,12 +14,17 @@ import { gsap } from "gsap";
 import { FaTrash, FaArrowDown } from "react-icons/fa";
 
 //INFO Custom Tailwind Modules
-import CustomHRTagV1 from "../../tailwindModules/CustomHRTagV1";
+import CustomHRTagV1 from "@tailwind-modules_product_management/CustomHRTagV1";
 
 //INFO Widgets
 import AnimatedCheckbox from "@widgets_product_management/AnimatedCheckbox";
 
+//INFO Images
+import noImage from "@assets/images/no-image.webp";
+
 function DashboardProductCard({
+  // eslint-disable-next-line no-unused-vars
+  storeId,
   product,
   editProduct,
   editedData,
@@ -49,13 +54,13 @@ function DashboardProductCard({
   setShowModal,
   isSelected,
   onSelect,
-  // eslint-disable-next-line no-unused-vars
-  storeId,
 }) {
   const checkboxRef = useRef(null); // Ref for the checkbox container background
 
   // Handle the checkbox animation when it is selected
   useEffect(() => {
+    // if checkbox ref is null return
+    if (!checkboxRef.current) return;
     if (isSelected) {
       gsap.to(checkboxRef.current, {
         backgroundColor: "#10b981", // Green background when selected
@@ -69,12 +74,14 @@ function DashboardProductCard({
     }
   }, [isSelected]);
 
-  //for testing
-  // useEffect(() => {
-  //   console.log("Edited Data:", editedData);
-  //   console.log("Image Option:", imageOption);
-  //   console.log("Image URL:", imageUrl);
-  // }, [editedData, imageOption, imageUrl]);
+  //if product id 2 log the product
+  useEffect(() => {
+    if (product.id === 2) {
+      console.log("Product:", product);
+    }
+  }, [product]);
+
+  console.log("Product Image:", product.image);
 
   return (
     <div
@@ -326,25 +333,18 @@ function DashboardProductCard({
           </h2>
           <div className="mt-8">
             {product.image_url ? (
-              // Display image URL if available
               <img
-                className="mb-4 h-48 w-full rounded-lg object-cover shadow-sm transition-all duration-200 hover:shadow-md"
+                className="object-cover w-full h-48"
                 src={product.image_url}
-                alt={`${product.title} product image`}
-              />
-            ) : product.image ? (
-              // Display Image file if available
-              <img
-                className="mb-4 h-48 w-full rounded-lg object-cover shadow-sm transition-all duration-200 hover:shadow-md"
-                src={convertBlobToBase64(product.image)}
-                alt={`${product.title} product image`}
+                alt={product.title}
               />
             ) : (
-              //   No image available
               <img
-                className="mb-4 h-48 w-full rounded-lg object-cover shadow-sm transition-all duration-200 hover:shadow-md"
-                src="public/images/no-image.webp"
-                alt="No image available"
+                className="object-cover w-full h-48"
+                src={
+                  product.image ? convertBlobToBase64(product.image) : noImage
+                }
+                alt={product.title}
               />
             )}
           </div>

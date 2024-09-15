@@ -22,11 +22,17 @@ function Shipping({ storeId }) {
 
   const [shippingOptions, setShippingOptions] = useState({
     flatRate: true, //for dev set to true for force enable
+    usps: false,
   });
 
   // Refs for GSAP animations
   const flatRateRef = useRef(null); //For Dev set to true or false null
+  const uspsRef = useRef(null);
+
   const flatRateCheckboxRef = useRef(null);
+  //REVIEW
+  // eslint-disable-next-line no-unused-vars
+  const uspsCheckboxRef = useRef(null);
 
   //INFO Run GSAP animation for the shipping options when they are rendered
   useLayoutEffect(() => {
@@ -98,6 +104,29 @@ function Shipping({ storeId }) {
                 getShippingOptions={getShippingOptions}
                 saveShippingOptions={saveShippingOptions}
               />
+            </div>
+          )}
+        </div>
+        {/* USPS Shipping */}
+        <div className="shipping-option flex items-center space-x-4">
+          <AnimatedCheckbox
+            isSelected={shippingOptions.usps}
+            onSelect={() => toggleShipping("usps")}
+          />
+          <label
+            htmlFor="usps"
+            className="text-lg cursor-pointer"
+            onClick={() => toggleShipping("usps")}
+          >
+            USPS Shipping
+          </label>
+          {shippingOptions.usps && (
+            <div ref={uspsRef} className="mt-4 w-full">
+              {/* USPS Shipping Component */}
+              {/* <USPSShipping
+                getShippingOptions={getShippingOptions}
+                saveShippingOptions={saveShippingOptions}
+              /> */}
             </div>
           )}
         </div>

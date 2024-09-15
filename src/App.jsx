@@ -18,6 +18,8 @@ import Music from "@components/pages/MusicVideos";
 import Lore from "@components/pages/Lore";
 import Booking from "@components/pages/Booking";
 
+import { ulid } from "ulid";
+
 //INFO Sub-components
 // import BackToTop from "@components/sub-components/BackToTop";
 
@@ -116,35 +118,28 @@ const App = () => {
       );
     } else {
       // If no matching product with the same variants exists, add as a new product object
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
+      setCartItems([
+        ...cartItems,
+        { ...product, quantity: 1, cartItemId: ulid() },
+      ]);
     }
   };
 
-  const removeFromCart = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+  //INFO Remove item from cart
+  // App.js
+
+  const removeFromCart = (cartItemId) => {
+    setCartItems(cartItems.filter((item) => item.cartItemId !== cartItemId));
   };
 
-  // const updateQuantity = (id, quantity) => {
-  //   setCartItems(
-  //     cartItems.map((item) =>
-  //       item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-  //     )
-  //   );
-  // };
+  //INFO Update quantity of an item in the cart
+  // App.js
 
-  const updateQuantity = (id, quantity, selectedSize, selectedColor) => {
+  const updateQuantity = (cartItemId, quantity) => {
     setCartItems(
-      cartItems.map((item) => {
-        // Compare both the id and the variant (selectedSize, selectedColor) to find the exact match
-        if (
-          item.id === id &&
-          item.selectedSize === selectedSize &&
-          item.selectedColor === selectedColor
-        ) {
-          return { ...item, quantity };
-        }
-        return item;
-      })
+      cartItems.map((item) =>
+        item.cartItemId === cartItemId ? { ...item, quantity } : item
+      )
     );
   };
 

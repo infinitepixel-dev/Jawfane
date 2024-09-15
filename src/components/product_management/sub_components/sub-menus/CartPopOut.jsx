@@ -104,6 +104,8 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
     sidebarRef,
   ]);
 
+  console.log("CartPopOut cartItems:", cartItems);
+
   return (
     <div className="absolute bottom-16">
       <button
@@ -179,7 +181,7 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
                 <hr className="border-gray-400 mb-4" />
                 <ul className="mt-16">
                   {cartItems.map((item) => (
-                    <div key={item.id}>
+                    <div key={item.cartItemId}>
                       <li className="mb-4  pb-4">
                         <div className="flex items-center justify-between">
                           <div>

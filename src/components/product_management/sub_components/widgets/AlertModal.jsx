@@ -28,13 +28,13 @@ const AlertModal = ({ message, closeModal }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-lg"
       aria-modal="true"
       role="dialog"
     >
       <div
         ref={modalRef}
-        className="p-6 bg-gray-400 bg-opacity-20 backdrop-blur-md rounded-lg shadow-lg"
+        className="p-6 bg-gray-400 bg-opacity-95 backdrop-blur-md rounded-lg shadow-lg"
       >
         <p className="mb-4 text-lg">{message}</p>
         <button
