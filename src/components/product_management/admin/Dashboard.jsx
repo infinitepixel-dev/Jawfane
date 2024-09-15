@@ -1,3 +1,10 @@
+/*FIXME Product adding / image refresh bug
+
+1. Go to AddProductForm
+2. When adding a new product, navigating back to the Product Manager
+3. Image doesn't refresh unless you refresh the page manually
+*/
+
 //Dashboard.jsx
 
 /*
@@ -30,26 +37,25 @@ import UsersManager from "@admin_product_management/UsersManager";
 import Payments from "@admin_product_management/Payments";
 import Shipping from "@admin_product_management/Shipping";
 
-//INFO Sub-components - apis
+//INFO Apis
 //products
 import DashboardProductCard from "@apis_product_management/products/DashboardProductCard";
 import ProductsAPI from "@apis_product_management/products/ProductsAPI";
 
-//INFO Sub-components - contexts
+//INFO Contexts
 import { AuthContext } from "@contexts_product_management/AuthContext";
 
-//INFO Sub-components - sub-menus
+//INFO Sub-menus
 import AdminSidebar from "@sub-menus_product_management/AdminSidebar";
 
-//INFO Sub-components - utilities
+//INFO Utilities
 import ImageUtility from "@utilities_product_management/ImageUtility";
 import ProductsUtility from "@utilities_product_management/ProductsUtility";
 
-//INFO Sub-components - widgets
-// import BandsInTownEvents from "../sub_components/widgets/BandsInTownEvents";
+//INFO Widgets
+import AlertModal from "@widgets_product_management/AlertModal";
 
 import LoreEditor from "@admin_product_management/LoreEditor";
-// import AlertModal from "@widgets_product_management/AlertModal";
 
 function Dashboard({ storeId }) {
   // console.log("Store ID: ", storeId);
@@ -71,12 +77,6 @@ function Dashboard({ storeId }) {
 
   const [products, setProducts] = useState([]);
 
-  // const { fetchProducts, handleDelete } = ProductsAPI(
-  //   apiUrl,
-  //   setProducts,
-  //   storeId
-  // );3
-
   const { fetchProducts, deleteMultipleProducts } = ProductsAPI(
     apiUrl,
     setProducts,
@@ -93,6 +93,9 @@ function Dashboard({ storeId }) {
     // modalMessage, //example display a message if the image url is wrong
     // confirmDelete,
     // closeModal,
+    showAlertModal,
+    setShowAlertModal,
+    alertMessage,
   } = ProductsUtility(storeId);
   const {
     imageOption,
@@ -341,6 +344,14 @@ function Dashboard({ storeId }) {
           )}
           {selectedPage === "manage-products" && (
             <>
+              {/* AlertModal */}
+              {showAlertModal && (
+                <AlertModal
+                  message={alertMessage}
+                  closeModal={() => setShowAlertModal(false)}
+                />
+              )}
+
               {/* Product Grid */}
               <div className="grid grid-cols-1 gap-6 auto-rows-min sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {products.map((product, index) => {
@@ -378,6 +389,9 @@ function Dashboard({ storeId }) {
                         storeId={storeId}
                         isSelected={selectedProducts.includes(product.id)}
                         onSelect={() => handleProductSelect(product.id)}
+                        showAlertModal={showAlertModal}
+                        setShowAlertModal={setShowAlertModal}
+                        alertMessage={alertMessage}
                       />
                     </div>
                   );

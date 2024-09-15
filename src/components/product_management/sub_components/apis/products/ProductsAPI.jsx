@@ -27,7 +27,11 @@ function ProductsAPI(apiUrl, setProducts, storeId) {
       credentials: "include", // Include credentials (cookies, etc.) if needed
     })
       .then((res) => res.json())
-      .then((data) => setProducts(data))
+      .then((data) => {
+        console.log("Products fetched successfully", data);
+
+        return setProducts(data);
+      })
       .catch((err) =>
         console.error("Uh oh! There was an error getting products", err)
       );
@@ -92,57 +96,6 @@ function ProductsAPI(apiUrl, setProducts, storeId) {
     // Wait for all delete operations to complete
     await Promise.all(deletePromises);
   };
-
-  // Handle product deletion
-  // const handleDelete = async (id, index, trashIconRefs, cardRefs) => {
-  //   // console.log(
-  //   //     'Products API handleDelete: ',
-  //   //     id,
-  //   //     index,
-  //   //     trashIconRefs,
-  //   //     cardRefs
-  //   // )
-
-  //   // Animate only the trash icon and the specific card before deletion
-  //   await gsap.to(trashIconRefs.current[index], {
-  //     rotate: 90,
-  //     repeat: 3,
-  //     yoyo: true,
-  //     duration: 0.1,
-  //   });
-
-  //   const deleteUrl = `${apiUrl}/api/products/${id}`;
-  //   try {
-  //     const response = await fetch(deleteUrl, {
-  //       method: "DELETE",
-
-  //       headers: {
-  //         store_id: storeId,
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include", // Include credentials (cookies, etc.) if needed
-  //     });
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       console.error("Error:", errorData);
-  //     } else {
-  //       // Animate the card itself before removing it
-  //       await gsap.to(cardRefs.current[index], {
-  //         opacity: 0,
-  //         y: -50,
-  //         duration: 0.5,
-  //         onComplete: () => {
-  //           // Once the animation completes, remove the card from the DOM
-  //           setProducts((prevProducts) =>
-  //             prevProducts.filter((product) => product.id !== id)
-  //           );
-  //         },
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.error("Uh oh! There was an error deleting things!!", err);
-  //   }
-  // };
 
   //returns functions to be used in other components
   return {

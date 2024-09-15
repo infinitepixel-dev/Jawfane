@@ -43,7 +43,7 @@ function CartPage({
   };
 
   const handleDeleteConfirm = () => {
-    removeFromCart(itemToDelete.id);
+    removeFromCart(itemToDelete.cartItemId);
     setIsModalVisible(false);
   };
 
@@ -103,7 +103,7 @@ function CartPage({
           <div className="grid grid-cols-1 gap-6">
             {cartItems.map((item, index) => (
               <CartItem
-                key={item.id}
+                key={item.cartItemId}
                 item={item}
                 index={index}
                 updateQuantity={updateQuantity}

@@ -15,8 +15,13 @@ import noImage from "@assets/images/no-image.webp";
 //INFO Icons
 import { Trash } from "react-feather";
 
+//INFO Widgets
+import ImageUtility from "@utilities_product_management/ImageUtility";
+
 const CartItem = ({ item, index, updateQuantity, showDeleteModal }) => {
   const itemRef = useRef(null);
+
+  const { convertBlobToBase64 } = ImageUtility();
 
   // GSAP animation when cart item is added or updated
   useEffect(() => {
@@ -32,7 +37,7 @@ const CartItem = ({ item, index, updateQuantity, showDeleteModal }) => {
   // Quantity handlers
   const handleIncrease = () =>
     updateQuantity(
-      item.id,
+      item.cartItemId,
       item.quantity + 1,
       item.selectedSize,
       item.selectedColor
@@ -40,7 +45,7 @@ const CartItem = ({ item, index, updateQuantity, showDeleteModal }) => {
   const handleDecrease = () => {
     if (item.quantity > 1)
       updateQuantity(
-        item.id,
+        item.cartItemId,
         item.quantity - 1,
         item.selectedSize,
         item.selectedColor
@@ -57,11 +62,21 @@ const CartItem = ({ item, index, updateQuantity, showDeleteModal }) => {
       {/* Product Image and Details */}
       <div className="flex w-full items-center space-x-4 md:w-auto">
         {/* Product Image */}
-        <img
-          className="mb-4 h-32 w-32 rounded-lg shadow-md object-cover md:mb-0 md:h-48 md:w-48"
-          src={item.image_url || noImage}
-          alt={`${item.title} product image`}
-        />
+
+        {item.image_url ? (
+          <img
+            className="mb-4 h-32 w-32 rounded-lg shadow-md object-cover md:mb-0 md:h-48 md:w-48"
+            src={item.image_url}
+            alt={item.title}
+          />
+        ) : (
+          <img
+            className="mb-4 h-32 w-32 rounded-lg shadow-md object-cover md:mb-0 md:h-48 md:w-48"
+            src={item.image ? convertBlobToBase64(item.image) : noImage}
+            alt={item.title}
+          />
+        )}
+
         <div className="flex flex-col text-center md:text-left">
           <h2 className="text-lg font-semibold text-white">{item.title}</h2>
           <p className="text-sm text-gray-300">

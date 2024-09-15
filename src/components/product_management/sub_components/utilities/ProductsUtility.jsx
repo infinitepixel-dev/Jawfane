@@ -9,6 +9,10 @@ import { gsap } from "gsap";
 function ProductsUtility(storeId) {
   const [editProduct, setEditProduct] = useState(null);
 
+  // State for AlertModal visibility and message
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   // Edit product handler
   const handleEditClick = (
     product,
@@ -25,7 +29,7 @@ function ProductsUtility(storeId) {
       description: product.description ?? "",
       category: product.category ?? "",
       product_id: product.product_id ?? "",
-      created_at: product.created_at ?? null,
+      // created_at: product.created_at ?? null,
       image_url: product.image_url ?? "",
       image: product.image ?? "",
       product_weight: product.product_weight ?? "",
@@ -71,9 +75,7 @@ function ProductsUtility(storeId) {
     imageUrl
   ) => {
     console.log("Saving changes...", id);
-    const testUrl = "http://66.128.253.47:3082";
-    // const updateUrl = `${apiUrl}/api/products/${id}`;
-    const updateUrl = `${testUrl}/api/products/${id}`;
+    const updateUrl = `${apiUrl}/api/products/${id}`;
     const formData = new FormData();
 
     // Add form data excluding image_url
@@ -112,8 +114,16 @@ function ProductsUtility(storeId) {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error:", errorData);
+
+        // Show error message in AlertModal
+        setAlertMessage(
+          `Error: ${errorData.message || "Failed to update product."}`
+        );
+        setShowAlertModal(true);
       } else {
-        // console.log("after PUT: ", editProduct);
+        // Show success message in AlertModal
+        setAlertMessage("Product updated successfully!");
+        setShowAlertModal(true);
 
         setEditProduct(null);
 
@@ -206,6 +216,9 @@ function ProductsUtility(storeId) {
     confirmDelete,
     closeModal,
     modalMessage,
+    showAlertModal,
+    setShowAlertModal,
+    alertMessage,
   };
 }
 

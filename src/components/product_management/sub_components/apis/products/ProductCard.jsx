@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Variants from "@apis_product_management/products/Variants";
 import propTypes from "prop-types";
 
+import ImageUtility from "@utilities_product_management/ImageUtility";
+
 import noImage from "@assets/images/no-image.webp";
 
 const ProductCard = ({
@@ -20,6 +22,8 @@ const ProductCard = ({
   const [finalPrice, setFinalPrice] = useState(
     parseFloat(product.price).toFixed(2)
   );
+
+  const { convertBlobToBase64 } = ImageUtility();
 
   const handleSizeChange = (size, extraCost) => {
     setSelectedSize(size);
@@ -41,6 +45,8 @@ const ProductCard = ({
   //   setFinalPrice(parseFloat(product.price).toFixed(2));
   // }, [product.price, setFinalPrice]);
 
+  // console.log("Product Image: ", product.image);
+
   return (
     <div
       ref={(el) => (cardRefs.current[index] = el)}
@@ -48,12 +54,24 @@ const ProductCard = ({
       style={style}
     >
       <h2 className="text-2xl font-semibold text-gray-900">{product.title}</h2>
-      <img
-        className="object-cover w-full h-48"
-        src={product.image_url ? product.image_url : noImage}
-        alt={product.title}
-        onClick={() => handleImageClick(product)}
-      />
+      {/* if there is an image url show that, otherwise show an image, if none of those display noImage */}
+
+      {product.image_url ? (
+        <img
+          className="object-cover w-full h-48"
+          src={product.image_url}
+          alt={product.title}
+          onClick={() => handleImageClick(product)}
+        />
+      ) : (
+        <img
+          className="object-cover w-full h-48"
+          src={product.image ? convertBlobToBase64(product.image) : noImage}
+          alt={product.title}
+          onClick={() => handleImageClick(product)}
+        />
+      )}
+
       <Variants
         product={product}
         onSizeChange={handleSizeChange}

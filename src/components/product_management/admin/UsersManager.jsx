@@ -91,8 +91,11 @@ const UsersManager = ({ storeId, roleMapData }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ...newUser,
+        email: newUser.email.toLowerCase(),
+        name: newUser.name.toLowerCase(),
         role_id: roleMapData.roles[newUser.role],
+        store_id: storeId,
+        ...newUser,
       }),
     }).then(() => {
       getUsers();
