@@ -1,135 +1,173 @@
-//Shipping.jsx
+// Shipping.jsx
 
 /*
 A component to manage shipping options available to the store
 */
 
-//INFO React Libraries
-import { useState, useRef, useLayoutEffect } from "react";
+// React Libraries
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import propTypes from "prop-types";
 
-//INFO Animation Libraries
+// Animation Libraries
 import { gsap } from "gsap";
 
-//INFO Sub-components
-import FlatRateShipping from "@components/product_management/sub_components/apis/shipping/FlatRateShipping";
+// Sub-components
+import FlatRateShipping from "@apis_product_management/shipping/FlatRateShipping";
+import USPSShipping from "@apis_product_management/shipping/usps/USPSShipping";
+// Import other shipping components as needed
 
-//INFO Widgets
+// Widgets
 import AnimatedCheckbox from "@components/product_management/sub_components/widgets/AnimatedCheckbox";
 
 function Shipping({ storeId }) {
-  // console.log("Shipping:", storeId);
+  const apiURL = "http://66.128.253.47:3001";
 
-  const [shippingOptions, setShippingOptions] = useState({
-    flatRate: true, //for dev set to true for force enable
-    usps: false,
-  });
+  const [shippingOptions, setShippingOptions] = useState({});
 
   // Refs for GSAP animations
-  const flatRateRef = useRef(null); //For Dev set to true or false null
-  const uspsRef = useRef(null);
+  const optionRefs = useRef([]);
 
-  const flatRateCheckboxRef = useRef(null);
-  //REVIEW
-  // eslint-disable-next-line no-unused-vars
-  const uspsCheckboxRef = useRef(null);
+  // Fetch shipping options from API
+  useEffect(() => {
+    const getShippingOptions = async () => {
+      try {
+        const res = await fetch(`${apiURL}/api/store/${storeId}/credentials`);
+        const data = await res.json();
+        setShippingOptions(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getShippingOptions();
+  }, [storeId]);
 
-  //INFO Run GSAP animation for the shipping options when they are rendered
-  useLayoutEffect(() => {
-    if (shippingOptions.flatRate && flatRateRef.current) {
-      gsap.from(flatRateRef.current, { opacity: 0, y: -20, duration: 0.5 });
-    }
-  }, [shippingOptions.flatRate]);
+  // Map service_name to components
+  const shippingComponents = {
+    "Flat Rate": FlatRateShipping,
+    USPS: USPSShipping,
+    // UPS: UPSShipping,
+    // FedEx: FedExShipping,
+    // ... add other mappings as needed
+  };
 
-  //INFO Custom checkbox animation for flat rate shipping
-  useLayoutEffect(() => {
-    if (flatRateCheckboxRef.current) {
-      gsap.to(flatRateCheckboxRef.current, {
-        backgroundColor: shippingOptions.flatRate ? "#10b981" : "#4b5563",
-        duration: 0.3,
+  // Convert shippingOptions object to an array and filter it
+  const shippingOptionsArray = Object.keys(shippingOptions)
+    .filter((key) => !isNaN(key)) // Keep only numeric keys
+    .map((key) => shippingOptions[key])
+    .filter((option) => option.service_name in shippingComponents); // Filter out non-shipping providers
+
+  // Toggle shipping option
+  const toggleShipping = (service_name) => {
+    setShippingOptions((prevOptions) => {
+      const updatedOptions = JSON.parse(JSON.stringify(prevOptions)); // Deep copy
+      Object.keys(updatedOptions).forEach((key) => {
+        if (!isNaN(key) && updatedOptions[key].service_name === service_name) {
+          const updatedServiceEnabled = !updatedOptions[key].service_enabled;
+          updatedOptions[key].service_enabled = updatedServiceEnabled ? 1 : 0;
+          updatedOptions[key].updated_at = new Date().toISOString();
+          // Now make API call to update the service_enabled field
+          updateServiceEnabled(updatedOptions[key]);
+        }
       });
+      return updatedOptions;
+    });
+  };
+
+  // Function to update service_enabled in the database
+  const updateServiceEnabled = async (credential) => {
+    try {
+      await fetch(
+        `${apiURL}/api/store/${storeId}/credentials/${credential.service_name}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(credential),
+        }
+      );
+      // console.log(
+      //   `${credential.service_name} service_enabled updated to ${credential.service_enabled}`
+      // );
+    } catch (err) {
+      console.error(
+        `Error updating ${credential.service_name} service_enabled:`,
+        err
+      );
     }
-  }, [shippingOptions.flatRate]);
-
-  //ANCHOR Toggle shipping option
-  const toggleShipping = (shippingType) => {
-    setShippingOptions((prev) => ({
-      ...prev,
-      [shippingType]: !prev[shippingType],
-    }));
   };
 
-  //ANCHOR GET request to the API to get the shipping options
-  const getShippingOptions = async () => {
-    await fetch(`/api/store/${storeId}/shipping`)
-      .then(async (res) => await res.json())
-      .then((data) => setShippingOptions(data))
-      .catch((err) => console.error(err));
-  };
+  // Run GSAP animations when options are rendered
+  useLayoutEffect(() => {
+    shippingOptionsArray.forEach((option, index) => {
+      if (option.service_enabled && optionRefs.current[index]) {
+        gsap.from(optionRefs.current[index], {
+          opacity: 0,
+          y: -20,
+          duration: 0.5,
+        });
+      }
+    });
+  }, [shippingOptionsArray]);
 
-  //ANCHOR POST request to the API to save the shipping options
+  // Save shipping options to API (if needed)
   const saveShippingOptions = async () => {
-    fetch(`/api/store/${storeId}/shipping`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(shippingOptions),
-    })
-      .then(async (res) => await res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.error(err));
+    try {
+      const res = await fetch(`${apiURL}/api/store/${storeId}/shipping`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(shippingOptions),
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  // console.log("Shipping Options:", shippingOptions);
 
   return (
     <div className="shipping p-6 bg-gray-800 rounded-lg shadow-lg text-white">
       <h1 className="text-2xl font-semibold mb-4">Shipping Options</h1>
       <div className="shipping-options space-y-4">
-        {/* Flat Rate Shipping */}
-        <div className="shipping-option flex items-center space-x-4">
-          <AnimatedCheckbox
-            isSelected={shippingOptions.flatRate}
-            onSelect={() => toggleShipping("flatRate")}
-          />
-          <label
-            htmlFor="flatRate"
-            className="text-lg cursor-pointer"
-            onClick={() => toggleShipping("flatRate")}
-          >
-            Flat Rate Shipping
-          </label>
-          {shippingOptions.flatRate && (
-            <div ref={flatRateRef} className="mt-4 w-full">
-              <FlatRateShipping
-                getShippingOptions={getShippingOptions}
-                saveShippingOptions={saveShippingOptions}
+        {shippingOptionsArray.map((option, index) => {
+          const ShippingComponent = shippingComponents[option.service_name];
+
+          return (
+            <div
+              key={option.id}
+              className="shipping-option flex items-center space-x-4"
+            >
+              <AnimatedCheckbox
+                isSelected={!!option.service_enabled}
+                onSelect={() => toggleShipping(option.service_name)}
               />
+              <label
+                htmlFor={option.service_name}
+                className="text-lg cursor-pointer"
+                onClick={() => toggleShipping(option.service_name)}
+              >
+                {option.service_name} Shipping
+              </label>
+              {!!option.service_enabled && ShippingComponent && (
+                <div
+                  ref={(el) => (optionRefs.current[index] = el)}
+                  className="mt-4 w-full"
+                >
+                  <ShippingComponent
+                    storeId={storeId}
+                    shippingOptions={shippingOptions}
+                    setShippingOptions={setShippingOptions}
+                    saveShippingOptions={saveShippingOptions}
+                  />
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        {/* USPS Shipping */}
-        <div className="shipping-option flex items-center space-x-4">
-          <AnimatedCheckbox
-            isSelected={shippingOptions.usps}
-            onSelect={() => toggleShipping("usps")}
-          />
-          <label
-            htmlFor="usps"
-            className="text-lg cursor-pointer"
-            onClick={() => toggleShipping("usps")}
-          >
-            USPS Shipping
-          </label>
-          {shippingOptions.usps && (
-            <div ref={uspsRef} className="mt-4 w-full">
-              {/* USPS Shipping Component */}
-              {/* <USPSShipping
-                getShippingOptions={getShippingOptions}
-                saveShippingOptions={saveShippingOptions}
-              /> */}
-            </div>
-          )}
-        </div>
+          );
+        })}
       </div>
     </div>
   );
