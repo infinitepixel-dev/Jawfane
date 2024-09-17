@@ -87,7 +87,7 @@ const App = () => {
     if (enableLocalStorage) {
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
     }
-  }, [cartItems]);
+  }, [cartItems, enableLocalStorage]);
 
   const addToCart = (product) => {
     // Function to check if a product with the same id and variant already exists in the cart
