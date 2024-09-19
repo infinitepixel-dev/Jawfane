@@ -5,10 +5,10 @@ A component that populates the cart page
 */
 
 //INFO React Libraries
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import propTypes from "prop-types";
-import { Link } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
 //INFO Sub-components
 import CartItem from "@apis_product_management/view-cart/CartItem";
 import DeleteModal from "@apis_product_management/view-cart/DeleteModal";
@@ -18,10 +18,13 @@ import Navigation from "@navigation_product_management/Navigation";
 //INFO Icons
 import { Trash2 } from "react-feather";
 
+import { CartContext } from "@contexts_product_management/CartContext";
+
 //API Shipping API
 import USPSApi from "@apis_product_management/shipping/usps/USPSApi";
 
 function CartPage({
+  storeId,
   cartItems,
   setCartItems,
   removeFromCart,
@@ -33,9 +36,34 @@ function CartPage({
   isMobile,
   setIsMobile,
 }) {
+  const navigate = useNavigate();
+
+  const {
+    cartTotal,
+    setCartTotal,
+    shippingAndTaxTotal,
+    setShippingAndTaxTotal,
+  } = useContext(CartContext);
+  // const location = useLocation();
+  // const { storeId } = location.state || {}; // Only get serializable state
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isEmptyCartModalVisible, setIsEmptyCartModalVisible] = useState(false);
+  // const [cartTotal, setCartTotal] = useState();
+  // const [shippingAndTaxTotal, setShippingAndTaxTotal] = useState(0);
+
+  // Your handler function for navigating to the checkout page
+  const handleProceedToCheckout = () => {
+    navigate("/checkout", {
+      state: {
+        storeId: storeId,
+        cartItems,
+        cartTotal,
+        shippingAndTaxTotal,
+      },
+    });
+  };
 
   const showDeleteModal = (item) => {
     setItemToDelete(item);
@@ -64,15 +92,19 @@ function CartPage({
     setIsEmptyCartModalVisible(false);
   };
 
-  const calculateTotal = () => {
-    return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
+  useEffect(() => {
+    //calculate cartItems totals on load
+    setCartTotal(
+      cartItems
+        .reduce((total, item) => total + item.price * item.quantity, 0)
+        .toFixed(2)
+    );
+  }, [cartItems, setCartTotal]);
 
   return (
     <>
       <Navigation
+        storeId={storeId}
         DevMode={DevMode}
         base={base}
         theme={theme}
@@ -92,17 +124,20 @@ function CartPage({
             <p className="text-lg font-medium text-gray-400">
               Your cart is currently empty.
             </p>
-            <Link
+            <button
               className="mt-4 rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
-              to={`/#merch`}
+              onClick={() => {
+                return navigate("/#merch");
+              }}
             >
               Continue Shopping
-            </Link>
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6">
             {cartItems.map((item, index) => (
               <CartItem
+                storeId={storeId}
                 key={item.cartItemId}
                 item={item}
                 index={index}
@@ -127,19 +162,28 @@ function CartPage({
 
             {/* Shipping API */}
             <div className="mt-8">
-              <USPSApi />
+              <USPSApi
+                storeId={storeId}
+                cartItems={cartItems}
+                setCartTotal={setCartTotal}
+                setShippingAndTaxTotal={setShippingAndTaxTotal}
+              />
             </div>
 
             <div className="flex flex-col items-center">
-              <h2 className="text-3xl font-bold text-white">
-                Total: ${calculateTotal()}
+              <h2 className="text-1xl font-bold italic text-slate-300">
+                S/H + Tax: ${shippingAndTaxTotal.toFixed(2)}
               </h2>
-              <Link
+              <h2 className="text-3xl font-bold text-slate-200">
+                {/* Total: ${calculateTotal()} */}
+                <span>${(cartTotal + shippingAndTaxTotal).toFixed(2)}</span>
+              </h2>
+              <button
                 className="mt-4 w-full rounded-lg bg-green-700 px-6 py-3 text-lg font-bold text-white hover:bg-green-500 duration-300 md:w-auto"
-                to="/checkout"
+                onClick={handleProceedToCheckout}
               >
                 Proceed to Checkout
-              </Link>
+              </button>
             </div>
           </div>
         )}
@@ -165,6 +209,7 @@ function CartPage({
 }
 
 CartPage.propTypes = {
+  storeId: propTypes.number.isRequired,
   cartItems: propTypes.array.isRequired,
   setCartItems: propTypes.func.isRequired,
   removeFromCart: propTypes.func.isRequired,

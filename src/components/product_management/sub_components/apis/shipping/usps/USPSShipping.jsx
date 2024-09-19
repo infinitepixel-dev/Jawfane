@@ -123,7 +123,7 @@ function USPSShipping({ storeId, shippingOptions, setShippingOptions }) {
             />
           </div>
           <div>
-            <label className="block text-sm">API Key</label>
+            <label className="block text-sm">API Key (Client ID)</label>
             <input
               type="text"
               name="api_key"
@@ -133,7 +133,7 @@ function USPSShipping({ storeId, shippingOptions, setShippingOptions }) {
             />
           </div>
           <div>
-            <label className="block text-sm">API Secret</label>
+            <label className="block text-sm">API Secret (Client Secret)</label>
             <input
               type="text"
               name="api_secret"

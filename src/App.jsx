@@ -174,6 +174,7 @@ const App = () => {
             path="/"
             element={
               <Home
+                storeId={storeId}
                 theme={theme}
                 isMobile={isMobile}
                 cartItems={cartItems}
@@ -182,7 +183,6 @@ const App = () => {
                 base={base}
                 toggleTheme={toggleTheme}
                 setIsMobile={setIsMobile}
-                storeId={storeId}
               />
             }
           />
@@ -190,6 +190,7 @@ const App = () => {
             path="/home"
             element={
               <Home
+                storeId={storeId}
                 theme={theme}
                 isMobile={isMobile}
                 cartItems={cartItems}
@@ -198,7 +199,6 @@ const App = () => {
                 base={base}
                 toggleTheme={toggleTheme}
                 setIsMobile={setIsMobile}
-                storeId={storeId}
               />
             }
           />
@@ -206,6 +206,7 @@ const App = () => {
             path="/Jawfane"
             element={
               <Home
+                storeId={storeId}
                 theme={theme}
                 isMobile={isMobile}
                 cartItems={cartItems}
@@ -214,7 +215,6 @@ const App = () => {
                 base={base}
                 toggleTheme={toggleTheme}
                 setIsMobile={setIsMobile}
-                storeId={storeId}
               />
             }
           />
@@ -223,11 +223,11 @@ const App = () => {
             path="/merch"
             element={
               <Merch
+                storeId={storeId}
                 theme={theme}
                 addToCart={addToCart}
                 cartItems={cartItems}
                 setCartItems={setCartItems}
-                storeId={storeId}
                 isMobile={isMobile}
               />
             }
@@ -246,6 +246,7 @@ const App = () => {
             path="/cart"
             element={
               <CartPage
+                storeId={storeId}
                 cartItems={cartItems}
                 setCartItems={setCartItems}
                 removeFromCart={removeFromCart}
@@ -263,10 +264,10 @@ const App = () => {
             path={`/checkout`}
             element={
               <CheckoutPage
-                cartItems={cartItems}
-                storeId={storeId}
-                enabledPayments={enabledPayments}
                 DevMode={DevMode}
+                storeId={storeId}
+                cartItems={cartItems}
+                enabledPayments={enabledPayments}
                 base={base}
                 theme={theme}
                 toggleTheme={toggleTheme}

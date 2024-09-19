@@ -1,7 +1,12 @@
 // USPSApi.jsx
 
+/*
+A component to fetch shipping rates from the USPS API
+*/
+
 //INFO React Libraries
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import propTypes from "prop-types";
 
 //INFO Animation Libraries
 import { gsap } from "gsap";
@@ -9,176 +14,248 @@ import { gsap } from "gsap";
 //INFO API Libraries
 import axios from "axios";
 
-const USPSRate = () => {
+const USPSRate = React.memo(function USPSRate({
+  storeId,
+  cartItems,
+  setCartTotal,
+  setShippingAndTaxTotal,
+}) {
+  // console.log("Store ID:", storeId);
+  // console.log("Products in Cart:", cartItems);
+
   const apiUrl = "https://vps.infinitepixel.dev:3050";
 
-  const [rate, setRate] = useState(null);
+  // State variables to store rates, errors, and access tokens
+  const [rates, setRates] = useState([]);
   const [error, setError] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  const [selectedRate, setSelectedRate] = useState(null); // State to keep track of selected shipping rate
 
+  // Reference for animations
   const shippingRef = useRef(null);
 
-  //TODO figure out shipping methods for USPS
-  /* method 1: "Priority Mail Nonmachinable Dimensional Rectangular"
-    const requestBody = {
-    originZIPCode: "90210",
-    destinationZIPCode: "37087",
-    weight: 5,
-    length: 1,
-    width: 1,
-    height: 1,
-    mailClass: "PRIORITY_MAIL",
-    processingCategory: "NON_MACHINABLE",
-    rateIndicator: "DR",
+  //INFO Utility function to parse product dimensions from a string
+  const parseDimensions = (dimensions) => {
+    // Expected format: "10x5x2 cm"
+    const [length, width, height] = dimensions
+      .split("x")
+      .map((dim) => parseFloat(dim));
+    return { length, width, height };
+  };
+
+  //INFO Utility function to aggregate product data
+  const aggregateProductData = (products) => {
+    let totalWeight = 0;
+    let maxDimensions = { length: 0, width: 0, height: 0 };
+
+    products.forEach((product) => {
+      console.log("Product:", product);
+
+      // Parse weight and dimensions
+      const productWeight = parseFloat(product.product_weight);
+      const { length, width, height } = parseDimensions(
+        product.product_dimensions
+      );
+
+      // Sum up the total weight
+      totalWeight += productWeight * product.quantity;
+
+      // Calculate max dimensions for shipping
+      maxDimensions.length = Math.max(maxDimensions.length, length);
+      maxDimensions.width = Math.max(maxDimensions.width, width);
+      maxDimensions.height += height; // Sum up the heights if stacked
+    });
+
+    return {
+      weight: totalWeight,
+      length: maxDimensions.length,
+      width: maxDimensions.width,
+      height: maxDimensions.height,
+    };
+  };
+
+  //INFO Utility function to create a request body for USPS API
+  const createRequestBody = (
+    aggregateData,
+    method,
+    originZIP,
+    destinationZIP
+  ) => ({
+    originZIPCode: originZIP,
+    destinationZIPCode: destinationZIP,
+    weight: aggregateData.weight,
+    length: aggregateData.length,
+    width: aggregateData.width,
+    height: aggregateData.height,
+    mailClass: method, // e.g., "PRIORITY_MAIL", "FIRST-CLASS_PACKAGE_SERVICE"
+    processingCategory: "NON_MACHINABLE", // Adjust based on requirements
+    rateIndicator: "DR", // Default for flat rate, adjust as needed
     destinationEntryFacilityType: "NONE",
     priceType: "RETAIL",
-    mailingDate: "2024-09-22",
+  });
+
+  //INFO Utility function to fetch all shipping rates for multiple USPS methods
+  const fetchAllRates = async (aggregateData) => {
+    const methods = [
+      "PRIORITY_MAIL",
+      "FIRST-CLASS_PACKAGE_SERVICE", // Fixed the mailClass value
+      "PRIORITY_MAIL_EXPRESS",
+    ];
+    const originZIP = "90210"; // Example origin ZIP
+    const destinationZIP = "37087"; // Example destination ZIP
+
+    // Fetch rates for all shipping methods in parallel
+    const rates = await Promise.all(
+      methods.map(async (method) => {
+        const requestBody = createRequestBody(
+          aggregateData,
+          method,
+          originZIP,
+          destinationZIP
+        );
+
+        try {
+          const response = await axios.post(`${apiUrl}/api/usps/rate`, {
+            requestBody,
+            accessToken, // Assume you have the access token available
+          });
+          return { method, rate: parseFloat(response.data.totalBasePrice) }; // Ensure rate is a number
+        } catch (error) {
+          console.error(`Error fetching rate for ${method}:`, error);
+          return { method, rate: null };
+        }
+      })
+    );
+
+    return rates;
   };
 
-  Method 2: "Priority Mail Machinable Dimensional Rectangular"
-    const requestBody = {
-    originZIPCode: "90210",
-    destinationZIPCode: "37087",
-    weight: 1, // Flat rate does not depend on weight as long as it's within the weight limit
-    length: 12.5, // Dimensions for the envelope
-    width: 9.5,
-    height: 0.75,
-    mailClass: "PRIORITY_MAIL",
-    processingCategory: "MACHINABLE", // Flat Rate envelopes are typically machinable
-    rateIndicator: "DR", // Flat Rate Envelope
-    destinationEntryFacilityType: "NONE",
-    priceType: "RETAIL",
-    mailingDate: "2024-09-22",
-  };
-
-  Method 3: "Priority Mail Express Machinable Single-piece"
-  const requestBody = {
-    originZIPCode: "90210",
-    destinationZIPCode: "37087",
-    weight: 2.5,
-    length: 10,
-    width: 8,
-    height: 5,
-    mailClass: "PRIORITY_MAIL_EXPRESS",
-    processingCategory: "MACHINABLE",
-    rateIndicator: "PA", // Priority Mail Express Single Piece
-    destinationEntryFacilityType: "NONE",
-    priceType: "RETAIL",
-    mailingDate: "2024-09-22",
-  };
-
-  METHOD 4: "USPS Ground Advantage Machinable Dimensional Rectangular"
-    const requestBody = {
-    originZIPCode: "90210",
-    destinationZIPCode: "37087",
-    weight: 0.8, // Weight must be less than or equal to 15.999 oz for First-Class Package
-    length: 9,
-    width: 6,
-    height: 0.5,
-    mailClass: "FIRST-CLASS_PACKAGE_SERVICE",
-    processingCategory: "MACHINABLE",
-    rateIndicator: "DR", // First-Class Package Retail
-    destinationEntryFacilityType: "NONE",
-    priceType: "RETAIL",
-    mailingDate: "2024-09-22",
-  };
-
-  METHOD 5: "Priority Mail Express Machinable Dimensional Rectangular"
-    const requestBody = {
-    originZIPCode: "90210",
-    destinationZIPCode: "37087",
-    weight: 1, // Flat rate envelope, weight does not affect price
-    length: 12.5, // Approximate dimensions for a flat rate envelope
-    width: 9.5,
-    height: 0.75,
-    mailClass: "PRIORITY_MAIL_EXPRESS",
-    processingCategory: "MACHINABLE",
-    rateIndicator: "DR", // Priority Mail Express Flat Rate Envelope
-    destinationEntryFacilityType: "NONE",
-    priceType: "RETAIL",
-    mailingDate: "2024-09-22",
-  };
-  */
-
-  // Updated request body structure with correct enum values
-  const requestBody = {
-    originZIPCode: "90210",
-    destinationZIPCode: "37087",
-    weight: 1, // Flat rate envelope, weight does not affect price
-    length: 12.5, // Approximate dimensions for a flat rate envelope
-    width: 9.5,
-    height: 0.75,
-    mailClass: "PRIORITY_MAIL_EXPRESS",
-    processingCategory: "MACHINABLE",
-    rateIndicator: "DR", // Priority Mail Express Flat Rate Envelope
-    destinationEntryFacilityType: "NONE",
-    priceType: "RETAIL",
-    // mailingDate: "2024-09-22",
-  };
-
-  const getAccessToken = async () => {
-    try {
-      // Call your backend to get the access token
-      const response = await axios.post(`${apiUrl}/api/usps/token`);
-      return response.data.access_token;
-    } catch (error) {
-      console.error("Error fetching access token:", error);
-      throw new Error("Unable to fetch access token");
-    }
-  };
-
+  //INFO Fetch the access token when the component mounts
   useEffect(() => {
+    const getAccessToken = async () => {
+      if (!storeId) {
+        console.error("Store ID not provided.");
+        return;
+      }
+      try {
+        // console.log("Store ID:", storeId);
+
+        // Call your backend to get the access token with storeId
+        const response = await axios.post(`${apiUrl}/api/usps/token`, {
+          storeId: storeId,
+        });
+        return response.data.access_token;
+      } catch (error) {
+        console.error("Error fetching access token:", error);
+        throw new Error("Unable to fetch access token");
+      }
+    };
+
     getAccessToken().then((token) => {
       setAccessToken(token);
     });
+  }, [storeId, apiUrl]);
 
-    // setAccessToken(
-    //   "eyJraWQiOiJIdWpzX2F6UnFJUzBpSE5YNEZIRk96eUwwdjE4RXJMdjNyZDBoalpNUnJFIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiI0MjAxMjY1NTUiLCJjcmlkIjoiNDg0ODUxMjMiLCJzdWJfaWQiOiI0MjAxMjY1NTUiLCJwYXltZW50X2FjY291bnRzIjoie30iLCJpc3MiOiJodHRwczpcL1wva2V5Yy51c3BzLmNvbVwvcmVhbG1zXC9VU1BTIiwiY29udHJhY3RzIjoie1wicGF5bWVudEFjY291bnRzXCI6e30sXCJwZXJtaXRzXCI6e1wicGVybWl0c1wiOlwiXCJ9fSIsImZhc3QiOiI0ODQ4NTEyMyIsImF6cCI6IkxGaXA3RFFBTFhkMkRzSHQxU2tlRXM3cnhnUjlsODg4IiwibWFpbF9vd25lcnMiOiJbe1wiY3JpZFwiOlwiNDg0ODUxMjNcIixcIm1pZHNcIjpcIjkwMzcxMzQ2MCwgOTAzNzEzNDU5XCJ9XSIsInNjb3BlIjoiYWRkcmVzc2VzIGludGVybmF0aW9uYWwtcHJpY2VzIHNlcnZpY2Utc3RhbmRhcmRzIGxvY2F0aW9ucyBwcmljZXMgc2hpcG1lbnRzIiwiY29tcGFueV9uYW1lIjoiSW5maW5pdGUgUGl4ZWwiLCJvcmdhbml6YXRpb25faWQiOiI0MjgwIiwiZXhwIjoxNzI2NDkyMzY4LCJpYXQiOjE3MjY0NjM1NjgsImp0aSI6ImYwYTUxYjQ0LWJiOTEtNDA4MC04YWQyLWQzMjQxN2ZlYmJiNyJ9.tzG-v3VW6wSdPr07eClRYAAJnctJcti6VgsnBdXgFBPExik4G747m6SJHikmlyGw0VfLQ75RR9pW_fohmP46LsbR6zuWbf1DgoGRSRO13jZ9fK7ENi2oZ98POTZll6w5Sj1GVlBT3DbRnocQgD3am_ujEN1qF3eiYsRQnZ4JQoYMHtssU8U8fn-Ukb8Xe6qhtrCQ4t7tdJOnExUCrcGI3wg1eClf53IratTFqomyv0N0aslOgHoWUyFU_blUV-8DDCPqXExM1833KofqZowsyLdbXgEFYFabpbJebbKCQqCAGnPZ3MUexVKy5LWKCGCEcOHJSc05pjYB8QhLkqZkzg"
-    // );
-  }, []);
-
+  //INFO Initialize animations when the component mounts
   useEffect(() => {
     if (shippingRef.current) {
-      gsap.to(shippingRef.current, { x: 100, duration: 1 });
+      gsap.to(shippingRef.current, { x: 0, duration: 1 });
     } else {
       console.error("GSAP target not found.");
     }
   }, []);
 
-  const getShippingRate = async () => {
-    console.log("Getting Shipping Rate...");
+  //INFO Function to get shipping rates based on aggregated product data
+  const getShippingRates = async () => {
+    console.log("Getting Shipping Rates...");
+
+    // Collect and aggregate product data from the cart
+    const aggregatedData = aggregateProductData(cartItems);
 
     try {
-      const response = await axios.post(`${apiUrl}/api/usps/rate`, {
-        requestBody,
-        accessToken,
-      });
+      const allRates = await fetchAllRates(aggregatedData);
+      console.log("Shipping Rates:", allRates);
 
-      const data = response.data;
-      console.log("USPS Shipping Rate Response:", data);
-
-      setRate(data.totalBasePrice); // Adjust based on the actual response structure
+      // Update state with the fetched rates
+      setRates(allRates);
     } catch (err) {
-      console.error("Error fetching shipping rate:", err);
-      setError("Error fetching shipping rate");
+      console.error("Error fetching shipping rates:", err);
+      setError("Error fetching shipping rates");
     }
   };
 
-  // console.log("Access Token:", accessToken);
+  //INFO Handler for selecting a shipping rate
+  // const handleRateChange = (event) => {
+  //   const selectedValue = event.target.value;
+  //   setSelectedRate(selectedValue);
+
+  //   // Update the cart total by adding the selected shipping rate to the cart subtotal
+  //   const shippingRate = parseFloat(selectedValue);
+  //   const cartSubtotal = cartItems.reduce(
+  //     (total, item) => total + item.finalPrice * item.quantity,
+  //     0
+  //   );
+  //   setCartTotal(cartSubtotal + shippingRate);
+  //   setShippingAndTaxTotal(shippingRate);
+  // };
+
+  //REVIEW v2
+  const handleRateChange = (event) => {
+    const selectedValue = parseFloat(event.target.value);
+    setSelectedRate(selectedValue);
+
+    // Update the cart total and shipping total
+    const cartSubtotal = cartItems.reduce(
+      (total, item) => total + item.finalPrice * item.quantity,
+      0
+    );
+    setCartTotal(cartSubtotal);
+    setShippingAndTaxTotal(selectedValue);
+  };
 
   return (
-    <>
+    <div className="w-full flex flex-col items-center mt-4">
       <button
         ref={shippingRef}
-        className="px-4 py-2 mr-4 font-bold text-black transition bg-yellow-600 rounded-lg shadow hover:bg-yellow-500"
-        onClick={getShippingRate}
+        className="px-4 py-2 w-full md:w-auto flex items-center justify-center font-bold text-white bg-yellow-600 rounded-lg shadow hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+        onClick={getShippingRates}
       >
-        Get Shipping Rate
+        Get Shipping Rates
       </button>
-      {rate && <p>Shipping Rate: ${rate}</p>}
-      {error && <p>{error}</p>}
-    </>
+
+      {/* Dropdown for selecting shipping rates */}
+      <div className="w-full mt-4">
+        {rates.length > 0 && (
+          <select
+            className="w-full md:w-auto p-2 text-slate-200 font-bold text-center rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-yellow-300 bg-slate-500 hover:bg-slate-600 duration-150"
+            value={selectedRate || ""}
+            onChange={handleRateChange}
+            aria-label="Select a shipping method"
+          >
+            <option value="">Select a shipping method</option>
+            {rates.map((r, index) => (
+              <option key={index} value={r.rate}>
+                {/* if no rate display a no shiping methods foudn error */}
+                {r.rate === null
+                  ? "No shipping methods found"
+                  : `${r.method} - $${r.rate.toFixed(2)}`}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+
+      {/* Display any errors */}
+      {error && <p className="mt-2 text-red-600">{error}</p>}
+    </div>
   );
+});
+
+USPSRate.propTypes = {
+  storeId: propTypes.number.isRequired,
+  cartItems: propTypes.arrayOf(propTypes.object).isRequired,
+  setCartTotal: propTypes.func.isRequired,
+  setShippingAndTaxTotal: propTypes.func.isRequired,
 };
 
 export default USPSRate;
