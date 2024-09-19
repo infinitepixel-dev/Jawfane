@@ -21,6 +21,7 @@ import BackToTop from "@buttons_product_management/BackToTop";
 import CanvasLogo from "@logos_product_management/CanvasLogo";
 
 function Home({
+  storeId,
   theme,
   isMobile,
   cartItems,
@@ -29,7 +30,6 @@ function Home({
   base,
   toggleTheme,
   setIsMobile,
-  storeId,
 }) {
   // console.log("Home component rendered");
   // console.log("Cart Items: ", cartItems);
@@ -37,6 +37,7 @@ function Home({
   return (
     <>
       <Navigation
+        storeId={storeId}
         DevMode={DevMode}
         base={base}
         theme={theme}
@@ -68,6 +69,7 @@ function Home({
 }
 
 Home.propTypes = {
+  storeId: propTypes.number,
   theme: propTypes.string.isRequired,
   isMobile: propTypes.bool.isRequired,
   cartItems: propTypes.array.isRequired,
@@ -76,7 +78,6 @@ Home.propTypes = {
   base: propTypes.string.isRequired,
   toggleTheme: propTypes.func.isRequired,
   setIsMobile: propTypes.func.isRequired,
-  storeId: propTypes.number,
 };
 
 export default Home;

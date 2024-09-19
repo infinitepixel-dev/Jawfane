@@ -34,3 +34,5 @@ node-apps
 # files
 *dist.tar.gz
 *dist.zip
+
+*storybook.log

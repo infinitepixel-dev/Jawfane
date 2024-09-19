@@ -19,6 +19,7 @@ import AudioPlayer from "@audio_product_management/AudioPlayer";
 import CartPopOut from "@sub-menus_product_management/CartPopOut";
 
 const Navigation = ({
+  storeId,
   DevMode,
   base,
   theme,
@@ -344,6 +345,7 @@ const Navigation = ({
         }}
       >
         <CartPopOut
+          storeId={storeId}
           theme={theme}
           cartItems={cartItems}
           isMobile={isMobile}
@@ -356,6 +358,7 @@ const Navigation = ({
 };
 
 Navigation.propTypes = {
+  storeId: propTypes.number.isRequired,
   DevMode: propTypes.bool,
   base: propTypes.string,
   theme: propTypes.string.isRequired,

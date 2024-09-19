@@ -4,7 +4,7 @@ import propTypes from "prop-types";
 import { gsap } from "gsap";
 import { ShoppingCart, ChevronLeft, ChevronRight } from "react-feather";
 
-function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
+function CartPopOut({ storeId, cartItems, isSidebarOpen, setSidebarOpen }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const cartButtonRef = useRef(null);
   const sidebarRef = useRef(null);
@@ -104,7 +104,7 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
     sidebarRef,
   ]);
 
-  console.log("CartPopOut cartItems:", cartItems);
+  // console.log("CartPopOut cartItems:", cartItems);
 
   return (
     <div className="absolute bottom-16">
@@ -217,7 +217,9 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
                 </p>
               </div>
               <button className="mt-4 w-full rounded bg-green-500 py-2 text-white hover:bg-green-600">
-                <Link to="/cart">View Full Cart</Link>
+                <Link to={{ pathname: "/cart", state: { storeId: storeId } }}>
+                  View Full Cart
+                </Link>
               </button>
             </div>
           )}
@@ -228,6 +230,7 @@ function CartPopOut({ cartItems, isSidebarOpen, setSidebarOpen }) {
 }
 
 CartPopOut.propTypes = {
+  storeId: propTypes.number.isRequired,
   cartItems: propTypes.arrayOf(
     propTypes.shape({
       title: propTypes.string.isRequired,
