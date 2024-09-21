@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { gsap } from "gsap";
+import { useState, useEffect, useRef } from "react"
+import axios from "axios"
+import { gsap } from "gsap"
 
 const ContactForm = () => {
   const [state, setState] = useState({
@@ -8,10 +8,10 @@ const ContactForm = () => {
     email: "",
     subject: "",
     message: "",
-  });
+  })
 
-  const [result, setResult] = useState(null);
-  const formRef = useRef(null);
+  const [result, setResult] = useState(null)
+  const formRef = useRef(null)
 
   useEffect(() => {
     gsap.from(formRef.current, {
@@ -19,37 +19,37 @@ const ContactForm = () => {
       y: 20,
       duration: 1,
       ease: "power3.out",
-    });
-  }, []);
+    })
+  }, [])
 
   const sendEmail = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     axios
       .post("/send", { ...state })
       .then((response) => {
-        setResult(response.data);
+        setResult(response.data)
         setState({
           name: "",
           email: "",
           subject: "",
           message: "",
-        });
+        })
       })
       .catch(() => {
         setResult({
           success: false,
           message: "Something went wrong. Try again later",
-        });
-      });
-  };
+        })
+      })
+  }
 
   const onInputChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     setState({
       ...state,
       [name]: value,
-    });
-  };
+    })
+  }
 
   return (
     <div
@@ -70,18 +70,18 @@ const ContactForm = () => {
             {result.message}
           </p>
         )}
-        <h2 className="text-2xl font-bold text-center mb-8 text-slate-200 sm:text-3xl">
-          Book Your Appointment
+        <h2 className="mb-8 text-2xl font-bold text-center text-slate-200 sm:text-3xl">
+          Book Jawfane
         </h2>
         <form
           onSubmit={sendEmail}
-          className="bg-white shadow-lg rounded-lg p-6 space-y-6"
+          className="p-6 space-y-6 bg-white rounded-lg shadow-lg"
           aria-labelledby="form-heading"
         >
           <div>
             <label
               htmlFor="name"
-              className="block text-gray-700 font-medium mb-2"
+              className="block mb-2 font-medium text-gray-700"
             >
               Full Name <span className="sr-only">(Required)</span>
             </label>
@@ -100,7 +100,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-gray-700 font-medium mb-2"
+              className="block mb-2 font-medium text-gray-700"
             >
               Email <span className="sr-only">(Required)</span>
             </label>
@@ -119,7 +119,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="subject"
-              className="block text-gray-700 font-medium mb-2"
+              className="block mb-2 font-medium text-gray-700"
             >
               Subject
             </label>
@@ -136,7 +136,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="message"
-              className="block text-gray-700 font-medium mb-2"
+              className="block mb-2 font-medium text-gray-700"
             >
               Message
             </label>
@@ -160,7 +160,7 @@ const ContactForm = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ContactForm;
+export default ContactForm
