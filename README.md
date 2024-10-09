@@ -1,4 +1,4 @@
-# Jawfane - Managed by [Company Name]
+# Jawfane - Managed by Infinite Pixel LLC
 
 Welcome to the official GitHub page for **Jawfane**, a progressive metal band based in Nashville! This GitHub repository is managed by the company that supports Jawfane's digital presence. While the band itself does not participate in the coding or technical side, this page is a hub for the tools and resources we use to maintain their online brand.
 
