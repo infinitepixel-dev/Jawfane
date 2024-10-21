@@ -1,17 +1,20 @@
-import { useState, useEffect, useRef } from "react"
-import axios from "axios"
-import { gsap } from "gsap"
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { gsap } from "gsap";
 
 const ContactForm = () => {
+  const apiURL = "https://vps.infinitepixel.dev:4010";
+  // const apiURL = "http://66.128.253.47:4010";
+
   const [state, setState] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
-  })
+  });
 
-  const [result, setResult] = useState(null)
-  const formRef = useRef(null)
+  const [result, setResult] = useState(null);
+  const formRef = useRef(null);
 
   useEffect(() => {
     gsap.from(formRef.current, {
@@ -19,37 +22,37 @@ const ContactForm = () => {
       y: 20,
       duration: 1,
       ease: "power3.out",
-    })
-  }, [])
+    });
+  }, []);
 
   const sendEmail = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     axios
-      .post("/send", { ...state })
+      .post(`${apiURL}/send`, { ...state, toEmail: "info@infinitepixel.dev" })
       .then((response) => {
-        setResult(response.data)
+        setResult(response.data);
         setState({
           name: "",
           email: "",
           subject: "",
           message: "",
-        })
+        });
       })
       .catch(() => {
         setResult({
           success: false,
           message: "Something went wrong. Try again later",
-        })
-      })
-  }
+        });
+      });
+  };
 
   const onInputChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
     setState({
       ...state,
       [name]: value,
-    })
-  }
+    });
+  };
 
   return (
     <div
@@ -160,7 +163,7 @@ const ContactForm = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ContactForm
+export default ContactForm;

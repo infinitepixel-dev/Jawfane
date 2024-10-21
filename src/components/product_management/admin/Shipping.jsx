@@ -20,7 +20,9 @@ import USPSShipping from "@apis_product_management/shipping/usps/USPSShipping";
 import AnimatedCheckbox from "@components/product_management/sub_components/widgets/AnimatedCheckbox";
 
 function Shipping({ storeId }) {
-  const apiURL = "http://66.128.253.47:3001";
+  console.log("Shipping Component...");
+
+  const apiURL = "https://vps.infinitepixel.dev:3050";
 
   const [shippingOptions, setShippingOptions] = useState({});
 
@@ -30,12 +32,14 @@ function Shipping({ storeId }) {
   // Fetch shipping options from API
   useEffect(() => {
     const getShippingOptions = async () => {
+      console.log("Fetching shipping options...");
+
       try {
         const res = await fetch(`${apiURL}/api/store/${storeId}/credentials`);
         const data = await res.json();
         setShippingOptions(data);
       } catch (err) {
-        console.error(err);
+        console.error("Shipping Error:", err);
       }
     };
     getShippingOptions();
