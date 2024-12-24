@@ -5,20 +5,20 @@ A component to manage the home page of the website
 */
 
 //INFO React Libraries
-import propTypes from "prop-types";
+import propTypes from "prop-types"
 
 //INFO Pages
-import Tour from "@pages/Tour";
-import Merch from "@pages/Merch";
-import MusicVideos from "@pages/MusicVideos";
-import Footer from "@pages/Footer";
-import Lore from "@pages/Lore";
-import Booking from "@pages/Booking";
+import Tour from "@pages/Tour"
+import Merch from "@pages/Merch"
+import MusicVideos from "@pages/MusicVideos"
+import Footer from "@pages/Footer"
+import Lore from "@pages/Lore"
+import Booking from "@pages/Booking"
 
 //INFO Sub-components
-import Navigation from "@navigation_product_management/Navigation";
-import BackToTop from "@buttons_product_management/BackToTop";
-import CanvasLogo from "@logos_product_management/CanvasLogo";
+import Navigation from "@navigation_product_management/Navigation"
+import BackToTop from "@buttons_product_management/BackToTop"
+import CanvasLogo from "@logos_product_management/CanvasLogo"
 
 function Home({
   storeId,
@@ -49,14 +49,6 @@ function Home({
       {/* <div id="main-app" className="w-screen"> */}
       <div id="home" className="w-screen overflow-x-hidden">
         <CanvasLogo theme={theme} isMobile={isMobile} />
-        <Merch
-          storeId={storeId}
-          theme={theme}
-          cartItems={cartItems}
-          setCartItems={addToCart}
-          addToCart={addToCart}
-          isMobile={isMobile}
-        />
         <MusicVideos theme={theme} />
         <Tour theme={theme} />
         <Lore theme={theme} />
@@ -65,19 +57,17 @@ function Home({
       </div>
       <BackToTop />
     </>
-  );
+  )
 }
 
 Home.propTypes = {
   storeId: propTypes.number,
   theme: propTypes.string.isRequired,
   isMobile: propTypes.bool.isRequired,
-  cartItems: propTypes.array.isRequired,
-  addToCart: propTypes.func.isRequired,
   DevMode: propTypes.bool.isRequired,
   base: propTypes.string.isRequired,
   toggleTheme: propTypes.func.isRequired,
   setIsMobile: propTypes.func.isRequired,
-};
+}
 
-export default Home;
+export default Home

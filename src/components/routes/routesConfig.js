@@ -7,7 +7,6 @@ import { lazy } from "react"
 // routesConfig.js
 export const navigationRoutes = [
   { id: "n1", name: "home", label: "Home" },
-  { id: "n2", name: "merch", label: "Merch" },
   { id: "n3", name: "music", label: "Music" },
   { id: "n4", name: "tour", label: "Tour" },
   { id: "n5", name: "booking", label: "Booking" },
@@ -47,17 +46,6 @@ export const componentRoutes = [
       title: "Tour Dates",
       description: "Check out our upcoming tour dates",
       keywords: "tour, dates, band, jawfane",
-    },
-  },
-  {
-    id: "merch",
-    key: "a4",
-    path: "/merch",
-    componentPath: "../pages/Merch.jsx",
-    metaData: {
-      title: "Merchandise",
-      description: "Buy our latest merchandise",
-      keywords: "merchandise, band, jawfane",
     },
   },
   {

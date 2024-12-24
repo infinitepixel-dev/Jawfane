@@ -5,89 +5,89 @@ A component that displays information about the band members
 */
 
 //INFO React Libraries
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react"
 
 //INFO Animation Libraries
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger)
 
 function Lore() {
-  const panels = useRef([]);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const panels = useRef([])
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   useEffect(() => {
     panels.current.forEach((panel, index) => {
-      const image = panel.querySelector(".bg-image");
+      const image = panel.querySelector(".bg-image")
       const position = isMobile
         ? bandData[index].position.mobile
-        : bandData[index].position.desktop;
+        : bandData[index].position.desktop
 
       gsap.set(image, {
         x: `${position.x}px`,
         y: `${position.y}px`,
         scale: 1.1,
         transformOrigin: "center top",
-      });
-    });
-  }, [isMobile]);
+      })
+    })
+  }, [isMobile])
 
   const handleClick = (index) => {
-    const panel = panels.current[index];
-    const bio = panel.querySelector(".bio");
-    const image = panel.querySelector(".bg-image");
+    const panel = panels.current[index]
+    const bio = panel.querySelector(".bio")
+    const image = panel.querySelector(".bg-image")
 
     if (activeIndex === index) {
-      setActiveIndex(null);
+      setActiveIndex(null)
       gsap.to(image, {
         scale: 1,
         x: 0,
         y: 0,
         duration: 0.5,
         ease: "power2.inOut",
-      });
+      })
       gsap.to(bio, {
         height: 0,
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut",
         onComplete: () => (bio.style.display = "none"),
-      });
+      })
     } else {
       if (activeIndex !== null) {
-        const prevPanel = panels.current[activeIndex];
-        const prevBio = prevPanel.querySelector(".bio");
-        const prevImage = prevPanel.querySelector(".bg-image");
+        const prevPanel = panels.current[activeIndex]
+        const prevBio = prevPanel.querySelector(".bio")
+        const prevImage = prevPanel.querySelector(".bg-image")
         gsap.to(prevImage, {
           scale: 1,
           x: 0,
           y: 0,
           duration: 0.5,
           ease: "power2.inOut",
-        });
+        })
         gsap.to(prevBio, {
           height: 0,
           opacity: 0,
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => (prevBio.style.display = "none"),
-        });
+        })
       }
 
-      setActiveIndex(index);
+      setActiveIndex(index)
       const position = isMobile
         ? bandData[index].position.mobile
-        : bandData[index].position.desktop;
+        : bandData[index].position.desktop
 
       gsap.to(image, {
         scale: 1.3,
@@ -96,8 +96,8 @@ function Lore() {
         transformOrigin: "center top",
         duration: 0.5,
         ease: "power2.inOut",
-      });
-      bio.style.display = "block";
+      })
+      bio.style.display = "block"
       gsap.fromTo(
         bio,
         { height: 0, opacity: 0 },
@@ -107,15 +107,15 @@ function Lore() {
           duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => {
-            startScrolling(bio);
+            startScrolling(bio)
           },
         }
-      );
+      )
     }
-  };
+  }
 
   const startScrolling = (bio) => {
-    const scrollHeight = bio.scrollHeight - bio.clientHeight;
+    const scrollHeight = bio.scrollHeight - bio.clientHeight
     if (scrollHeight > 0) {
       gsap.to(bio, {
         scrollTo: { y: scrollHeight },
@@ -125,7 +125,7 @@ function Lore() {
         delay: 2,
         repeat: -1,
         repeatDelay: 3,
-      });
+      })
 
       //on repeat fade the text back to the beginning
       ScrollTrigger.create({
@@ -136,11 +136,11 @@ function Lore() {
             y: 0,
             duration: 0.5,
             ease: "power2.inOut",
-          });
+          })
         },
-      });
+      })
     }
-  };
+  }
 
   const handleMouseEnter = (index) => {
     if (activeIndex !== index) {
@@ -148,9 +148,9 @@ function Lore() {
         scale: 1.1,
         duration: 0.15,
         ease: "power2.inOut",
-      });
+      })
     }
-  };
+  }
 
   const handleMouseLeave = (index) => {
     if (activeIndex !== index) {
@@ -158,9 +158,9 @@ function Lore() {
         scale: 1,
         duration: 0.15,
         ease: "power2.inOut",
-      });
+      })
     }
-  };
+  }
 
   return (
     <div
@@ -224,7 +224,7 @@ function Lore() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 const bandData = [
@@ -277,8 +277,8 @@ Across the distance Frodo and sam journeyed I have been, and same as them I saw 
     },
   },
   {
-    member: "Zach Cenate",
-    imageUrl: "images/zach-cenate.jpg",
+    member: "AJ",
+    imageUrl: "images/aj.jpg",
     bio: `We often live our lives wondering what if you stuck with that job, what if you ever moved to that new city, or the endless possibilities that weigh heavy on us at times. 
 
 Mine is “what if you kept playing drums in a band no matter if it amounted to anything or not?”
@@ -318,6 +318,6 @@ As the wind picks up, as the cold deepens…the question lingers, hangs heavy in
       desktop: { x: "0", y: "0" },
     },
   },
-];
+]
 
-export default Lore;
+export default Lore
