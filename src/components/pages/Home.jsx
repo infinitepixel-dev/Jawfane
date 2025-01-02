@@ -6,6 +6,7 @@ import Tour from "./Tour"
 // import Merch from "./Merch";
 import MusicVideos from "./MusicVideos"
 import Footer from "../sub-components/Footer"
+import Lore from "./Lore"
 
 //INFO Sub-components imports
 import CanvasLogo from "../sub-components/CanvasLogo"
@@ -17,6 +18,7 @@ function Home({ theme, isMobile }) {
       <Tour theme={theme} />
       {/* <Merch theme={theme} /> */}
       <MusicVideos theme={theme} />
+      <Lore />
       <Footer theme={theme} />
     </div>
   )

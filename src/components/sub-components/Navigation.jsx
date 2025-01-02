@@ -11,10 +11,8 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
   const [selected, setSelected] = useState("")
   const [isCollapsed, setIsCollapsed] = useState(true)
 
-  const [isUserClosed, setIsUserClosed] = useState(false)
   const navBarRef = useRef(null)
   const navRef = useRef(null)
-  const timeoutRef = useRef(null)
   const hamburgerRef = useRef(null)
 
   // Handle resize to detect mobile vs desktop
@@ -28,7 +26,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.set(navBarRef.current, { opacity: 1 })
         gsap.set(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 32, 97, 1)",
+          backgroundColor: "rgb(23,26,22)",
         })
       } else {
         // Ensure the menu is always visible on mobile
@@ -59,43 +57,6 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     }
   }, [location])
 
-  // Handle navbar visibility and fade on scroll (for desktop)
-  useEffect(() => {
-    const resetFade = () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-
-      if (!isMobile && !isUserClosed) {
-        // Keep the menu visible and handle fade-out after 5 seconds
-        gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
-        gsap.to(navRef.current, {
-          opacity: 1,
-          backgroundColor: "rgba(0, 32, 97, 0.97)",
-          duration: 0.5,
-        })
-
-        setIsCollapsed(false)
-
-        timeoutRef.current = setTimeout(() => {
-          gsap.to(navBarRef.current, { opacity: 0, duration: 1 })
-          gsap.to(navRef.current, {
-            opacity: 0,
-            backgroundColor: "transparent",
-            duration: 1,
-          })
-          setIsCollapsed(true)
-        }, 5000)
-      }
-    }
-
-    window.addEventListener("scroll", resetFade)
-
-    return () => {
-      window.removeEventListener("scroll", resetFade)
-    }
-  }, [isMobile, isUserClosed])
-
   // Toggle navbar with GSAP (for mobile and desktop)
   const toggleNavbar = useCallback(() => {
     if (isCollapsed) {
@@ -107,11 +68,10 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         display: "flex",
       })
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(0, 32, 97, 0.8)",
+        backgroundColor: "rgb(23,26,22)",
         opacity: 1,
         duration: 0.5,
       })
-      setIsUserClosed(false)
     } else {
       gsap.to(navBarRef.current, {
         opacity: isMobile ? 1 : 0,
@@ -125,7 +85,6 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         opacity: isMobile ? 1 : 0,
         duration: 0.5,
       })
-      setIsUserClosed(true)
     }
 
     setIsCollapsed(!isCollapsed)

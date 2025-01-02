@@ -1,0 +1,41 @@
+.perspective {
+  perspective: 1200px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-in-out;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.card {
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card img {
+  border-bottom: 4px solid #ffcc00;
+}
+
+.card .name-section {
+  background-color: #ffcc00;
+  font-size: 1.5rem;
+}
+
+.card .description {
+  background: linear-gradient(to bottom, #e6ccb2, #d7ba97);
+  padding: 12px;
+  border-top: 2px solid #ffcc00;
+}
+
+.absolute.inset-0.transform-style-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
