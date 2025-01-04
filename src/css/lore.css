@@ -1,41 +1,58 @@
+/* Container for the card */
 .perspective {
-  perspective: 1200px;
+  perspective: 1000px;
 }
 
+/* Wrapper to apply 3D transformations */
 .transform-style-3d {
   transform-style: preserve-3d;
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.5s ease;
 }
 
+/* Front face of the card */
+backface-hidden {
+  backface-visibility: hidden;
+  transform: rotateY(0deg);
+  z-index: 1; /* Ensure this layer is above others */
+  background: linear-gradient(
+      to bottom,
+      rgba(4, 121, 167, 0.6),
+      rgba(8, 123, 185, 0.8)
+    ),
+    url("/public/images/p6.webp") center/cover no-repeat;
+}
+
+/* Back face */
+.rotateY-180 {
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Correct text orientation */
+.rotateY-180 .back-content {
+  transform: rotateY(180deg);
+}
+
+/* When card is flipped */
 .flipped {
   transform: rotateY(180deg);
 }
 
-.backface-hidden {
-  backface-visibility: hidden;
+.cardBorder.border-custom.backface-hidden {
+  border: 5px solid;
 }
 
-.card {
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.card img {
-  border-bottom: 4px solid #ffcc00;
-}
-
-.card .name-section {
-  background-color: #ffcc00;
-  font-size: 1.5rem;
-}
-
-.card .description {
-  background: linear-gradient(to bottom, #e6ccb2, #d7ba97);
-  padding: 12px;
-  border-top: 2px solid #ffcc00;
-}
-
-.absolute.inset-0.transform-style-3d {
-  transform-style: preserve-3d;
-  transition: transform 0.6s ease;
+.bgCard {
+  background: linear-gradient(
+      45deg,
+      rgba(117, 28, 215, 0.9),
+      rgba(22, 44, 203, 0.1)
+    ),
+    url(public/images/p6.webp);
+  background-size: cover;
+  background-position: center;
 }
