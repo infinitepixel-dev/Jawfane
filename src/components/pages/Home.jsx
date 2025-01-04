@@ -17,8 +17,10 @@ function Home({ theme, isMobile }) {
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <Tour theme={theme} />
       {/* <Merch theme={theme} /> */}
+      <div className="p-20">
+        <Lore theme={theme} isMobile={isMobile} />
+      </div>
       <MusicVideos theme={theme} />
-      <Lore />
       <Footer theme={theme} />
     </div>
   )

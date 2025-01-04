@@ -91,7 +91,7 @@ const Lore = () => {
   }
 
   return (
-    <div className="flex items-center justify-center w-full p-6 overflow-hidden">
+    <div className="flex items-center justify-center w-full pt-8 overflow-hidden">
       <div className="flex flex-wrap justify-center w-full gap-8">
         {people.map((person, index) => (
           <div
@@ -119,7 +119,7 @@ const Lore = () => {
                 </div>
               </div>
               {/* Back Face */}
-              <div className="absolute z-0 w-full h-full p-6 text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rotateY-180 rounded-xl">
+              <div className="absolute z-0 w-full h-full p-6 overflow-y-auto text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rotateY-180 rounded-xl">
                 <div className="back-content">
                   <p className="text-base">{person.bio}</p>
                 </div>
