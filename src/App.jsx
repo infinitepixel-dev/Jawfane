@@ -4,6 +4,7 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom"
 //INFO Pages imports
 import Home from "./components/pages/Home"
 import Tour from "./components/pages/Tour"
+import Merch from "./components/pages/Merch"
 import Music from "./components/pages/MusicVideos"
 
 //INFO Sub-components imports
@@ -57,6 +58,7 @@ const App = () => {
             element={<Home theme={theme} isMobile={isMobile} />}
           />
           <Route path="/tour" element={<Tour theme={theme} />} />
+          <Route path="/merch" element={<Merch theme={theme} />} />
           <Route path="/music" element={<Music theme={theme} />} />
 
           {/* <Route path='/booking' element={<Booking theme={theme} />} /> */}
