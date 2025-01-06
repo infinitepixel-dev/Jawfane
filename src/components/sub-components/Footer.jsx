@@ -6,6 +6,10 @@ const Footer = () => {
           <p>
             &copy; {new Date().getFullYear()} Jawfane Band. All rights reserved.
           </p>
+          <p>
+            Website Designed by:
+            <a href="https://infinitepixel.dev"> Infinite Pixel</a>
+          </p>
         </footer>
       </section>
     </>
