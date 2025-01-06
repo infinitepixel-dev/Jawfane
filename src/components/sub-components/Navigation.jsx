@@ -157,11 +157,11 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
               key={item}
               className={`p-2 rounded transition-transform cursor-pointer ${
                 selected === item
-                  ? `bg-blue-500 ${
+                  ? `bg-sky-500 ${
                       theme === "dark" ? "text-black" : "text-white"
                     } rounded-full`
                   : theme === "dark"
-                  ? "hover:bg-blue-800 text-white rounded-full"
+                  ? "hover:bg-sky-700 text-white rounded-full"
                   : "hover:bg-gray-500 text-black rounded-full"
               }
             ${item === "booking" ? "pointer-events-none line-through" : ""}`}
