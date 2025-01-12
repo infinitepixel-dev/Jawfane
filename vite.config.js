@@ -1,15 +1,15 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { fileURLToPath } from "url";
-import { dirname, resolve } from "path";
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react"
+import { fileURLToPath } from "url"
+import { dirname, resolve } from "path"
 
 // Helper function to get __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 export default defineConfig({
   plugins: [react()],
-  base: "/Jawfane/",
+  base: "/jawfane-band/", // Set base path to match the GitHub Pages URL
   server: {
     host: "0.0.0.0", // Listen on all network interfaces
     port: 5173,
@@ -23,4 +23,4 @@ export default defineConfig({
       "@public": resolve(__dirname, "public"),
     },
   },
-});
+})
