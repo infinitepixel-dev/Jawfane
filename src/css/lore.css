@@ -40,7 +40,7 @@
 
 /* Correct text orientation */
 .rotateY-180 .back-content {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg); /* Fix orientation of back text */
   font-size: 0.9rem; /* Adjust font size for better scaling on mobile */
   line-height: 1.5; /* Increase line height for readability */
   text-align: justify; /* Improve text alignment */
@@ -49,6 +49,11 @@
 /* When card is flipped */
 .flipped {
   transform: rotateY(180deg);
+}
+
+/* Ensure back face is properly oriented */
+.flipped .backface-hidden:last-child {
+  transform: rotateY(180deg); /* Correct orientation of back face */
 }
 
 /* Border customization */
@@ -96,20 +101,16 @@
   scrollbar-width: thin; /* Minimal scrollbar for better aesthetics */
 }
 
-.shimmer-effect {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+.back-content {
+  position: relative;
   height: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.2),
-    rgba(255, 255, 255, 0.1)
-  );
-  z-index: 20;
-  pointer-events: none;
-  transform: skewX(-15deg);
-  overflow: hidden;
+  width: 100%;
+  background-image: url("/images/climpek.png"); /* Image path adjustment */
+  background-size: auto; /* Keeps the image at its original size */
+  background-repeat: repeat; /* Ensures the image repeats */
+  background-position: top left; /* Align the repeated pattern to the top-left */
+  color: #001b2b; /* Text color */
+  border-radius: 1rem;
+  border: #001b2b 1px solid;
+  padding: 20px;
 }

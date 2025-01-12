@@ -38,7 +38,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     handleResize() // Initial check on load
 
     return () => window.removeEventListener("resize", handleResize)
-  }, [])
+  }, [setIsMobile])
 
   // Handle URL hash scrolling on initial load
   useEffect(() => {
@@ -143,7 +143,9 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
           !isCollapsed && !isMobile
             ? "bg-black bg-opacity-60"
             : "bg-transparent"
-        } ${theme === "dark" ? " text-white" : "bg-gray-100 text-black"}`}
+        } ${
+          theme === "dark" ? " text-slate-950" : "bg-gray-100 text-slate-900"
+        }`}
         style={{ opacity: 1 }} // Ensure initial opacity is set to 1
       >
         <ul
@@ -158,13 +160,13 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
               className={`p-2 rounded transition-transform cursor-pointer ${
                 selected === item
                   ? `bg-sky-500 ${
-                      theme === "dark" ? "text-black" : "text-white"
+                      theme === "dark" ? "text-black" : "text-slate-950"
                     } rounded-full`
                   : theme === "dark"
                   ? "hover:bg-sky-700 text-white rounded-full"
-                  : "hover:bg-gray-500 text-black rounded-full"
+                  : "hover:bg-gray-500 text-slate-950 rounded-full"
               }
-            ${item === "booking" ? "pointer-events-none line-through" : ""}`}
+           ${item === "booking" ? "pointer-events-none" : ""}`}
               onClick={() => handleItemClick(item)}
             >
               <a href={`#${item}`}>

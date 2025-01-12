@@ -6,70 +6,83 @@ const people = [
   {
     name: "Cory Pack",
     photo: "public/images/cory.jpg",
-    bio: `Since the breaking of the first string, I’ve sought the nastiest tones and the greatest riffs—one amp, one guitar to rule them all.
+    bio: `It’s like it’s always been this way, since the breaking of the first string, I have sought the greatest riffs and nastiest tones. One amp and one guitar to rule them all.
+    
+    Formally trained classical composer, self taught metal head, I found my safe place as a teenager and young adult in small diy venues full of angry music and open minded people. It was here the forge was first built. 
 
-Trained as a classical composer but self-taught as a metalhead, I found my sanctuary in small DIY venues filled with angry music and open-hearted people. It was there the forge was built. Stories of betrayal, love, hurt, and forgiveness fused into a single note—the only note I’ve ever needed.
+    It was here, the stories of betrayal, love, hurt, and forgiveness all ran together into a single note and since last I care remember, it is the only note I have ever needed.
 
-The note of acceptance, the ring of chosen family, the fellowship of healing—it’s never been about the end of the journey, but the people and moments along the way. The audience lights their own fires alongside us, transforming fleeting notes into priceless memories of triumph and defeat.
+    The note of acceptance, the ring of chosen family, the fellowship of healing: I admire them all.
 
-The fire never surrenders—it only rests. From the forge comes transformation, for no sword was ever made without taking a beating.
+    Truly it would be easy to say that this is the only path I could have chosen, but there are many paths, and many forges, many rings, and many songs. I never considered the end of the path, there is no destination with which me and my fine fellows would be content. I search not for the gold at the end of the rainbow.
 
-The Eternal Riffsmith
-Cory`,
+    It is the journey and the people we choose to go with that is gold, it is the people in the audience who, have their own forge and light their fire with us.
+
+    And together as the metal is made into priceless memories of triumph and defeat. 
+
+    I stand in awe of you and what we are when you burn for the things you love.
+
+    “The fire doesn’t surrender it only rests. 
+    Yet from the forge comes transformation.
+    And no sword was ever made without getting the shit beat out it.”
+
+    The Eternal Riffsmith- Cory`,
   },
   {
     name: "Chase Schumann",
     photo: "public/images/chase.jpg",
-    bio: `Chase Schumann: is a failed Eldrich Horror. He may look scary, he may even sound scary at times. but the only thing he's scaring is his bandmates when he can't find his vape.This Eldrich Horror hides deep in the catacombs of bass frequencies. He's the distortion in bass amps and he's the reason why Sailor Jerry's  rum tastes the way it does. 
+    bio: `Chase Schumann: is a failed Eldrich Horror. He may look scary, he may even sound scary at times, but the only thing he's scaring is his bandmates when he can't find his vape. This Eldrich Horror hides deep in the catacombs of bass frequencies. He's the distortion in bass amps and he's the reason why Sailor Jerry's rum tastes the way it does.
 
-    Cory found him one day whilst trying to create the brown note, instead of Sh***ing themselves he appeared and never left. Thus creating the chaos that loves gummy candy and filthy breakdowns, and has an unquenchable thirst for mosh pits. 
-    
-    With his talents and the help from his new friends jawfane would take over the static in every speaker in the known universe.`,
+    Zach and Cory found him one day whilst trying to create the brown note. Instead of sh***ing themselves, he appeared and never left. Thus creating the chaos that loves gummy candy and filthy breakdowns, and has an unquenchable thirst for mosh pits.
+
+    With his talents and the help from his new friends, Jawfane would take over the static in every speaker in the known universe.`,
   },
   {
     name: "Austin Heipp",
     photo: "public/images/austin.jpg",
-    bio: `Defending the youngest and smallest isn’t a choice—it’s instinct.
+    bio: `It's without thought some things should be done. Defense of the youngest and smallest should be a reflex, not a debate.
 
-I may be the loudest, but only pain teaches you to be the softest. A self-taught vocalist, I don’t dwell on my younger years; I remember only the songs that carried me through them. From those feelings, I summon raw emotion, replacing doubt with certainty—the reflex to protect those without a voice, the instinct I once wished for myself.
+    I may be the loudest, but it's only through pain that you learn to be the softest.
 
-I am the reckoning. The shield I needed when I was younger.
+    Self-taught vocalist, I care not to remember my younger years, only the songs that got me through them. It's with those feelings I replace training and invoke pure, unfiltered emotion. It's with those feelings I replace doubt with certainty—certain that the reflex to defend the indefensible, the ones who have yet to have a voice, is the reflex that I so desired.
 
-Like Frodo’s journey, I’ve traveled far and witnessed tragedy. But through speaking to those like me, I’ve cast the voice of defeat into the fire.
+    I am the reckoning. The shield against what was done to me.
 
-"I carry my shield not for myself, but for everyone like me—and those who don’t yet know the strength they hold."
+    I am someone who would have protected me when I was younger.
 
--The Shield Sage,
-Austin`,
+    Across the distance Frodo and Sam journeyed, I have been, and same as them I saw many tragedies. But like Frodo carrying the burden of the age, I spoke to the ones who hurt me like me and through them, I was able to cast the nagging, unending voice of defeat into the fire.
+
+    “I carry my shield not for me alone; I carry it for the sake of everyone like me and those who do not yet know the strength of their position.”
+
+    - The Shield Sage Austin`,
   },
   {
     name: "Jesse Marquez",
     photo: "public/images/jesse.jpg",
-    bio: `On a frozen morning, the wind twists with cruel purpose, carving Jesse from the frost—or is he the wind itself? Maybe the world bends to him, shaping him from coincidence. He doesn't know—no one ever really does.
+    bio: `On a bleak, frozen morning, the wind twists and turns with a cruel sort of purpose. It’s carving someone out of the air, out of the frost. Jesse. He’s there. Or is he the wind itself? You can’t tell, can you? Maybe the world’s folding in on itself, shaping him from coincidence. Maybe synchronicity bends to him. Or perhaps it’s the world itself bending to his will, conforming to his quiet presence. He doesn’t know—no one ever really does.
 
-There's something deeper, though. A gnawing pull, but no clear purpose. While others move with gravity’s call, Jesse stands still, unmoved by a greater meaning. He just... is.
+    There's something deeper. He was born with it, wasn't he? That feeling. That strange, gnawing pull from the depths. But purpose? No. Never. While others are pulled toward something—an irresistible gravity—Jesse stands still. A murmur he couldn't understand at first. No grand meaning. No cause. No voice calling him to something larger, like it does for others. He's never had that. No inner drumbeat driving him forward. He just… is.
 
-Time whispers its truths, carried on icy gusts. The wind, like Jesse, shivers and pushes forward, holding him together. Fragile, yet unyielding. Surrender has never crossed his mind; it’s not an option.
+    Yet, time has a way of whispering truths. It carries meaning on icy gusts, whether you want to hear it or not. The wind, Jesse—it's the same. Shivers. They drive him, move him. Volition keeps him stitched together, a fragile thing standing tall against the gales.
 
-Obstacles rise—broken dreams and thick fog—but Jesse moves through them, driven by a quiet volition. The cold deepens, the wind howls, yet he endures. As the gale sharpens, one question lingers in the rustling leaves:
+    Purpose? It's a myth. Or maybe a lie, a cruel gift wrapped in ice and blown in on the same howling wind that brought him here. He's always wondered where that lack of calling would take him. But look at him. Still standing. Still going. He may not know what he's after, but stopping isn't an option.
 
-"In dark times, should the stars also go out?"`,
+    Obstacles rise, as they always do. Barriers, broken dreams, a thick fog of confusion and pain. Peace is a distant shore, but the idea of surrender? It's never crossed his mind. No, surrender is a luxury others can afford. Jesse? He can only move forward. Through the wreckage, through the cold, forward. Shivers. It pushes, nudges, chills him to the core. Deep in the marrow, they drive him. His body—this brittle temple—is held together by the unbreakable thread of Volition that pushes him to break through to the heavens. Holding him together, a fragile thing standing tall against the gales.
+
+    As the wind picks up, as the cold deepens…the question lingers, hangs heavy in the air, whispered in the rustling leaves:
+
+    “In dark times, should the stars also go out?”`,
   },
   {
     name: "AJ",
     photo: "public/images/aj.jpg",
-    bio: `Rhythm is life, and I’ve always been its pulse.
+    bio: `AJ’s world is rhythm, and rhythm is survival. From the first time he picked up a pair of sticks, it wasn’t about music—it was about channeling energy, emotion, and chaos into something tangible. To the band the drums became anchor, their weapon, their voice when words wouldn’t come.
 
-Before I could walk, I was drumming—hands on tables, feet on floors, finding the beat in the chaos. The world has always made sense to me in patterns: a crash here, a thud there, and the silence that lingers just long enough to give meaning to the next sound.
+    AJ doesn’t just play; he commands. Each beat is an assertion, a declaration of existence. Drumming isn’t just keeping time, It’s carving out space where there wasn’t any, staking a claim in the silence and refusing to back down.
 
-I don’t play to be heard; I play to connect. Drumming isn’t about showing off—it's about holding everything together when it feels like it might fall apart. It’s the steady march forward, the rallying cry, the heartbeat of something greater.
+    To AJ, the kit is a battlefield. The snare cracks like defiance; the kick drum resonates like a heartbeat. Every strike is deliberate, every pattern a message. He’s not here to impress anyone—He's here to make you feel. Onstage, the drums are a relentless pulse, a force of nature that refuses to let the crowd sit still. The drums aren’t just an instrument; they’re a lifeline, a declaration that even in chaos, there is order to be found.
 
-Every strike of the drum is a conversation—with the music, the audience, and the fire within. And when the rhythm locks in, when the energy flows through the room and everyone feels it—that’s when I know I’m exactly where I need to be.
-
-"Some people hear the rhythm; others live it. I’m just here to remind you it’s been in you all along."
-
--The Beatkeeper,
-AJ`,
+    'For me, every beat is a reckoning, A chance to turn raw emotion into something powerful. I’m not just playing for myself—I’m playing for anyone who’s ever felt like their voice wasn’t loud enough. Because trust me, it can be.'`,
   },
 ]
 
@@ -77,28 +90,39 @@ const Lore = () => {
   const [flipped, setFlipped] = useState(null)
 
   const handleFlip = (index) => {
-    const isFlipped = flipped === index ? null : index
-    setFlipped(isFlipped)
+    if (flipped === index) {
+      // Flip back
+      setFlipped(null)
+      animateFlip(index, 0)
+    } else {
+      // Flip new card
+      setFlipped(index)
+      animateFlip(index, 180)
+    }
+  }
 
+  const animateFlip = (index, rotationY) => {
     const card = document.getElementById(`card-${index}`)
     if (card) {
       gsap.to(card, {
-        rotationY: isFlipped === null ? 0 : 180,
-        duration: 0.5,
+        rotationY,
+        duration: 0.6,
         ease: "power1.inOut",
       })
     }
   }
 
   return (
-    <div className="flex items-center justify-center w-full pt-8 overflow-hidden">
+    <div className="flex items-center justify-center w-full p-6 overflow-hidden">
       <div className="flex flex-wrap justify-center w-full gap-8">
         {people.map((person, index) => (
           <div
             key={index}
             id={`card-${index}`}
-            className="relative w-[400px] h-[600px] perspective cursor-pointer"
+            className={`relative w-[400px] h-[600px] perspective cursor-pointer`}
             onClick={() => handleFlip(index)}
+            role="button"
+            aria-pressed={flipped === index}
           >
             <div
               className={`absolute inset-0 transform-style-3d ${
@@ -106,22 +130,24 @@ const Lore = () => {
               }`}
             >
               {/* Front Face */}
-              <div className="absolute z-10 flex flex-col w-full h-full border-4 border-transparent bgCard cardBorder border-custom backface-hidden rounded-xl">
-                <div className="w-full h-[33em] bg-cover rounded-t-xl">
+              <div className="absolute z-10 flex flex-col w-full h-full border-4 border-transparent backface-hidden rounded-xl">
+                <div className="w-full h-[80%] bg-cover rounded-t-lg">
                   <img
                     src={person.photo}
-                    alt={person.name}
-                    className="object-cover w-full h-full rounded-t-xl"
+                    alt={`${person.name}'s photo`}
+                    className="object-cover w-full h-full rounded-t-lg"
                   />
                 </div>
-                <div className="py-4 text-2xl font-bold text-center bg-center bg-cover text-slate-200 bg-gradient-to-b from-sky-500 to-sky-600">
+                <div className="flex items-center justify-center h-[20%] text-2xl font-bold text-center text-black bg-gradient-to-b from-sky-500 to-sky-600 rounded-b-lg">
                   {person.name}
                 </div>
               </div>
               {/* Back Face */}
-              <div className="absolute z-0 w-full h-full p-6 overflow-y-auto text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rotateY-180 rounded-xl">
+              <div className="absolute z-0 flex items-center justify-center w-full h-full p-6 text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rounded-xl rotateY-180">
                 <div className="back-content">
-                  <p className="text-base">{person.bio}</p>
+                  <p className="text-base text-center">
+                    {person.bio || "Bio unavailable."}
+                  </p>
                 </div>
               </div>
             </div>
