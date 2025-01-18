@@ -28,7 +28,7 @@ const Booking = () => {
 
   return (
     <div
-      className="relative flex flex-col items-center justify-center min-h-screen p-4 text-white bg-gray-900"
+      className="relative z-0 flex flex-col items-center justify-center min-h-screen p-4 text-white bg-gray-900"
       style={{
         backgroundImage: "url('public/images/Jawfane-44.jpg')",
         backgroundSize: "cover",
@@ -40,14 +40,14 @@ const Booking = () => {
       <div className="absolute inset-0 bg-gray-900 bg-opacity-50"></div>
       <h1
         ref={headingRef}
-        className="relative z-10 mb-6 text-4xl font-bold text-center"
+        className="relative z-10 mb-6 text-5xl font-bold text-center shadow-md"
       >
-        For bookings, click below:
+        For bookings, click below
       </h1>
       <a
         ref={buttonRef}
-        href="mailto:jawfane@gmail.com"
-        className="relative z-10 px-6 py-3 font-semibold text-white transition-transform transform bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600"
+        href="mailto:jawfane@gmail.com?subject=Booking Inquiry"
+        className="relative z-10 px-6 py-3 font-semibold text-white transition-transform transform bg-orange-500 rounded-lg shadow-lg hover:bg-orange-600"
       >
         Book Now
       </a>
