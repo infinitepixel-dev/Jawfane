@@ -30,7 +30,7 @@ const Booking = () => {
     <div
       className="relative z-0 flex flex-col items-center justify-center min-h-screen p-4 text-white bg-gray-900"
       style={{
-        backgroundImage: "url('public/images/Jawfane-44.jpg')",
+        backgroundImage: "url('../build/images/Jawfane-44.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

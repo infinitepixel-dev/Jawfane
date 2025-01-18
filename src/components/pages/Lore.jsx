@@ -5,7 +5,7 @@ import "../../css/lore.css"
 const people = [
   {
     name: "Cory Pack",
-    photo: "public/images/cory.jpg",
+    photo: "../build/images/cory.jpg",
     bio: `It’s like it’s always been this way, since the breaking of the first string, I have sought the greatest riffs and nastiest tones. One amp and one guitar to rule them all.
     
     Formally trained classical composer, self taught metal head, I found my safe place as a teenager and young adult in small diy venues full of angry music and open minded people. It was here the forge was first built. 
@@ -30,7 +30,7 @@ const people = [
   },
   {
     name: "Chase Schumann",
-    photo: "public/images/chase.jpg",
+    photo: "../build/images/chase.jpg",
     bio: `Chase Schumann: is a failed Eldrich Horror. He may look scary, he may even sound scary at times, but the only thing he's scaring is his bandmates when he can't find his vape. This Eldrich Horror hides deep in the catacombs of bass frequencies. He's the distortion in bass amps and he's the reason why Sailor Jerry's rum tastes the way it does.
 
     Zach and Cory found him one day whilst trying to create the brown note. Instead of sh***ing themselves, he appeared and never left. Thus creating the chaos that loves gummy candy and filthy breakdowns, and has an unquenchable thirst for mosh pits.
@@ -39,7 +39,7 @@ const people = [
   },
   {
     name: "Austin Heipp",
-    photo: "public/images/austin.jpg",
+    photo: "../build/images/austin.jpg",
     bio: `It's without thought some things should be done. Defense of the youngest and smallest should be a reflex, not a debate.
 
     I may be the loudest, but it's only through pain that you learn to be the softest.
@@ -58,7 +58,7 @@ const people = [
   },
   {
     name: "Jesse Marquez",
-    photo: "public/images/jesse.jpg",
+    photo: "../build/images/jesse.jpg",
     bio: `On a bleak, frozen morning, the wind twists and turns with a cruel sort of purpose. It’s carving someone out of the air, out of the frost. Jesse. He’s there. Or is he the wind itself? You can’t tell, can you? Maybe the world’s folding in on itself, shaping him from coincidence. Maybe synchronicity bends to him. Or perhaps it’s the world itself bending to his will, conforming to his quiet presence. He doesn’t know—no one ever really does.
 
     There's something deeper. He was born with it, wasn't he? That feeling. That strange, gnawing pull from the depths. But purpose? No. Never. While others are pulled toward something—an irresistible gravity—Jesse stands still. A murmur he couldn't understand at first. No grand meaning. No cause. No voice calling him to something larger, like it does for others. He's never had that. No inner drumbeat driving him forward. He just… is.
@@ -75,7 +75,7 @@ const people = [
   },
   {
     name: "AJ",
-    photo: "public/images/aj.jpg",
+    photo: "../build/images/aj.jpg",
     bio: `AJ’s world is rhythm, and rhythm is survival. From the first time he picked up a pair of sticks, it wasn’t about music—it was about channeling energy, emotion, and chaos into something tangible. To the band the drums became anchor, their weapon, their voice when words wouldn’t come.
 
     AJ doesn’t just play; he commands. Each beat is an assertion, a declaration of existence. Drumming isn’t just keeping time, It’s carving out space where there wasn’t any, staking a claim in the silence and refusing to back down.
