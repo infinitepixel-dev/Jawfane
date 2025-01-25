@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { gsap } from "gsap"
+import jawfane from "/images/Jawfane-44.jpg"
 
 const Booking = () => {
   const headingRef = useRef(null)
@@ -30,7 +31,7 @@ const Booking = () => {
     <div
       className="relative z-0 flex flex-col items-center justify-center min-h-screen p-4 text-white bg-gray-900"
       style={{
-        backgroundImage: "url('../build/images/Jawfane-44.jpg')",
+        backgroundImage: `url(${jawfane})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
