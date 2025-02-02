@@ -18,7 +18,8 @@ const Tour = ({ theme }) => {
       if (isUserInteracting.current) return
 
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && heroSection) {
+          // Added check for heroSection
           gsap.to(window, {
             duration: 1.5,
             scrollTo: { y: heroSection, offsetY: 0 },
@@ -32,7 +33,9 @@ const Tour = ({ theme }) => {
       threshold: 0.4,
     })
 
-    observer.observe(heroSection)
+    if (heroSection) {
+      observer.observe(heroSection)
+    }
 
     const handleUserInteractionStart = () => {
       isUserInteracting.current = true

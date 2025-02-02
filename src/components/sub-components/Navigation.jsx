@@ -9,7 +9,6 @@ import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
   const location = useLocation()
   const [selected, setSelected] = useState("")
-  const [isCollapsed, setIsCollapsed] = useState(true)
 
   const navBarRef = useRef(null)
   const navRef = useRef(null)
@@ -20,22 +19,10 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     const handleResize = () => {
       const isNowMobile = window.innerWidth < 768
       setIsMobile(isNowMobile)
-
-      if (!isNowMobile) {
-        // Ensure the menu is always visible on desktop
-        gsap.set(navBarRef.current, { opacity: 1 })
-        gsap.set(navRef.current, {
-          opacity: 1,
-          backgroundColor: "rgb(23,26,22)",
-        })
-      } else {
-        // Ensure the menu is always visible on mobile
-        gsap.set(navBarRef.current, { opacity: 1 })
-      }
     }
 
     window.addEventListener("resize", handleResize)
-    handleResize() // Initial check on load
+    handleResize()
 
     return () => window.removeEventListener("resize", handleResize)
   }, [setIsMobile])
@@ -57,44 +44,33 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     }
   }, [location])
 
-  // Toggle navbar with GSAP (for mobile and desktop)
   const toggleNavbar = useCallback(() => {
-    if (isCollapsed) {
-      gsap.to(navBarRef.current, {
-        opacity: 1,
-        height: "auto",
-        duration: 0.5,
-        ease: "power2.out",
-        display: "flex",
-      })
-      gsap.to(navRef.current, {
-        backgroundColor: "rgb(23,26,22)",
-        opacity: 1,
-        duration: 0.5,
-      })
-    } else {
-      gsap.to(navBarRef.current, {
-        opacity: isMobile ? 1 : 0,
-        duration: 0.5,
-        ease: "power2.in",
-        height: 0,
-        display: "none",
-      })
-      gsap.to(navRef.current, {
-        backgroundColor: "transparent",
-        opacity: isMobile ? 1 : 0,
-        duration: 0.5,
-      })
+    if (navBarRef.current) {
+      const isNavVisible = navBarRef.current.classList.contains("hidden")
+
+      // If the navbar is currently hidden, show it
+      if (isNavVisible) {
+        gsap.to(navBarRef.current, {
+          opacity: 1,
+          height: "auto", // Ensure it expands to show the menu items
+          duration: 0.5,
+          ease: "power2.out",
+        })
+        navBarRef.current.classList.remove("hidden")
+      } else {
+        // If the navbar is visible, hide it
+        gsap.to(navBarRef.current, {
+          opacity: 0,
+          height: 0, // Collapse the menu
+          duration: 0.5,
+          ease: "power2.out",
+        })
+        navBarRef.current.classList.add("hidden")
+      }
     }
 
-    setIsCollapsed(!isCollapsed)
-  }, [isCollapsed, isMobile])
-
-  useEffect(() => {
-    if (setToggleNavbar) {
-      setToggleNavbar(() => toggleNavbar)
-    }
-  }, [setToggleNavbar, toggleNavbar])
+    setToggleNavbar((prev) => !prev) // Toggle the state to control navbar visibility
+  }, [isMobile, setToggleNavbar])
 
   const handleItemClick = (item) => {
     setSelected(item)
@@ -113,20 +89,17 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
 
   return (
     <>
-      {/* Hamburger button: Only visible on mobile */}
       {isMobile && (
         <div
           ref={hamburgerRef}
           className="sticky pl-4 top-4"
-          style={{
-            zIndex: 1000,
-          }}
+          style={{ zIndex: 1000 }}
         >
           <button
             onClick={toggleNavbar}
             className="p-2 text-white bg-blue-500 rounded-lg"
           >
-            {isCollapsed ? (
+            {isMobile ? (
               <FontAwesomeIcon icon={faBars} />
             ) : (
               <FontAwesomeIcon icon={faArrowUp} />
@@ -135,26 +108,22 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         </div>
       )}
 
-      {/* Navigation Bar */}
       <nav
         ref={navRef}
         id="navigation"
         className={`sticky top-0 w-full z-50 transition-all duration-300 ease-in-out ${
-          !isCollapsed && !isMobile
-            ? "bg-black bg-opacity-60"
-            : "bg-transparent"
+          !isMobile ? "bg-black bg-opacity-60" : "bg-transparent"
         } ${
           theme === "dark" ? " text-slate-950" : "bg-gray-100 text-slate-900"
         }`}
-        style={{ opacity: 1 }} // Ensure initial opacity is set to 1
       >
         <ul
           ref={navBarRef}
           className={`px-8 ${
-            isCollapsed && isMobile ? "hidden" : "flex"
+            isMobile ? "hidden" : "flex"
           } pt-4 flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
         >
-          {["home", "music", "tour", "booking"].map((item) => (
+          {["music", "tour", "booking"].map((item) => (
             <li
               key={item}
               className={`p-2 rounded transition-transform cursor-pointer ${
@@ -165,13 +134,10 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
                   : theme === "dark"
                   ? "hover:bg-sky-700 text-white rounded-full"
                   : "hover:bg-gray-500 text-slate-950 rounded-full"
-              }
-           ${item === "booking" ? "pointer-events-none" : ""}`}
+              }`}
               onClick={() => handleItemClick(item)}
             >
-              <a href={`#${item}`}>
-                {item.charAt(0).toUpperCase() + item.slice(1)}
-              </a>
+              <span>{item.charAt(0).toUpperCase() + item.slice(1)}</span>
             </li>
           ))}
 
@@ -186,7 +152,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
 
 Navigation.propTypes = {
   theme: propTypes.string.isRequired,
-  setToggleNavbar: propTypes.func,
+  setToggleNavbar: propTypes.func.isRequired,
   isMobile: propTypes.bool.isRequired,
   setIsMobile: propTypes.func.isRequired,
 }

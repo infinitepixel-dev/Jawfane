@@ -1,123 +1,113 @@
 import { useEffect, useRef } from "react"
 import { gsap } from "gsap"
-import { ScrollToPlugin } from "gsap/ScrollToPlugin"
-gsap.registerPlugin(ScrollToPlugin)
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+gsap.registerPlugin(ScrollTrigger)
 
 import propTypes from "prop-types"
 
 const MusicVideos = ({ theme }) => {
-  const isUserInteracting = useRef(false)
-  const debounceTimeout = useRef(null)
+  const sectionRef = useRef(null)
 
   useEffect(() => {
-    const heroSection = document.getElementById("music")
+    const section = sectionRef.current
+    const videos = section.querySelectorAll(".video-item")
+    const title = section.querySelector("#music-video-title")
 
-    const snapIntoView = (entries) => {
-      if (isUserInteracting.current) return
+    // Animation for title and videos
+    gsap.fromTo(
+      title,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: title,
+          start: "top 80%",
+        },
+      }
+    )
 
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          gsap.to(window, {
-            duration: 1.5,
-            scrollTo: { y: heroSection, offsetY: 0 },
-            ease: "elastic.out(1, 1)",
-          })
-        }
-      })
-    }
-
-    const observer = new IntersectionObserver(snapIntoView, {
-      threshold: 0.4,
-    })
-
-    observer.observe(heroSection)
-
-    const handleUserInteractionStart = () => {
-      isUserInteracting.current = true
-      clearTimeout(debounceTimeout.current)
-    }
-
-    const handleUserInteractionEnd = () => {
-      debounceTimeout.current = setTimeout(() => {
-        isUserInteracting.current = false
-      }, 100)
-    }
-
-    window.addEventListener("scroll", handleUserInteractionStart)
-    window.addEventListener("mousedown", handleUserInteractionStart)
-    window.addEventListener("mouseup", handleUserInteractionEnd)
-    window.addEventListener("touchstart", handleUserInteractionStart)
-    window.addEventListener("touchend", handleUserInteractionEnd)
+    gsap.fromTo(
+      videos,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power2.out",
+        stagger: 0.3,
+        scrollTrigger: {
+          trigger: section,
+          start: "top 70%",
+        },
+      }
+    )
 
     return () => {
-      observer.disconnect()
-      window.removeEventListener("scroll", handleUserInteractionStart)
-      window.removeEventListener("mousedown", handleUserInteractionStart)
-      window.removeEventListener("mouseup", handleUserInteractionEnd)
-      window.removeEventListener("touchstart", handleUserInteractionStart)
-      window.removeEventListener("touchend", handleUserInteractionEnd)
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }
   }, [])
 
   return (
-    <>
-      <section
-        id="music"
-        className={`w-full min-h-screen bg-cover bg-center pt-16 ${theme} clear-both z-40`}
-        style={{
-          backgroundImage: `url({heroImage})`,
-        }}
+    <section
+      id="music"
+      ref={sectionRef}
+      className={`w-full min-h-screen bg-cover bg-center flex flex-col items-center pt-16 ${theme} z-40`}
+      style={{
+        backgroundImage: `url({heroImage})`,
+      }}
+    >
+      <h1
+        id="music-video-title"
+        className={`text-5xl text-center mb-8 ${
+          theme === "dark" ? "text-white" : "text-black"
+        }`}
       >
-        <h1
-          id="music-video-title"
-          className={`text-5xl text-center ${
-            theme === "dark" ? "text-white" : "text-black"
-          }`}
-        >
-          Music Videos
-        </h1>
+        Music Videos
+      </h1>
 
-        <div
-          className={`flex items-center justify-center py-8 ${
-            theme === "dark" ? "bg-black" : "bg-slate-300"
-          }`}
-        >
-          <div className="grid w-full grid-cols-1 gap-4 px-4 md:grid-cols-2 lg:grid-cols-2 max-w-7xl">
-            {/* Responsive Video 1 */}
-            <div
-              className="relative w-full"
-              style={{ paddingBottom: "56.25%" }}
-            >
-              <iframe
-                className="absolute top-0 left-0 w-full h-full border border-gray-300 border-solid rounded-md"
-                src="https://www.youtube.com/embed/rSdiBTpiFbY?si=PjIO9GIjFRnusqa0"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
-            </div>
+      <div
+        className={`flex items-center justify-center w-full px-4 py-8 ${
+          theme === "dark" ? "bg-black" : "bg-slate-300"
+        }`}
+      >
+        <div className="grid w-full max-w-5xl grid-cols-1 gap-8 sm:grid-cols-2">
+          {/* Video 1 */}
+          <div
+            className="relative w-full video-item"
+            style={{ paddingBottom: "56.25%" }}
+          >
+            <iframe
+              className="absolute top-0 left-0 w-full h-full border border-gray-300 rounded-md"
+              src="https://www.youtube.com/embed/rSdiBTpiFbY?si=PjIO9GIjFRnusqa0"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+          </div>
 
-            {/* Responsive Video 2 */}
-            <div
-              className="relative w-full"
-              style={{ paddingBottom: "56.25%" }}
-            >
-              <iframe
-                className="absolute top-0 left-0 w-full h-full border border-gray-300 border-solid rounded-md"
-                src="https://www.youtube.com/embed/hK7ekE0Sry4?si=nJ00ieaI8d6W9ixL"
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
-            </div>
+          {/* Video 2 */}
+          <div
+            className="relative w-full video-item"
+            style={{ paddingBottom: "56.25%" }}
+          >
+            <iframe
+              className="absolute top-0 left-0 w-full h-full border border-gray-300 rounded-md"
+              src="https://www.youtube.com/embed/hK7ekE0Sry4?si=nJ00ieaI8d6W9ixL"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   )
 }
 

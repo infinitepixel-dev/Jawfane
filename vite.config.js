@@ -9,7 +9,7 @@ const __dirname = dirname(__filename)
 
 export default defineConfig({
   plugins: [react()],
-  base: "/jawfane-band/", // Set base path to match the GitHub Pages URL
+  base: "/Jawfane", // Set base path to match the GitHub Pages URL
   build: {
     outDir: "build", // Change output directory to 'build' for gh-pages
     emptyOutDir: true, // Clean the output directory before building

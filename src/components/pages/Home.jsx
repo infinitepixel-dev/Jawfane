@@ -5,6 +5,7 @@ import propTypes from "prop-types"
 import Tour from "./Tour"
 // import Merch from "./Merch";
 import MusicVideos from "./MusicVideos"
+import Booking from "./Booking"
 import Footer from "../sub-components/Footer"
 import Lore from "./Lore"
 
@@ -21,6 +22,7 @@ function Home({ theme, isMobile }) {
         <Lore theme={theme} isMobile={isMobile} />
       </div>
       <MusicVideos theme={theme} />
+      <Booking theme={theme} />
       <Footer theme={theme} />
     </div>
   )
