@@ -1,62 +1,30 @@
-//Home.jsx
-
-/*
-A component to manage the home page of the website
-*/
-
-//INFO React Libraries
 import propTypes from "prop-types"
 
-//INFO Pages
-import Tour from "@pages/Tour"
-import Merch from "@pages/Merch"
-import MusicVideos from "@pages/MusicVideos"
-import Footer from "@pages/Footer"
-import Lore from "@pages/Lore"
-import Booking from "@pages/Booking"
+//INFO Pages imports
 
-//INFO Sub-components
-import Navigation from "@navigation_product_management/Navigation"
-import BackToTop from "@buttons_product_management/BackToTop"
-import CanvasLogo from "@logos_product_management/CanvasLogo"
+import Tour from "./Tour"
+// import Merch from "./Merch";
+import MusicVideos from "./MusicVideos"
+import Booking from "./Booking"
+import Footer from "../sub-components/Footer"
+import Lore from "./Lore"
 
-function Home({
-  storeId,
-  theme,
-  isMobile,
-  cartItems,
-  addToCart,
-  DevMode,
-  base,
-  toggleTheme,
-  setIsMobile,
-}) {
-  // console.log("Home component rendered");
-  // console.log("Cart Items: ", cartItems);
+//INFO Sub-components imports
+import CanvasLogo from "../sub-components/CanvasLogo"
 
+function Home({ theme, isMobile }) {
   return (
-    <>
-      <Navigation
-        storeId={storeId}
-        DevMode={DevMode}
-        base={base}
-        theme={theme}
-        toggleTheme={toggleTheme}
-        isMobile={isMobile}
-        setIsMobile={setIsMobile}
-        cartItems={cartItems}
-      />
-      {/* <div id="main-app" className="w-screen"> */}
-      <div id="home" className="w-screen overflow-x-hidden">
-        <CanvasLogo theme={theme} isMobile={isMobile} />
-        <MusicVideos theme={theme} />
-        <Tour theme={theme} />
-        <Lore theme={theme} />
-        <Booking theme={theme} />
-        <Footer theme={theme} />
+    <div id="main-app" className="w-screen">
+      <CanvasLogo theme={theme} isMobile={isMobile} />
+      <Tour theme={theme} />
+      {/* <Merch theme={theme} /> */}
+      <div className="p-20">
+        <Lore theme={theme} isMobile={isMobile} />
       </div>
-      <BackToTop />
-    </>
+      <MusicVideos theme={theme} />
+      <Booking theme={theme} />
+      <Footer theme={theme} />
+    </div>
   )
 }
 
@@ -64,10 +32,6 @@ Home.propTypes = {
   storeId: propTypes.number,
   theme: propTypes.string.isRequired,
   isMobile: propTypes.bool.isRequired,
-  DevMode: propTypes.bool.isRequired,
-  base: propTypes.string.isRequired,
-  toggleTheme: propTypes.func.isRequired,
-  setIsMobile: propTypes.func.isRequired,
 }
 
 export default Home

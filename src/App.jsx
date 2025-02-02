@@ -4,17 +4,15 @@ const DevMode = false
 import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
-//INFO Pages
-import Home from "@components/pages/Home"
-import Tour from "@components/pages/Tour"
-import Music from "@components/pages/MusicVideos"
-import Lore from "@components/pages/Lore"
-import Booking from "@components/pages/Booking"
+//INFO Pages imports
+import Home from "./components/pages/Home"
+import Tour from "./components/pages/Tour"
+import Music from "./components/pages/MusicVideos"
+import Booking from "./components/pages/Booking"
 
-import { ulid } from "ulid"
-
-//INFO Sub-components
-// import BackToTop from "@components/sub-components/BackToTop";
+//INFO Sub-components imports
+import Navigation from "./components/sub-components/Navigation"
+import BackToTop from "./components/sub-components/BackToTop"
 
 import "./App.css"
 
@@ -24,82 +22,8 @@ const App = () => {
   //import the base from vite config
   const [base, setBase] = useState("")
   const [theme, setTheme] = useState("dark")
-  const [isMobile, setIsMobile] = useState(
-    window.innerWidth < 768 ? true : false
-  )
-
-  // Cart Items
-  // Set whether to store cart items in localStorage
-  const enableLocalStorage = true //INFO Toggle this to true or false
-
-  //REVIEW - added test product to cartItems
-  // const [cartItems, setCartItems] = useState([]);
-  //v2 w/ localStorage
-  const [cartItems, setCartItems] = useState(() => {
-    // Load cart from localStorage if enabled and exists
-    if (enableLocalStorage) {
-      const savedCart = localStorage.getItem("cartItems")
-      return savedCart ? JSON.parse(savedCart) : []
-    }
-    return []
-  })
-
-  // eslint-disable-next-line no-unused-vars
-  const [enabledPayments, setEnabledPayments] = useState({
-    stripe: true,
-    paypal: true,
-    googlePay: true,
-  })
-
-  useEffect(() => {
-    if (DevMode) {
-      console.log("Infinite Pixel Development Mode Enabled")
-      setBase("/dev")
-    }
-  }, [])
-
-  // Effect to handle saving cart items to localStorage if enabled
-  useEffect(() => {
-    if (enableLocalStorage) {
-      localStorage.setItem("cartItems", JSON.stringify(cartItems))
-    }
-  }, [cartItems, enableLocalStorage])
-
-  const addToCart = (product) => {
-    // Function to check if a product with the same id and variant already exists in the cart
-    const isSameProductVariant = (item, product) => {
-      // Compare the id and all variants (or any other unique attributes like selectedSize or selectedColor)
-      return (
-        item.id === product.id &&
-        item.selectedSize === product.selectedSize &&
-        item.selectedColor === product.selectedColor
-      )
-    }
-
-    // Check if a product with the same id and variants exists in the cart
-    const existingProduct = cartItems.find((item) =>
-      isSameProductVariant(item, product)
-    )
-
-    if (existingProduct) {
-      console.log("Product already exists in cart", existingProduct)
-
-      // If a product with the same variant exists, just update the quantity
-      setCartItems(
-        cartItems.map((item) =>
-          isSameProductVariant(item, product)
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      )
-    } else {
-      // If no matching product with the same variants exists, add as a new product object
-      setCartItems([
-        ...cartItems,
-        { ...product, quantity: 1, cartItemId: ulid() },
-      ])
-    }
-  }
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  const [toggleNavbar, setToggleNavbar] = useState(false) // Manage the navbar toggle state
 
   //INFO theme settings
   useEffect(() => {
@@ -122,11 +46,15 @@ const App = () => {
   }
 
   return (
-    <Router basename={DevMode ? "/dev" : ""}>
-      <div
-        id="main-app"
-        className={`app-container ${theme} overflow-hidden bg-black`}
-      >
+    <Router>
+      <div id="home" className={`app-container ${theme} overflow-hidden`}>
+        <Navigation
+          theme={theme}
+          toggleTheme={toggleTheme}
+          setToggleNavbar={setToggleNavbar} // Pass the setter to Navigation
+          isMobile={isMobile}
+          setIsMobile={setIsMobile}
+        />
         <Routes>
           <Route
             path="/"
@@ -178,11 +106,6 @@ const App = () => {
           />
           <Route path="/tour" element={<Tour theme={theme} />} />
           <Route path="/music" element={<Music theme={theme} />} />
-
-          <Route
-            path="lore"
-            element={<Lore theme={theme} isMobile={isMobile} />}
-          />
           <Route path="/booking" element={<Booking theme={theme} />} />
         </Routes>
       </div>

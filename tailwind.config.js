@@ -2,12 +2,11 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      borderCustom: {
+        color: "#526763",
+      },
+    },
   },
-  plugins: [
-    require("tailwind-scrollbar"),
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/aspect-ratio"),
-    require("tailwindcss-filters"),
-  ],
-};
+  plugins: [],
+}
