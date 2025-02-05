@@ -28,8 +28,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.set(navBarRef.current, { opacity: 1 })
         gsap.set(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 3, 4, 0.98)",
-          backdropFilter: "blur(10px)",
+          backgroundColor: "rgba(0, 32, 97, 1)",
         })
       } else {
         // Ensure the menu is always visible on mobile
@@ -72,9 +71,8 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         gsap.to(navBarRef.current, { opacity: 1, duration: 0.5 })
         gsap.to(navRef.current, {
           opacity: 1,
-          backgroundColor: "rgba(0, 3, 4, 0.98)",
+          backgroundColor: "rgba(0, 32, 97, 0.97)",
           duration: 0.5,
-          backdropFilter: "blur(10px)",
         })
 
         setIsCollapsed(false)
@@ -109,10 +107,9 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         display: "flex",
       })
       gsap.to(navRef.current, {
-        backgroundColor: "rgba(0, 3, 4, 0.98)",
+        backgroundColor: "rgba(0, 32, 97, 0.8)",
         opacity: 1,
         duration: 0.5,
-        backdropFilter: "blur(10px)",
       })
       setIsUserClosed(false)
     } else {
@@ -157,17 +154,20 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
 
   return (
     <>
+      {/* Hamburger button: Only visible on mobile */}
       {isMobile && (
         <div
           ref={hamburgerRef}
           className="sticky pl-4 top-4"
-          style={{ zIndex: 1000 }}
+          style={{
+            zIndex: 1000,
+          }}
         >
           <button
             onClick={toggleNavbar}
             className="p-2 text-white bg-blue-500 rounded-lg"
           >
-            {isMobile ? (
+            {isCollapsed ? (
               <FontAwesomeIcon icon={faBars} />
             ) : (
               <FontAwesomeIcon icon={faArrowUp} />
@@ -176,43 +176,45 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
         </div>
       )}
 
+      {/* Navigation Bar */}
       <nav
         ref={navRef}
         id="navigation"
         className={`sticky top-0 w-full z-50 transition-all duration-300 ease-in-out ${
-          !isMobile ? "bg-black bg-opacity-60" : "bg-transparent"
-        } ${
-          theme === "dark" ? " text-slate-950" : "bg-gray-100 text-slate-900"
-        }`}
+          !isCollapsed && !isMobile
+            ? "bg-black bg-opacity-60"
+            : "bg-transparent"
+        } ${theme === "dark" ? " text-white" : "bg-gray-100 text-black"}`}
+        style={{ opacity: 1 }} // Ensure initial opacity is set to 1
       >
         <ul
           ref={navBarRef}
           className={`px-8 ${
-            isMobile ? "hidden" : "flex"
+            isCollapsed && isMobile ? "hidden" : "flex"
           } pt-4 flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
         >
-          {["music", "tour", "booking"].map((item) => (
+          {["home", "merch", "music", "tour", "booking"].map((item) => (
             <li
               key={item}
-              className={`p-2 cursor-pointer relative ${
+              className={`p-2 rounded transition-transform cursor-pointer ${
                 selected === item
-                  ? `${theme === "dark" ? "text-lime-600" : "text-black"}`
-                  : `${theme === "dark" ? "text-white" : "text-black"}`
-              } ${
-                item === "merch" || item === "booking"
-                  ? "pointer-events-none line-through"
-                  : ""
-              }`}
+                  ? `bg-blue-500 ${
+                      theme === "dark" ? "text-black" : "text-white"
+                    } rounded-full`
+                  : theme === "dark"
+                  ? "hover:bg-blue-800 text-white rounded-full"
+                  : "hover:bg-gray-500 text-black rounded-full"
+              }
+            ${
+              item === "merch" || item === "booking"
+                ? "pointer-events-none line-through"
+                : ""
+            }`}
               onClick={() => handleItemClick(item)}
             >
-              <a href={`#${item}`} className="no-underline">
+              <a href={`#${item}`}>
                 {item.charAt(0).toUpperCase() + item.slice(1)}
               </a>
-              <span
-                className={`absolute bottom-[-0.25em] left-0 w-full h-[0.25em] ${
-                  selected === item ? "bg-lime-500" : "bg-transparent"
-                } transition-all duration-300 ease-in-out`}
-              ></span>
             </li>
           ))}
 
@@ -227,7 +229,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
 
 Navigation.propTypes = {
   theme: propTypes.string.isRequired,
-  setToggleNavbar: propTypes.func.isRequired,
+  setToggleNavbar: propTypes.func,
   isMobile: propTypes.bool.isRequired,
   setIsMobile: propTypes.func.isRequired,
 }

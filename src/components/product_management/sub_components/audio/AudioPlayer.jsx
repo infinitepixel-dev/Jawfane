@@ -5,32 +5,34 @@ A component to manage the audio player for the store
 */
 
 //INFO React Libraries
-import { useEffect, useState } from "react";
-import propTypes from "prop-types";
+import { useEffect, useState } from "react"
+import bgMusic from "@assets/audio/DamagedGoods.wav"
+import { gsap } from "gsap"
+import propTypes from "prop-types"
 
 //INFO Animation Libraries
-import { gsap } from "gsap";
+import { gsap } from "gsap"
 
 //INFO Icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons"
 
 //INFO Custom CSS
-import "./AudioPlayer.module.css";
+import "./AudioPlayer.module.css"
 
 //INFO Audio files
-import bgMusic from "@assets/audio/DamagedGoods.wav";
+import bgMusic from "@assets/audio/DamagedGoods.wav"
 
 const AudioPlayer = ({ theme }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const minVolume = "0.00";
-  const maxVolume = "0.09";
+  const [isPlaying, setIsPlaying] = useState(false)
+  const minVolume = "0.00"
+  const maxVolume = "0.09"
 
   useEffect(() => {
-    const audioPlayer = document.getElementById("audioPlayer");
-    const storedVolume = localStorage.getItem("audioVolume");
+    const audioPlayer = document.getElementById("audioPlayer")
+    const storedVolume = localStorage.getItem("audioVolume")
     if (audioPlayer) {
-      audioPlayer.volume = storedVolume ? parseFloat(storedVolume) : 0.02;
+      audioPlayer.volume = storedVolume ? parseFloat(storedVolume) : 0.02
 
       //INFO enabled or disable autoplay
       // audioPlayer.play().catch((error) => {
@@ -38,58 +40,58 @@ const AudioPlayer = ({ theme }) => {
       // });
 
       // Check if the audio player is playing initially
-      audioPlayer.onplay = () => setIsPlaying(true);
-      audioPlayer.onpause = () => setIsPlaying(false);
+      audioPlayer.onplay = () => setIsPlaying(true)
+      audioPlayer.onpause = () => setIsPlaying(false)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    const audioPlayer = document.getElementById("audioPlayer");
+    const audioPlayer = document.getElementById("audioPlayer")
 
     const handlePlayPause = () => {
       if (audioPlayer.paused) {
-        audioPlayer.play();
+        audioPlayer.play()
       } else {
-        audioPlayer.pause();
+        audioPlayer.pause()
       }
-    };
+    }
 
-    const playPauseBtn = document.getElementById("playPauseBtn");
-    playPauseBtn.addEventListener("click", handlePlayPause);
-    return () => playPauseBtn.removeEventListener("click", handlePlayPause);
-  }, []);
+    const playPauseBtn = document.getElementById("playPauseBtn")
+    playPauseBtn.addEventListener("click", handlePlayPause)
+    return () => playPauseBtn.removeEventListener("click", handlePlayPause)
+  }, [])
 
   useEffect(() => {
-    const audioPlayerVolume = document.getElementById("audioPlayer-volume");
-    const audioPlayer = document.getElementById("audioPlayer");
+    const audioPlayerVolume = document.getElementById("audioPlayer-volume")
+    const audioPlayer = document.getElementById("audioPlayer")
 
     if (audioPlayerVolume && audioPlayer) {
-      const storedVolume = localStorage.getItem("audioVolume");
+      const storedVolume = localStorage.getItem("audioVolume")
       if (storedVolume) {
-        audioPlayerVolume.value = storedVolume;
+        audioPlayerVolume.value = storedVolume
       }
 
       const handleVolumeChange = (event) => {
-        const volume = parseFloat(event.target.value);
-        audioPlayer.volume = volume;
-        localStorage.setItem("audioVolume", volume);
+        const volume = parseFloat(event.target.value)
+        audioPlayer.volume = volume
+        localStorage.setItem("audioVolume", volume)
         // console.log("Volume changed to:", volume);
-      };
+      }
 
-      audioPlayerVolume.addEventListener("input", handleVolumeChange);
+      audioPlayerVolume.addEventListener("input", handleVolumeChange)
 
       return () =>
-        audioPlayerVolume.removeEventListener("input", handleVolumeChange);
+        audioPlayerVolume.removeEventListener("input", handleVolumeChange)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     gsap.fromTo(
       ".audio-container",
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 1 }
-    );
-  }, []);
+    )
+  }, [])
 
   return (
     <div
@@ -118,11 +120,11 @@ const AudioPlayer = ({ theme }) => {
       </div>
       <audio id="audioPlayer" src={bgMusic}></audio>
     </div>
-  );
-};
+  )
+}
 
 AudioPlayer.propTypes = {
   theme: propTypes.string.isRequired,
-};
+}
 
-export default AudioPlayer;
+export default AudioPlayer

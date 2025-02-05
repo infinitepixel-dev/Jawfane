@@ -1,29 +1,23 @@
-const DevMode = false
-
-//INFO React Libraries
 import { useState, useEffect } from "react"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { HashRouter as Router, Routes, Route } from "react-router-dom"
 
 //INFO Pages imports
-import Home from "./components/pages/Home"
-import Tour from "./components/pages/Tour"
-import Music from "./components/pages/MusicVideos"
-import Booking from "./components/pages/Booking"
+import Home from "@components/pages/Home"
+import Tour from "@components/pages/Tour"
+import Merch from "@components/pages/Merch"
+import Music from "@components/pages/MusicVideos"
 
 //INFO Sub-components imports
-import Navigation from "./components/sub-components/Navigation"
-import BackToTop from "./components/sub-components/BackToTop"
+import Navigation from "@components/navigation/Navigation"
+import BackToTop from "@components/sub-components/BackToTop"
+
+// import Booking from './components/pages/Booking'
 
 import "./App.css"
 
 const App = () => {
-  const storeId = 1
-
-  //import the base from vite config
-  const [base, setBase] = useState("")
   const [theme, setTheme] = useState("dark")
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
-  const [toggleNavbar, setToggleNavbar] = useState(false) // Manage the navbar toggle state
 
   //INFO theme settings
   useEffect(() => {
