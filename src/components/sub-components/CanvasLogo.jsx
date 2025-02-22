@@ -5,7 +5,7 @@ import logo from "@public/jawfane_logo.svg"
 import hero_bg from "@public/hero_bg.webp"
 import hero_bg_mobile from "@public/hero_bg_mobile.webp"
 
-import "./AnimatedLogo.css"
+import "../../css/AnimatedLogo.css"
 
 const AnimatedLogo = ({ theme, isMobile }) => {
   const logoRef = useRef(null)
