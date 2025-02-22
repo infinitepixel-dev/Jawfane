@@ -137,7 +137,10 @@ const Lore = () => {
   }
 
   return (
-    <div className="flex items-center justify-center w-full px-4 overflow-hidden sm:px-6 md:px-8">
+    <div
+      className="flex items-center justify-center w-full px-4 overflow-hidden sm:px-6 md:px-8"
+      id="lore"
+    >
       <div className="flex flex-wrap justify-center w-full gap-4 sm:gap-6 md:gap-8">
         {people.map((person, index) => (
           <div

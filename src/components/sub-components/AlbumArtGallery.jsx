@@ -46,7 +46,7 @@ const AlbumArtCarousel = () => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" id="album">
       <div
         className="relative w-full max-w-lg mt-10 overflow-hidden"
         style={{ height: "600px" }}

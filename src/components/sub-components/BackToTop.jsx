@@ -10,7 +10,15 @@ const BackToTop = () => {
   const nextButtonRef = useRef(null)
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
 
-  const sections = ["home", "tour", "lore", "music", "footer"] // List of sections
+  const sections = [
+    "home",
+    "album",
+    "tour",
+    "lore",
+    "music",
+    "booking",
+    "footer",
+  ] // List of sections
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -73,14 +81,26 @@ const BackToTop = () => {
       const nextSectionId = sections[nextSectionIndex]
       const nextSectionElement = document.getElementById(nextSectionId)
 
+      console.log("Next Section ID:", nextSectionId)
+      console.log("Next Section Element:", nextSectionElement)
+
       if (nextSectionElement) {
-        gsap.to(window, {
-          duration: 1,
-          scrollTo: { y: nextSectionElement.offsetTop },
-          ease: "power2.out",
+        // Log the position of the section to debug
+        console.log("Next Section OffsetTop:", nextSectionElement.offsetTop)
+
+        // Attempt a scroll directly with window.scrollTo() for debugging
+        window.scrollTo({
+          top: nextSectionElement.offsetTop,
+          behavior: "smooth",
         })
+
+        // Now update the index state after scrolling
         setCurrentSectionIndex(nextSectionIndex)
+      } else {
+        console.error("Section not found:", nextSectionId)
       }
+    } else {
+      console.warn("No more sections to scroll to.")
     }
   }
 
