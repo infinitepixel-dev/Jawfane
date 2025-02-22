@@ -3,9 +3,9 @@ import gsap from "gsap"
 
 const AlbumArtCarousel = () => {
   const images = [
+    "/Jawfane/art3.jpg",
     "/Jawfane/art1.jpg",
     "/Jawfane/art2.jpg",
-    "/Jawfane/art3.jpg",
     "/Jawfane/art4.jpg",
   ]
 
