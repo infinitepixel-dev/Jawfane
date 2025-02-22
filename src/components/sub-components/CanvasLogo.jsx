@@ -3,7 +3,7 @@ import { gsap } from "gsap"
 import propTypes from "prop-types"
 import logo from "@public/jawfane_logo.svg"
 import hero_bg from "@public/hero_bg.webp"
-import hero_bg_mobile from "@public/hero_bg_mobile.webp"
+import hero_bg_mobile from "/hero_bg_mobile.webp"
 
 import "../../css/AnimatedLogo.css"
 

@@ -18,7 +18,7 @@ const people = [
     photo: chase,
     bio: `Chase Schumann: is a failed Eldrich Horror. He may look scary, he may even sound scary at times. but the only thing he's scaring is his bandmates when he can't find his vape.This Eldrich Horror hides deep in the catacombs of bass frequencies. He's the distortion in bass amps and he's the reason why Sailor Jerry's  rum tastes the way it does. 
 
-Zach and Cory found him one day whilst trying to create the brown note, instead of Sh***ing themselves he appeared and never left. Thus creating the chaos that loves gummy candy and filthy breakdowns, and has an unquenchable thirst for mosh pits. 
+Cory found him one day whilst trying to create the brown note, instead of Sh***ing themselves he appeared and never left. Thus creating the chaos that loves gummy candy and filthy breakdowns, and has an unquenchable thirst for mosh pits. 
 
 With his talents and the help from his new friends jawfane would take over the static in every speaker in the known universe.`,
   },
@@ -106,6 +106,9 @@ const Lore = () => {
       setFlipped(null)
       animateFlip(index, 0)
     } else {
+      if (flipped !== null) {
+        animateFlip(flipped, 0) // Reset rotation for the previously flipped card
+      }
       setFlipped(index)
       animateFlip(index, 180)
     }
@@ -142,7 +145,7 @@ const Lore = () => {
             id={`card-${index}`}
             data-index={index}
             ref={(el) => (cardsRef.current[index] = el)}
-            className={`relative w-full sm:w-[85%] md:w-[400px] max-w-[480px] h-[600px] perspective cursor-pointer`}
+            className="relative w-[calc(100%-5px)] max-w-[420px] h-[600px] perspective cursor-pointer mx-auto"
             onClick={() => handleFlip(index)}
             role="button"
             aria-pressed={flipped === index}
@@ -166,8 +169,8 @@ const Lore = () => {
                 </div>
               </div>
               {/* Back Face */}
-              <div className="absolute z-0 flex items-center justify-center w-full h-full p-6 text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rounded-xl rotateY-180">
-                <div className="back-content">
+              <div className="absolute z-0 flex items-center justify-center w-full h-full p-6 overflow-auto text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rounded-xl rotateY-180">
+                <div className="max-h-full back-content">
                   <p className="text-base text-center">
                     {person.bio || "Bio unavailable."}
                   </p>
