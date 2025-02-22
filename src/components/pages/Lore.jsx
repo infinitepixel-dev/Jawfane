@@ -16,16 +16,16 @@ const people = [
   {
     name: "Chase Schumann",
     photo: chase,
-    bio: `Chase Schumann: is a failed Eldrich Horror. He may look scary, he may even sound scary at times. but the only thing he's scaring is his bandmates when he can't find his vape.This Eldrich Horror hides deep in the catacombs of bass frequencies. He's the distortion in bass amps and he's the reason why Sailor Jerry's  rum tastes the way it does. 
+    bio: `Chase Schumann: is a failed Eldrich Horror. He may look scary, he may even sound scary at times. but the only thing he's scaring is his bandmates when he can't find his vape.This Eldrich Horror hides deep in the catacombs of bass frequencies. He's the distortion in bass amps and he's the reason why Sailor Jerry's rum tastes the way it does. 
 
 Cory found him one day whilst trying to create the brown note, instead of Sh***ing themselves he appeared and never left. Thus creating the chaos that loves gummy candy and filthy breakdowns, and has an unquenchable thirst for mosh pits. 
 
-With his talents and the help from his new friends jawfane would take over the static in every speaker in the known universe.`,
+With his talents and the help from his new friends Jawfane would take over the static in every speaker in the known universe.`,
   },
   {
     name: "Austin Heipp",
     photo: austin,
-    bio: `It's without thought some things should be done. Defense of the our  youngest and smallest should be a reflex, not a debate. 
+    bio: `It's without thought some things should be done. Defense of the our youngest and smallest should be a reflex, not a debate. 
 
 I may be the loudest, but it's only through pain that you learn to be the softest. 
 
@@ -46,17 +46,17 @@ Across the distance Frodo and sam journeyed I have been, and same as them I saw 
     photo: jesse,
     bio: `On a bleak, frozen morning, the wind twists and turns with a cruel sort of purpose. It’s carving someone out of the air, out of the frost. Jesse. He’s there. Or is he the wind itself? You can’t tell, can you? Maybe the world’s folding in on itself, shaping him from coincidence. Maybe synchronicity bends to him. Or perhaps it’s the world itself bending to his will, conforming to his quiet presence. He doesn’t know—no one ever really does.
 
- There's something deeper. He was born with it, wasn't he? That feeling. That strange, gnawing pull from the depths. But purpose? No. Never. While others are pulled toward something—an irresistible gravity—Jesse stands still. A murmur he couldn't understand at first. No grand meaning. No cause. No voice calling him to something larger, like it does for others. He's never had that. No inner drumbeat driving him forward. He just… is.
+There's something deeper. He was born with it, wasn't he? That feeling. That strange, gnawing pull from the depths. But purpose? No. Never. While others are pulled toward something—an irresistible gravity—Jesse stands still. A murmur he couldn't understand at first. No grand meaning. No cause. No voice calling him to something larger, like it does for others. He's never had that. No inner drumbeat driving him forward. He just… is.
 
 Yet, time has a way of whispering truths. It carries meaning on icy gusts, whether you want to hear it or not. The wind, Jesse—it's the same. Shivers. They drive him, move him. Volition keeps him stitched together, a fragile thing standing tall against the gales.
 
-Purpose? It's a myth. Or maybe a lie, a cruel gift wrapped in ice and blown in on the same howling wind that brought him here.  He's always wondered where that lack of calling would take him. But look at him. Still standing. Still going. He may not know what he's after, but stopping isn't an option. 
+Purpose? It's a myth. Or maybe a lie, a cruel gift wrapped in ice and blown in on the same howling wind that brought him here. He's always wondered where that lack of calling would take him. But look at him. Still standing. Still going. He may not know what he's after, but stopping isn't an option. 
 
 Obstacles rise, as they always do. Barriers, broken dreams, a thick fog of confusion and pain. Peace is a distant shore, but the idea of surrender? It's never crossed his mind. No, surrender is a luxury others can afford. Jesse? He can only move forward. Through the wreckage, through the cold, forward. Shivers. It pushes, nudges, chills him to the core. Deep in the marrow, they drive him. His body—this brittle temple—is held together by the unbreakable thread of Volition that pushes him to break through to the heavens. Holding him together, a fragile thing standing tall against the gales. 
 
 As the wind picks up, as the cold deepens…the question lingers, hangs heavy in the air, whispered in the rustling leaves:
 
-“In dark times, should the stars also go out?`,
+“In dark times, should the stars also go out?”`,
   },
   {
     name: "AJ Chacon",
@@ -80,18 +80,17 @@ const Lore = () => {
   const cardsRef = useRef([])
 
   useEffect(() => {
-    // Intersection Observer to trigger animations
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const index = entry.target.dataset.index
             animateCardIn(index)
-            observer.unobserve(entry.target) // Stop observing after animation
+            observer.unobserve(entry.target)
           }
         })
       },
-      { threshold: 0.2 } // Trigger when 20% of the card is visible
+      { threshold: 0.2 }
     )
 
     cardsRef.current.forEach((card) => {
@@ -107,7 +106,7 @@ const Lore = () => {
       animateFlip(index, 0)
     } else {
       if (flipped !== null) {
-        animateFlip(flipped, 0) // Reset rotation for the previously flipped card
+        animateFlip(flipped, 0)
       }
       setFlipped(index)
       animateFlip(index, 180)
@@ -148,7 +147,7 @@ const Lore = () => {
             id={`card-${index}`}
             data-index={index}
             ref={(el) => (cardsRef.current[index] = el)}
-            className="relative w-[calc(100%-5px)] max-w-[420px] h-[600px] perspective cursor-pointer mx-auto"
+            className="relative w-full sm:w-[calc(50%-8px)] md:w-[calc(33%-8px)] lg:w-[calc(25%-8px)] h-[600px] max-w-[420px] perspective cursor-pointer mx-auto"
             onClick={() => handleFlip(index)}
             role="button"
             aria-pressed={flipped === index}
