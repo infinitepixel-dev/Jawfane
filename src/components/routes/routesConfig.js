@@ -2,16 +2,16 @@
 
 // import Booking from "@components/pages/Booking";
 
-import { lazy } from "react";
+import { lazy } from "react"
 
 // routesConfig.js
 export const navigationRoutes = [
   { id: "n1", name: "home", label: "Home" },
-  { id: "n2", name: "merch", label: "Merch" },
+  { id: "n2", name: "album", label: "Album" },
   { id: "n3", name: "music", label: "Music" },
   { id: "n4", name: "tour", label: "Tour" },
   { id: "n5", name: "booking", label: "Booking", disabled: true }, // Disable booking as an example
-];
+]
 
 //INFO export
 
@@ -39,8 +39,19 @@ export const componentRoutes = [
     },
   },
   {
-    id: "tour",
+    id: "album",
     key: "a3",
+    path: "/album",
+    componentPath: "../pages/AlbumArtGallery.jsx",
+    metaData: {
+      title: "Cataclysm Nightmare",
+      description: "Explore the latest album from Jawfane.",
+      keywords: "album, Jawfane, music, metal, rock",
+    },
+  },
+  {
+    id: "tour",
+    key: "a4",
     path: "/tour",
     componentPath: "../pages/Tour.jsx",
     metaData: {
@@ -50,19 +61,20 @@ export const componentRoutes = [
     },
   },
   {
-    id: "merch",
-    key: "a4",
-    path: "/merch",
-    componentPath: "../pages/Merch.jsx",
+    id: "lore",
+    key: "a5",
+    path: "/lore",
+    componentPath: "../pages/Lore.jsx",
     metaData: {
-      title: "Merchandise",
-      description: "Buy our latest merchandise",
-      keywords: "merchandise, band, jawfane",
+      title: "Jawfane Lore",
+      description:
+        "Uncover the hidden stories and secrets behind Jawfane's music.",
+      keywords: "Jawfane, lore, music, metal",
     },
   },
   {
     id: "music",
-    key: "a5",
+    key: "a6",
     path: "/music",
     componentPath: "../pages/MusicVideos.jsx",
     metaData: {
@@ -71,14 +83,26 @@ export const componentRoutes = [
       keywords: "music, videos, band, jawfane",
     },
   },
-  // { path: "/booking", component: Booking, disabled: true },
-];
+  {
+    id: "booking",
+    key: "a7",
+    path: "/booking",
+    componentPath: "../pages/Booking",
+    metaData: {
+      title: "Book Jawfane",
+      description:
+        "Bring Jawfane to your event. Book the band for an unforgettable performance.",
+      keywords:
+        "book Jawfane, live performance, metal band, concert, music booking, event",
+    },
+  },
+]
 
-let RoutesWithComponents = componentRoutes;
+let RoutesWithComponents = componentRoutes
 
 if (typeof window !== "undefined") {
   // Vite-specific logic for dynamic imports
-  const componentMap = import.meta.glob("../pages/*.{jsx,js}");
+  const componentMap = import.meta.glob("../pages/*.{jsx,js}")
 
   //INFO Sub components path
   // const subComponentMap = import.meta.glob(
@@ -87,7 +111,7 @@ if (typeof window !== "undefined") {
   /* console.log('Component Map:', { ...componentMap, ...subComponentMap }) */
 
   // Initialize the components object
-  const components = {};
+  const components = {}
 
   // Define required meta fields
   const requiredMetaFields = [
@@ -105,18 +129,18 @@ if (typeof window !== "undefined") {
     // "requiresAuth", // Whether authentication is required
     // "roles", // Roles allowed to access
     // "breadcrumbs", // Breadcrumb navigation information
-  ];
+  ]
 
   // Adjust componentPath if necessary to match the keys in componentMap
   componentRoutes.forEach((route) => {
     // console.log("Route:", route);
 
-    const importPath = route.componentPath;
-    let componentPromise = null;
+    const importPath = route.componentPath
+    let componentPromise = null
 
     if (componentMap[importPath]) {
-      componentPromise = componentMap[importPath]();
-      components[route.key] = lazy(componentMap[importPath]);
+      componentPromise = componentMap[importPath]()
+      components[route.key] = lazy(componentMap[importPath])
 
       // console.log("Components:", components);
     }
@@ -128,32 +152,32 @@ if (typeof window !== "undefined") {
 
     //INFO Else if the component is not found, log a warning
     else {
-      console.warn(`Component for path ${importPath} not found.`);
+      console.warn(`Component for path ${importPath} not found.`)
     }
 
     // If the component was found, check for meta information
     if (componentPromise) {
       componentPromise.then((componentModule) => {
-        const component = componentModule.default;
-        const meta = component?.meta || {};
+        const component = componentModule.default
+        const meta = component?.meta || {}
         requiredMetaFields.forEach((field) => {
           if (!meta[field]) {
             /*      console.warn(
                             `Meta field "${field}" is missing in component for path ${importPath}`
                         ) */
           }
-        });
-      });
+        })
+      })
     }
-  });
+  })
 
   // Create RoutesWithComponents array
   RoutesWithComponents = componentRoutes.map((route) => ({
     ...route,
     component: components[route.key],
-  }));
+  }))
 }
 
 // console.log("Routes with Components:", RoutesWithComponents);
 
-export default RoutesWithComponents;
+export default RoutesWithComponents

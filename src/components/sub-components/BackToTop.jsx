@@ -1,44 +1,44 @@
-import { useState, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import { gsap } from "gsap";
+import { useState, useEffect, useRef } from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons"
+import { gsap } from "gsap"
 
 const BackToTop = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [showNextButton, setShowNextButton] = useState(true);
-  const buttonRef = useRef(null);
-  const nextButtonRef = useRef(null);
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(false)
+  const [showNextButton, setShowNextButton] = useState(true)
+  const buttonRef = useRef(null)
+  const nextButtonRef = useRef(null)
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
 
-  const sections = ["home", "tour", "merch", "music", "footer"]; // List of sections
+  const sections = ["home", "tour", "lore", "music", "footer"] // List of sections
 
   useEffect(() => {
     const toggleVisibility = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
+      const scrollPosition = window.scrollY
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
 
-      setIsVisible(scrollPosition > 300);
+      setIsVisible(scrollPosition > 300)
 
       // If at bottom of the page, hide the "next" button
       if (scrollPosition + windowHeight >= documentHeight) {
-        setShowNextButton(false);
+        setShowNextButton(false)
       } else {
-        setShowNextButton(true);
+        setShowNextButton(true)
       }
 
       // Collapse the navbar on manual scroll
       if (scrollPosition > 0) {
         // closeNavbar(); // Call the passed-in closeNavbar function
       }
-    };
+    }
 
-    window.addEventListener("scroll", toggleVisibility);
+    window.addEventListener("scroll", toggleVisibility)
 
     return () => {
-      window.removeEventListener("scroll", toggleVisibility);
-    };
-  }, []);
+      window.removeEventListener("scroll", toggleVisibility)
+    }
+  }, [])
 
   useEffect(() => {
     const animateButton = (ref, visible) => {
@@ -50,46 +50,46 @@ const BackToTop = () => {
         duration: 0.6,
         display: visible ? "block" : "none",
         ease: visible ? "power2.out" : "power2.in",
-      });
-    };
+      })
+    }
 
-    animateButton(buttonRef, isVisible);
-    animateButton(nextButtonRef, showNextButton);
-  }, [isVisible, showNextButton]);
+    animateButton(buttonRef, isVisible)
+    animateButton(nextButtonRef, showNextButton)
+  }, [isVisible, showNextButton])
 
   const scrollToTop = () => {
     gsap.to(window, {
       duration: 1,
       scrollTo: { y: 0 },
       ease: "power2.out",
-    });
-    setCurrentSectionIndex(0); // Reset to the first section
-  };
+    })
+    setCurrentSectionIndex(0) // Reset to the first section
+  }
 
   const scrollToNextSection = () => {
-    const nextSectionIndex = currentSectionIndex + 1;
+    const nextSectionIndex = currentSectionIndex + 1
 
     if (nextSectionIndex < sections.length) {
-      const nextSectionId = sections[nextSectionIndex];
-      const nextSectionElement = document.getElementById(nextSectionId);
+      const nextSectionId = sections[nextSectionIndex]
+      const nextSectionElement = document.getElementById(nextSectionId)
 
       if (nextSectionElement) {
         gsap.to(window, {
           duration: 1,
           scrollTo: { y: nextSectionElement.offsetTop },
           ease: "power2.out",
-        });
-        setCurrentSectionIndex(nextSectionIndex);
+        })
+        setCurrentSectionIndex(nextSectionIndex)
       }
     }
-  };
+  }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col space-y-2">
+    <div className="fixed z-50 flex flex-col space-y-2 bottom-4 right-4">
       <button
         ref={buttonRef}
         onClick={scrollToTop}
-        className="p-4 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-700 transition"
+        className="p-4 text-white transition bg-blue-500 rounded-full shadow-lg hover:bg-blue-700"
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
@@ -101,7 +101,7 @@ const BackToTop = () => {
       <button
         ref={nextButtonRef}
         onClick={scrollToNextSection}
-        className="p-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-700 transition"
+        className="p-4 text-white transition bg-green-500 rounded-full shadow-lg hover:bg-green-700"
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
@@ -110,7 +110,7 @@ const BackToTop = () => {
         <FontAwesomeIcon icon={faArrowDown} />
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default BackToTop;
+export default BackToTop
