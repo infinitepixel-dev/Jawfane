@@ -18,7 +18,7 @@ const BackToTop = () => {
     "music",
     "booking",
     "footer",
-  ] // List of sections
+  ]
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -27,25 +27,11 @@ const BackToTop = () => {
       const documentHeight = document.documentElement.scrollHeight
 
       setIsVisible(scrollPosition > 300)
-
-      // If at bottom of the page, hide the "next" button
-      if (scrollPosition + windowHeight >= documentHeight) {
-        setShowNextButton(false)
-      } else {
-        setShowNextButton(true)
-      }
-
-      // Collapse the navbar on manual scroll
-      if (scrollPosition > 0) {
-        // closeNavbar(); // Call the passed-in closeNavbar function
-      }
+      setShowNextButton(scrollPosition + windowHeight < documentHeight)
     }
 
     window.addEventListener("scroll", toggleVisibility)
-
-    return () => {
-      window.removeEventListener("scroll", toggleVisibility)
-    }
+    return () => window.removeEventListener("scroll", toggleVisibility)
   }, [])
 
   useEffect(() => {
@@ -58,6 +44,11 @@ const BackToTop = () => {
         duration: 0.6,
         display: visible ? "block" : "none",
         ease: visible ? "power2.out" : "power2.in",
+        onComplete: () => {
+          if (visible) {
+            pulseArrow(ref) // Start subtle animation when visible
+          }
+        },
       })
     }
 
@@ -65,42 +56,38 @@ const BackToTop = () => {
     animateButton(nextButtonRef, showNextButton)
   }, [isVisible, showNextButton])
 
+  const pulseArrow = (ref) => {
+    gsap.to(ref.current, {
+      y: "-5px", // Slight float up
+      duration: 1,
+      repeat: -1, // Infinite loop
+      yoyo: true,
+      ease: "power1.inOut",
+    })
+  }
+
   const scrollToTop = () => {
     gsap.to(window, {
       duration: 1,
       scrollTo: { y: 0 },
       ease: "power2.out",
     })
-    setCurrentSectionIndex(0) // Reset to the first section
+    setCurrentSectionIndex(0)
   }
 
   const scrollToNextSection = () => {
     const nextSectionIndex = currentSectionIndex + 1
-
     if (nextSectionIndex < sections.length) {
-      const nextSectionId = sections[nextSectionIndex]
-      const nextSectionElement = document.getElementById(nextSectionId)
-
-      console.log("Next Section ID:", nextSectionId)
-      console.log("Next Section Element:", nextSectionElement)
-
+      const nextSectionElement = document.getElementById(
+        sections[nextSectionIndex]
+      )
       if (nextSectionElement) {
-        // Log the position of the section to debug
-        console.log("Next Section OffsetTop:", nextSectionElement.offsetTop)
-
-        // Attempt a scroll directly with window.scrollTo() for debugging
         window.scrollTo({
           top: nextSectionElement.offsetTop,
           behavior: "smooth",
         })
-
-        // Now update the index state after scrolling
         setCurrentSectionIndex(nextSectionIndex)
-      } else {
-        console.error("Section not found:", nextSectionId)
       }
-    } else {
-      console.warn("No more sections to scroll to.")
     }
   }
 
@@ -109,7 +96,7 @@ const BackToTop = () => {
       <button
         ref={buttonRef}
         onClick={scrollToTop}
-        className="p-4 text-white transition bg-blue-500 rounded-full shadow-lg hover:bg-blue-700"
+        className="p-4 text-white transition bg-blue-600 rounded-full shadow-lg hover:bg-blue-700"
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
@@ -121,7 +108,7 @@ const BackToTop = () => {
       <button
         ref={nextButtonRef}
         onClick={scrollToNextSection}
-        className="p-4 text-white transition bg-green-500 rounded-full shadow-lg hover:bg-green-700"
+        className="p-4 text-white transition rounded-full shadow-lg bg-neutral-900 hover:bg-neutral-950"
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
