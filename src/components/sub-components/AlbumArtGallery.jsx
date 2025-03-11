@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
+import bandLabel from "/Jawfane/exsr.png"
 
 const AlbumArtCarousel = () => {
   const images = [
@@ -70,6 +71,17 @@ const AlbumArtCarousel = () => {
       >
         Next
       </button>
+      <a
+        href="https://www.exsrmusic.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src={bandLabel}
+          alt="Exitus Stratagem Records"
+          className="w-6/12 mx-auto mt-20 h-25"
+        />
+      </a>
     </div>
   )
 }
