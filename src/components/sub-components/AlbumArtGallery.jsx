@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
-import bandLabel from "/Jawfane/exsr.png"
+import bandLabel from "/exsr.png"
 
 const AlbumArtCarousel = () => {
   const images = [
