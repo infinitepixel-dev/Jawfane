@@ -58,8 +58,8 @@ const BackToTop = () => {
 
   const pulseArrow = (ref) => {
     gsap.to(ref.current, {
-      y: "-5px", // Slight float up
-      duration: 1,
+      y: "-10px", // Slight float up
+      duration: 2,
       repeat: -1, // Infinite loop
       yoyo: true,
       ease: "power1.inOut",
