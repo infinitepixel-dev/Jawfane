@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import bandLabel from "/exsr.png"
+
+gsap.registerPlugin(ScrollTrigger)
 
 const AlbumArtCarousel = () => {
   const images = [
@@ -13,6 +16,7 @@ const AlbumArtCarousel = () => {
   const [index, setIndex] = useState(0)
   const imageRef = useRef(null)
   const buttonRef = useRef(null)
+  const labelRef = useRef(null)
 
   useEffect(() => {
     const img = imageRef.current
@@ -26,14 +30,35 @@ const AlbumArtCarousel = () => {
     }
 
     return () => {
-      if (img) gsap.killTweensOf(img) // Cleanup GSAP animations
+      if (img) gsap.killTweensOf(img)
     }
   }, [index])
+
+  useEffect(() => {
+    const label = labelRef.current
+
+    if (label) {
+      gsap.fromTo(
+        label,
+        { opacity: 0, x: 100 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: label,
+            start: "top 80%", // Triggers when label is 80% in viewport
+            toggleActions: "play none none reverse",
+          },
+        }
+      )
+    }
+  }, [])
 
   const nextImage = () => {
     setIndex((prev) => (prev + 1) % images.length)
 
-    // Animate the button when clicked
     const button = buttonRef.current
     if (button) {
       gsap.to(button, {
@@ -58,10 +83,7 @@ const AlbumArtCarousel = () => {
           src={images[index]}
           alt="Album Art"
           className="object-contain w-full h-full transition-all rounded-lg shadow-lg"
-          onLoad={() =>
-            gsap.to(imageRef.current, { opacity: 1, scale: 1, duration: 0.3 })
-          }
-          style={{ opacity: 0 }} // Ensure it starts fully hidden before animation
+          style={{ opacity: 0 }}
         />
       </div>
       <button
@@ -75,6 +97,7 @@ const AlbumArtCarousel = () => {
         href="https://www.exsrmusic.com/"
         target="_blank"
         rel="noopener noreferrer"
+        ref={labelRef}
       >
         <img
           src={bandLabel}
