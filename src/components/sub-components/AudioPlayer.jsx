@@ -8,21 +8,23 @@ import "./AudioPlayer.module.css"
 
 const AudioPlayer = ({ theme }) => {
   const [isPlaying, setIsPlaying] = useState(false)
-  const minVolume = 0.01
-  const maxVolume = 0.09
+  const [volumePercent, setVolumePercent] = useState(2) // Default volume at 2%
+  const minVolume = 0.0
+  const maxVolume = 1
 
   useEffect(() => {
     const audioPlayer = document.getElementById("audioPlayer")
     const storedVolume = localStorage.getItem("audioVolume")
 
     if (audioPlayer) {
-      // Set the volume to the stored value, or default to 0.02
-      audioPlayer.volume = storedVolume ? parseFloat(storedVolume) : 0.02
+      const volume = storedVolume ? parseFloat(storedVolume) : 0.02
+      audioPlayer.volume = volume
+      setVolumePercent(Math.round(volume * 100)) // Convert to percentage
+
       audioPlayer.play().catch((error) => {
         console.log("Autoplay was prevented:", error)
       })
 
-      // Check if the audio player is playing initially
       audioPlayer.onplay = () => setIsPlaying(true)
       audioPlayer.onpause = () => setIsPlaying(false)
     }
@@ -49,23 +51,19 @@ const AudioPlayer = ({ theme }) => {
     const audioPlayer = document.getElementById("audioPlayer")
 
     if (audioPlayerVolume && audioPlayer) {
-      // Get and set the stored volume if available
       const storedVolume = localStorage.getItem("audioVolume")
       if (storedVolume) {
-        // Set the volume on the slider
         audioPlayerVolume.value = storedVolume
       }
 
-      // Handle volume change through the slider
       const handleVolumeChange = (event) => {
         const volume = parseFloat(event.target.value)
         audioPlayer.volume = volume
+        setVolumePercent(Math.round(volume * 100)) // Convert volume to percentage
         localStorage.setItem("audioVolume", volume)
       }
 
-      // Update volume when the slider changes
       audioPlayerVolume.addEventListener("input", handleVolumeChange)
-
       return () =>
         audioPlayerVolume.removeEventListener("input", handleVolumeChange)
     }
@@ -94,7 +92,7 @@ const AudioPlayer = ({ theme }) => {
           />
         </button>
       </div>
-      <div className="flex items-center justify-center md:justify-start">
+      <div className="flex items-center justify-center space-x-3 md:justify-start">
         <input
           id="audioPlayer-volume"
           type="range"
@@ -103,6 +101,7 @@ const AudioPlayer = ({ theme }) => {
           step="0.001"
           className="w-full max-w-xs"
         />
+        <span className="text-white">{volumePercent}%</span>
       </div>
       <audio id="audioPlayer" src={bgMusic}></audio>
     </div>

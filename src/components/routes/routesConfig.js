@@ -1,20 +1,13 @@
-// routesConfig.js
-
-// import Booking from "@components/pages/Booking";
-
 import { lazy } from "react"
 
-// routesConfig.js
 export const navigationRoutes = [
   { id: "n1", name: "home", label: "Home" },
   { id: "n2", name: "album", label: "Album" },
   { id: "n3", name: "tour", label: "Tour" },
-  { id: "n4", name: "lore", label: "Lusic" },
-  { id: "n5", name: "music", label: "Tmour" },
+  { id: "n4", name: "lore", label: "Lore" },
+  { id: "n5", name: "music", label: "Music" },
   { id: "n6", name: "booking", label: "Booking" },
 ]
-
-//INFO export
 
 export const componentRoutes = [
   {
@@ -77,7 +70,7 @@ export const componentRoutes = [
     id: "booking",
     key: "a6",
     path: "/booking",
-    componentPath: "../pages/Booking",
+    componentPath: "../pages/Booking.jsx",
     metaData: {
       title: "Book Jawfane",
       description:
@@ -91,83 +84,22 @@ export const componentRoutes = [
 let RoutesWithComponents = componentRoutes
 
 if (typeof window !== "undefined") {
-  // Vite-specific logic for dynamic imports
   const componentMap = import.meta.glob("../pages/*.{jsx,js}")
-
-  //INFO Sub components path
-  // const subComponentMap = import.meta.glob(
-  //   "../components/Sub_Components/**/*.{jsx,js}"
-  // );
-  /* console.log('Component Map:', { ...componentMap, ...subComponentMap }) */
-
-  // Initialize the components object
   const components = {}
 
-  // Define required meta fields
-  const requiredMetaFields = [
-    // "title", // SEO: Page title
-    // "description", // SEO: Meta description
-    // "og:title", // Social: Open Graph title
-    // "og:description", // Social: Open Graph description
-    // "og:image", // Social: Open Graph image
-    // "og:url", // Social: Canonical URL for Open Graph
-    // "twitter:title", // Social: Twitter title
-    // "twitter:description", // Social: Twitter description
-    // "twitter:image", // Social: Twitter image
-    // "path", // Route Path
-    // "layout", // Layout to use for rendering
-    // "requiresAuth", // Whether authentication is required
-    // "roles", // Roles allowed to access
-    // "breadcrumbs", // Breadcrumb navigation information
-  ]
-
-  // Adjust componentPath if necessary to match the keys in componentMap
   componentRoutes.forEach((route) => {
-    // console.log("Route:", route);
-
     const importPath = route.componentPath
-    let componentPromise = null
-
     if (componentMap[importPath]) {
-      componentPromise = componentMap[importPath]()
       components[route.key] = lazy(componentMap[importPath])
-
-      // console.log("Components:", components);
-    }
-    //INFO Sub components path
-    // else if (subComponentMap[importPath]) {
-    //   componentPromise = subComponentMap[importPath]();
-    //   components[route.key] = lazy(subComponentMap[importPath]);
-    // }
-
-    //INFO Else if the component is not found, log a warning
-    else {
+    } else {
       console.warn(`Component for path ${importPath} not found.`)
-    }
-
-    // If the component was found, check for meta information
-    if (componentPromise) {
-      componentPromise.then((componentModule) => {
-        const component = componentModule.default
-        const meta = component?.meta || {}
-        requiredMetaFields.forEach((field) => {
-          if (!meta[field]) {
-            /*      console.warn(
-                            `Meta field "${field}" is missing in component for path ${importPath}`
-                        ) */
-          }
-        })
-      })
     }
   })
 
-  // Create RoutesWithComponents array
   RoutesWithComponents = componentRoutes.map((route) => ({
     ...route,
     component: components[route.key],
   }))
 }
-
-// console.log("Routes with Components:", RoutesWithComponents);
 
 export default RoutesWithComponents
