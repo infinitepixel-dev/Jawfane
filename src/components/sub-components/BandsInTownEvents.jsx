@@ -1,57 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 import propTypes from "prop-types"
-import axios from "axios"
 import { gsap } from "gsap"
 
 const BandsInTownEvents = ({ artistName }) => {
-  const [events, setEvents] = useState([])
-  const eventListRef = useRef(null)
   const widgetRef = useRef(null) // Ref for the BandsInTown widget
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const appId = "YOUR_APP_ID" // Replace with your Bandsintown App ID
-        const response = await axios.get(
-          `https://rest.bandsintown.com/artists/${artistName}/events?app_id=${appId}`
-        )
-
-        setEvents(response.data)
-      } catch (error) {
-        console.error("Error fetching events:", error)
-      }
-    }
-
-    fetchEvents()
-  }, [artistName])
-
-  // Animation for the events list
-  useEffect(() => {
-    if (events.length > 0) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            gsap.fromTo(
-              entry.target.children,
-              { opacity: 0, y: 50 },
-              { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 }
-            )
-            observer.unobserve(entry.target)
-          }
-        })
-      })
-
-      const currentRef = eventListRef.current
-
-      if (currentRef) {
-        observer.observe(currentRef)
-      }
-
-      return () => {
-        if (currentRef) observer.unobserve(currentRef)
-      }
-    }
-  }, [events])
 
   // GSAP animation for the widget
   useEffect(() => {
@@ -101,7 +53,7 @@ const BandsInTownEvents = ({ artistName }) => {
         <a
           ref={widgetRef}
           className="bit-widget-initializer max-w-[62%] mx-auto"
-          data-artist-name="id_15556436"
+          data-artist-name={artistName}
           data-background-color="rgba(230,230,230,1)"
           data-separator-color="rgba(76, 103, 99, 1)"
           data-text-color="#052139"
@@ -126,9 +78,7 @@ const BandsInTownEvents = ({ artistName }) => {
           data-date-capitalization="undefined"
           data-date-border-radius="10px"
           data-event-ticket-cta-size="medium"
-          data-event-custom-ticket-text="undefined"
           data-event-ticket-text="TICKETS"
-          data-event-ticket-icon=""
           data-event-ticket-cta-text-color="#FFFFFF"
           data-event-ticket-cta-bg-color="rgba(76, 95, 91, 1)"
           data-event-ticket-cta-border-color="#4A4A4A"
@@ -140,9 +90,7 @@ const BandsInTownEvents = ({ artistName }) => {
           data-sold-out-button-clickable="true"
           data-event-rsvp-position="left"
           data-event-rsvp-cta-size="medium"
-          data-event-rsvp-only-show-icon="undefined"
           data-event-rsvp-text="REMIND ME"
-          data-event-rsvp-icon=""
           data-event-rsvp-cta-text-color="#052139"
           data-event-rsvp-cta-bg-color="#FFFFFF"
           data-event-rsvp-cta-border-color="#4A4A4A"
@@ -172,8 +120,6 @@ const BandsInTownEvents = ({ artistName }) => {
           data-play-my-city-cta-border-radius="4px"
           data-language="en"
           data-layout-breakpoint="900"
-          data-app-id=""
-          data-affil-code=""
           data-bit-logo-position="bottomRight"
           data-bit-logo-color="#CCCCCC"
         ></a>
