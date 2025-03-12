@@ -9,8 +9,8 @@ export const navigationRoutes = [
   { id: "n1", name: "home", label: "Home" },
   { id: "n2", name: "album", label: "Album" },
   { id: "n3", name: "tour", label: "Tour" },
-  { id: "n4", name: "lore", label: "Lusic" },
-  { id: "n5", name: "music", label: "Tmour" },
+  { id: "n4", name: "lore", label: "Lore" },
+  { id: "n5", name: "music", label: "Music" },
   { id: "n6", name: "booking", label: "Booking" },
 ]
 
@@ -77,7 +77,7 @@ export const componentRoutes = [
     id: "booking",
     key: "a6",
     path: "/booking",
-    componentPath: "../pages/Booking",
+    componentPath: "../pages/Booking.jsx",
     metaData: {
       title: "Book Jawfane",
       description:
