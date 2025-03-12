@@ -33,6 +33,7 @@ const CookieConsent = () => {
       <button
         onClick={acceptCookies}
         className="px-6 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+        aria-label="Accept cookies"
       >
         Accept
       </button>
