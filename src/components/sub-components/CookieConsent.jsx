@@ -25,7 +25,7 @@ const CookieConsent = () => {
       <p className="text-sm">
         This website uses cookies to enhance user experience. By continuing, you
         accept our{" "}
-        <Link to="/privacy-policy" className="text-blue-400 underline">
+        <Link to="/privacy-policy" className="z-50 text-blue-400 underline">
           cookie policy
         </Link>
         .

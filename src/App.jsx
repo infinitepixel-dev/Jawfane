@@ -1,41 +1,32 @@
 import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
-//INFO Pages imports
 import Home from "./components/pages/Home"
 import Tour from "./components/pages/Tour"
 import Music from "./components/pages/MusicVideos"
 import Booking from "./components/pages/Booking"
+import PrivacyPolicy from "./components/pages/PrivacyPolicy"
 
-//INFO Sub-components imports
 import Navigation from "./components/sub-components/Navigation"
 import BackToTop from "./components/sub-components/BackToTop"
 import CookieConsent from "./components/sub-components/CookieConsent"
-import PrivacyPolicy from "./components/pages/PrivacyPolicy"
 
 import "./App.css"
 
 const App = () => {
   const [theme, setTheme] = useState("dark")
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
-  const [toggleNavbar, setToggleNavbar] = useState(false) // Manage the navbar toggle state
+  const [toggleNavbar, setToggleNavbar] = useState(false)
 
-  //INFO theme settings
   useEffect(() => {
-    const localTheme = localStorage.getItem("theme")
-    if (localTheme) {
-      setTheme(localTheme)
-      document.documentElement.classList.add(localTheme)
-    } else {
-      document.documentElement.classList.add(theme)
-    }
-  }, [theme])
+    const localTheme = localStorage.getItem("theme") || "dark"
+    setTheme(localTheme)
+    document.documentElement.classList.add(localTheme)
+  }, [])
 
-  //INFO toggles the theme and locally stores it
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light"
-    document.documentElement.classList.remove(theme)
-    document.documentElement.classList.add(newTheme)
+    document.documentElement.classList.replace(theme, newTheme)
     setTheme(newTheme)
     localStorage.setItem("theme", newTheme)
   }
@@ -46,7 +37,7 @@ const App = () => {
         <Navigation
           theme={theme}
           toggleTheme={toggleTheme}
-          setToggleNavbar={setToggleNavbar} // Pass the setter to Navigation
+          setToggleNavbar={setToggleNavbar}
           isMobile={isMobile}
           setIsMobile={setIsMobile}
         />
