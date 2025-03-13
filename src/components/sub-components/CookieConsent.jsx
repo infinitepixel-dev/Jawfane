@@ -21,7 +21,7 @@ const CookieConsent = () => {
   if (!showConsent) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 flex flex-col items-center gap-3 p-4 text-center text-white bg-gray-900">
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col items-center gap-3 p-4 text-center text-white bg-gray-900">
       <p className="text-sm">
         This website uses cookies to enhance user experience. By continuing, you
         accept our{" "}
