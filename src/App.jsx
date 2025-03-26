@@ -5,11 +5,9 @@ import Home from "./components/pages/Home"
 import Tour from "./components/pages/Tour"
 import Music from "./components/pages/MusicVideos"
 import Booking from "./components/pages/Booking"
-import PrivacyPolicy from "./components/pages/PrivacyPolicy"
 
 import Navigation from "./components/sub-components/Navigation"
 import BackToTop from "./components/sub-components/BackToTop"
-import CookieConsent from "./components/sub-components/CookieConsent"
 
 import "./App.css"
 
@@ -53,10 +51,8 @@ const App = () => {
           <Route path="/tour" element={<Tour theme={theme} />} />
           <Route path="/music" element={<Music theme={theme} />} />
           <Route path="/booking" element={<Booking theme={theme} />} />
-          <Route path="/-policy" element={<PrivacyPolicy theme={theme} />} />
         </Routes>
         <BackToTop />
-        <CookieConsent />
       </div>
     </Router>
   )
