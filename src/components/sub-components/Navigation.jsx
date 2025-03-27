@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from "react"
 import { gsap } from "gsap"
 import { useLocation } from "react-router-dom"
 import propTypes from "prop-types"
-import AudioPlayer from "./AudioPlayer"
+// import AudioPlayer from "./AudioPlayer"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 
@@ -142,7 +142,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
           ))}
 
           <div className="relative top-[-1rem] mx-auto">
-            <AudioPlayer theme={theme} />
+            {/* <AudioPlayer theme={theme} /> */}
           </div>
         </ul>
       </nav>
