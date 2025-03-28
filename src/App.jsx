@@ -8,27 +8,25 @@ import Booking from "./components/pages/Booking"
 
 import Navigation from "./components/sub-components/Navigation"
 import BackToTop from "./components/sub-components/BackToTop"
-import CountdownTimer from "./components/sub-components/CountdownTimer" // New component
+import CountdownTimer from "./components/sub-components/CountdownTimer"
 
 import "./App.css"
 
 const App = () => {
+  const tenSecondsFromNow = new Date(new Date().getTime() + 10000) // 10 seconds from now
   const [theme, setTheme] = useState("dark")
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const [toggleNavbar, setToggleNavbar] = useState(false)
   const [showWebsite, setShowWebsite] = useState(false)
-
-  const releaseDate = "2025-04-23T00:00:00Z"
 
   useEffect(() => {
     const localTheme = localStorage.getItem("theme") || "dark"
     setTheme(localTheme)
     document.documentElement.classList.add(localTheme)
 
-    // Check if the release date has passed
+    // Check if release date has already passed
     const now = new Date()
-    const launchDate = new Date(releaseDate)
-    if (now >= launchDate) {
+    if (now >= tenSecondsFromNow) {
       setShowWebsite(true)
     }
   }, [])
@@ -43,7 +41,7 @@ const App = () => {
   if (!showWebsite) {
     return (
       <CountdownTimer
-        releaseDate={releaseDate}
+        releaseDate={tenSecondsFromNow}
         onTimeUp={() => setShowWebsite(true)}
       />
     )
