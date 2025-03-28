@@ -13,6 +13,7 @@ import CountdownTimer from "./components/sub-components/CountdownTimer" // New c
 import "./App.css"
 
 const App = () => {
+  const tenSecondsFromNow = new Date(new Date().getTime() + 10000)
   const [theme, setTheme] = useState("dark")
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const [toggleNavbar, setToggleNavbar] = useState(false)
