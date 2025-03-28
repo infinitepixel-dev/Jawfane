@@ -33,7 +33,7 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [releaseDate, onTimeUp])
+  }, [releaseDate, onTimeUp, calculateTimeLeft])
 
   // Run animations once after mounting
   useLayoutEffect(() => {
@@ -131,13 +131,12 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
   )
 }
 
-// ✅ PropTypes for Safety
 CountdownTimer.propTypes = {
   releaseDate: PropTypes.instanceOf(Date).isRequired,
   onTimeUp: PropTypes.func,
 }
 
-// ✅ Default Props to Avoid Errors
+// Default Props to Avoid Errors
 CountdownTimer.defaultProps = {
   onTimeUp: () => console.log("Time is up!"),
 }

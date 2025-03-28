@@ -50,7 +50,7 @@ const App = () => {
   }
 
   return (
-    <Router basename="/Jawfane">
+    <Router>
       <div id="home" className={`app-container ${theme} overflow-hidden`}>
         <Navigation
           theme={theme}
