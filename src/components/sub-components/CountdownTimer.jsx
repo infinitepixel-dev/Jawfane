@@ -1,46 +1,66 @@
-import { useState, useEffect, useRef, useLayoutEffect } from "react"
+import {
+  useState,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+  useCallback,
+} from "react"
 import PropTypes from "prop-types"
 import { gsap } from "gsap"
 
-const CountdownTimer = ({ releaseDate, onTimeUp }) => {
-  const calculateTimeLeft = () => {
-    const difference = new Date(releaseDate) - new Date()
-    if (difference > 0) {
-      return {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      }
+const calculateTimeLeft = (releaseDate) => {
+  const difference = new Date(releaseDate) - new Date()
+  if (difference > 0) {
+    return {
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
     }
-    return null
   }
+  return null
+}
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+const CountdownTimer = ({ releaseDate, onTimeUp }) => {
+  const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(releaseDate))
   const bgRef = useRef(null)
   const orbsRef = useRef([])
   const initialized = useRef(false)
 
-  // Countdown timer logic
+  // Store initial orb positions in a ref so they do not reset on re-renders
+  const orbPositions = useRef(
+    [...Array(8)].map(() => ({
+      size: Math.random() * 150 + 100,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+    }))
+  )
+
+  // Memoize onTimeUp to prevent re-renders
+  const handleTimeUp = useCallback(() => {
+    onTimeUp()
+  }, [onTimeUp])
+
+  // Countdown logic (separate from orbs)
   useEffect(() => {
     const timer = setInterval(() => {
-      const newTimeLeft = calculateTimeLeft()
+      const newTimeLeft = calculateTimeLeft(releaseDate)
       if (!newTimeLeft) {
         clearInterval(timer)
-        onTimeUp()
+        handleTimeUp()
+      } else {
+        setTimeLeft(newTimeLeft)
       }
-      setTimeLeft(newTimeLeft)
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [releaseDate, onTimeUp, calculateTimeLeft])
+  }, [releaseDate, handleTimeUp])
 
-  // Run animations once after mounting
+  // Orbs animation (completely independent from countdown)
   useLayoutEffect(() => {
     if (initialized.current) return
     initialized.current = true
 
-    // Background Animation
     gsap.to(bgRef.current, {
       backgroundPosition: "50% 60%",
       duration: 10,
@@ -49,20 +69,20 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
       ease: "power1.inOut",
     })
 
-    // Animate each orb smoothly
     orbsRef.current.forEach((orb, i) => {
-      // Floating movement
+      const deltaX = gsap.utils.random(30, 80)
+      const deltaY = gsap.utils.random(30, 80)
+      const duration = gsap.utils.random(6, 12)
+
       gsap.to(orb, {
-        x: "random(-20, 20, 1)",
-        y: "random(-20, 20, 1)",
-        scale: "random(0.8, 1.3)",
-        duration: 10 + i * 1.5,
+        x: `+=${deltaX}`,
+        y: `+=${deltaY}`,
+        duration: duration,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
       })
 
-      // Smooth Shape Morphing
       gsap.to(orb, {
         borderRadius: ["30%", "50%", "70%", "100%", "40%", "20%"],
         duration: 12 + i * 2,
@@ -71,7 +91,6 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
         ease: "power2.inOut",
       })
 
-      // Color Transition
       gsap.to(orb, {
         backgroundColor: [
           "#ff007f",
@@ -99,8 +118,8 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
         backgroundSize: "200% 200%",
       }}
     >
-      {/* Floating Orbs */}
-      {[...Array(8)].map((_, i) => (
+      {/* Orbs (Independent from Countdown) */}
+      {orbPositions.current.map((pos, i) => (
         <div
           key={i}
           ref={(el) => {
@@ -108,10 +127,10 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
           }}
           className="absolute orb mix-blend-screen"
           style={{
-            width: `${Math.random() * 150 + 100}px`,
-            height: `${Math.random() * 150 + 100}px`,
-            top: `${Math.random() * 100}vh`,
-            left: `${Math.random() * 100}vw`,
+            width: `${pos.size}px`,
+            height: `${pos.size}px`,
+            top: `${pos.top}vh`,
+            left: `${pos.left}vw`,
             backgroundColor: "rgba(255, 255, 255, 0.2)",
             borderRadius: "50%",
             filter: "blur(40px)",
@@ -119,7 +138,7 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
         />
       ))}
 
-      {/* Countdown Timer Box */}
+      {/* Countdown Timer */}
       <div className="p-6 text-center bg-black bg-opacity-50 rounded-lg shadow-lg backdrop-blur-md">
         <h1 className="mb-4 font-bold text-white text-7xl">Coming Soon</h1>
         <p className="text-4xl text-white">
@@ -136,7 +155,6 @@ CountdownTimer.propTypes = {
   onTimeUp: PropTypes.func,
 }
 
-// Default Props to Avoid Errors
 CountdownTimer.defaultProps = {
   onTimeUp: () => console.log("Time is up!"),
 }
