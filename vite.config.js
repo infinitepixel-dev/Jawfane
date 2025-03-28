@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [react()],
   // base: "/Jawfane", // Set base path to match the GitHub Pages URL
   build: {
-    outDir: "build", // Change output directory to 'build' for gh-pages
+    outDir: "dist",
     emptyOutDir: true, // Clean the output directory before building
   },
   server: {
