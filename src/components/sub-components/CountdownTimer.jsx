@@ -25,11 +25,12 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
   const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(releaseDate))
   const bgRef = useRef(null)
   const orbsRef = useRef([])
+  const orbCount = 12
   const initialized = useRef(false)
 
   // Store initial orb positions in a ref so they do not reset on re-renders
   const orbPositions = useRef(
-    [...Array(8)].map(() => ({
+    [...Array(orbCount)].map(() => ({
       size: Math.random() * 150 + 100,
       top: Math.random() * 100,
       left: Math.random() * 100,
@@ -92,17 +93,18 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
       })
 
       gsap.to(orb, {
-        backgroundColor: [
+        backgroundColor: gsap.utils.random([
           "#ff007f",
+          "#0384fc",
           "#fc4903",
           "#ffd700",
           "#9acd32",
-          "#0384fc",
-        ],
+        ]),
         duration: 10 + i * 2,
         repeat: -1,
         yoyo: true,
         ease: "power1.inOut",
+        stagger: { amount: 4 },
       })
     })
   }, [])
@@ -112,7 +114,7 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
   return (
     <div
       ref={bgRef}
-      className="relative flex flex-col items-center justify-center w-screen h-screen overflow-hidden"
+      className="relative flex flex-col items-center justify-center w-screen h-screen overflow-hidden select-none"
       style={{
         background: "linear-gradient(#1a1a1a, #8003fc)",
         backgroundSize: "200% 200%",
@@ -133,7 +135,7 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
             left: `${pos.left}vw`,
             backgroundColor: "rgba(255, 255, 255, 0.2)",
             borderRadius: "50%",
-            filter: "blur(40px)",
+            filter: "blur(35px)",
           }}
         />
       ))}
