@@ -8,18 +8,18 @@ import Booking from "./components/pages/Booking"
 
 import Navigation from "./components/sub-components/Navigation"
 import BackToTop from "./components/sub-components/BackToTop"
-import CountdownTimer from "./components/sub-components/CountdownTimer" // New component
+import CountdownTimer from "./components/sub-components/CountdownTimer"
 
 import "./App.css"
 
 const App = () => {
-  const tenSecondsFromNow = new Date(new Date().getTime() + 10000)
   const [theme, setTheme] = useState("dark")
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const [toggleNavbar, setToggleNavbar] = useState(false)
   const [showWebsite, setShowWebsite] = useState(false)
 
   const releaseDate = "2025-04-23T00:00:00Z"
+  // const releaseDate = "2025-04-11T14:00:00Z" // For testing
 
   useEffect(() => {
     const localTheme = localStorage.getItem("theme") || "dark"

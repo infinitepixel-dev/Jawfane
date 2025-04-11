@@ -8,6 +8,7 @@ import Booking from "./Booking"
 import Footer from "../sub-components/Footer"
 import Lore from "./Lore"
 import AlbumArtGallery from "../sub-components/AlbumArtGallery"
+import MusicMenu from "../sub-components/MusicMenu"
 
 //INFO Sub-components imports
 import CanvasLogo from "../sub-components/CanvasLogo"
@@ -15,10 +16,11 @@ import CanvasLogo from "../sub-components/CanvasLogo"
 function Home({ theme, isMobile }) {
   return (
     <div id="main-app" className="w-screen">
+      <MusicMenu />
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <AlbumArtGallery />
       <Tour theme={theme} />
-      <div className="p-20">
+      <div className="p-2">
         <Lore theme={theme} isMobile={isMobile} />
       </div>
       <MusicVideos theme={theme} />
