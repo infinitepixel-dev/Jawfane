@@ -137,7 +137,7 @@ const Lore = () => {
 
   return (
     <div
-      className="flex items-center justify-center w-full px-4 overflow-hidden sm:px-6 md:px-8"
+      className="flex items-center justify-center w-full px-4 overflow-y-auto sm:px-6 md:px-8"
       id="lore"
     >
       <div className="flex flex-wrap justify-center w-full gap-4 sm:gap-6 md:gap-8">
@@ -147,7 +147,7 @@ const Lore = () => {
             id={`card-${index}`}
             data-index={index}
             ref={(el) => (cardsRef.current[index] = el)}
-            className="relative w-full sm:w-[calc(50%-8px)] md:w-[calc(33%-8px)] lg:w-[calc(25%-8px)] h-[600px] max-w-[420px] m-2 perspective cursor-pointer mx-auto"
+            className="relative overflow-y-auto w-full sm:w-[calc(50%-8px)] md:w-[calc(33%-8px)] lg:w-[calc(25%-8px)] h-[600px] max-w-[420px] m-2 perspective cursor-pointer mx-auto"
             onClick={() => handleFlip(index)}
             role="button"
             aria-pressed={flipped === index}
@@ -158,7 +158,7 @@ const Lore = () => {
               }`}
             >
               {/* Front Face */}
-              <div className="absolute z-10 flex flex-col w-full h-full border-4 border-transparent backface-hidden rounded-xl">
+              <div className="absolute flex flex-col w-full h-full border-4 border-transparent backface-hidden rounded-xl">
                 <div className="w-full h-[80%] bg-cover rounded-t-lg">
                   <img
                     src={person.photo}
@@ -171,7 +171,7 @@ const Lore = () => {
                 </div>
               </div>
               {/* Back Face */}
-              <div className="absolute z-0 flex items-center justify-center w-full h-full p-6 overflow-auto text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rounded-xl rotateY-180">
+              <div className="absolute flex items-center justify-center w-full h-full p-6 text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rounded-xl rotateY-180">
                 <div className="max-h-full back-content">
                   <p className="text-base text-center">
                     {person.bio || "Bio unavailable."}
