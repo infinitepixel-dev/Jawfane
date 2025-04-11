@@ -147,7 +147,7 @@ const Lore = () => {
             id={`card-${index}`}
             data-index={index}
             ref={(el) => (cardsRef.current[index] = el)}
-            className="relative w-full sm:w-[calc(50%-8px)] md:w-[calc(33%-8px)] lg:w-[calc(25%-8px)] h-[600px] max-w-[420px] perspective cursor-pointer mx-auto"
+            className="relative w-full sm:w-[calc(50%-8px)] md:w-[calc(33%-8px)] lg:w-[calc(25%-8px)] h-[600px] max-w-[420px] m-2 perspective cursor-pointer mx-auto"
             onClick={() => handleFlip(index)}
             role="button"
             aria-pressed={flipped === index}
