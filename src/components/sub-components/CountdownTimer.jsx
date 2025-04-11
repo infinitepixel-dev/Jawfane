@@ -22,7 +22,13 @@ const calculateTimeLeft = (releaseDate) => {
 }
 
 const CountdownTimer = ({ releaseDate, onTimeUp }) => {
-  const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(releaseDate))
+  // Initialize with 5 seconds countdown
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 5,
+  })
   const bgRef = useRef(null)
   const orbsRef = useRef([])
   const orbCount = 12
@@ -45,17 +51,37 @@ const CountdownTimer = ({ releaseDate, onTimeUp }) => {
   // Countdown logic (separate from orbs)
   useEffect(() => {
     const timer = setInterval(() => {
-      const newTimeLeft = calculateTimeLeft(releaseDate)
-      if (!newTimeLeft) {
-        clearInterval(timer)
-        handleTimeUp()
-      } else {
-        setTimeLeft(newTimeLeft)
-      }
+      setTimeLeft((prevTime) => {
+        if (prevTime.seconds > 0) {
+          return { ...prevTime, seconds: prevTime.seconds - 1 }
+        } else if (prevTime.minutes > 0) {
+          return { ...prevTime, minutes: prevTime.minutes - 1, seconds: 59 }
+        } else if (prevTime.hours > 0) {
+          return {
+            ...prevTime,
+            hours: prevTime.hours - 1,
+            minutes: 59,
+            seconds: 59,
+          }
+        } else if (prevTime.days > 0) {
+          return {
+            ...prevTime,
+            days: prevTime.days - 1,
+            hours: 23,
+            minutes: 59,
+            seconds: 59,
+          }
+        } else {
+          // Timer is finished
+          handleTimeUp()
+          clearInterval(timer)
+          return { ...prevTime }
+        }
+      })
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [releaseDate, handleTimeUp])
+  }, [handleTimeUp])
 
   // Orbs animation (completely independent from countdown)
   useLayoutEffect(() => {

@@ -11,10 +11,12 @@ import AlbumArtGallery from "../sub-components/AlbumArtGallery"
 
 //INFO Sub-components imports
 import CanvasLogo from "../sub-components/CanvasLogo"
+import MusicMenu from "../sub-components/MusicMenu"
 
 function Home({ theme, isMobile }) {
   return (
     <div id="main-app" className="w-screen">
+      <MusicMenu />
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <AlbumArtGallery />
       <Tour theme={theme} />
