@@ -121,7 +121,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
           ref={navBarRef}
           className={`px-8 ${
             isMobile ? "hidden" : "flex"
-          } pt-4 flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
+          } py-4 md:py-2 flex-col md:flex-row gap-14 justify-center items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
         >
           {["tour", "music", "booking"].map((item) => (
             <li
@@ -140,10 +140,6 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
               <span>{item.charAt(0).toUpperCase() + item.slice(1)}</span>
             </li>
           ))}
-
-          <div className="relative top-[-1rem] mx-auto">
-            {/* <AudioPlayer theme={theme} /> */}
-          </div>
         </ul>
       </nav>
     </>
