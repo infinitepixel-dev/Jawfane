@@ -18,8 +18,8 @@ const App = () => {
   const [toggleNavbar, setToggleNavbar] = useState(false)
   const [showWebsite, setShowWebsite] = useState(false)
 
-  // const releaseDate = "2025-04-23T00:00:00Z"
-  const releaseDate = "2025-04-11T14:00:00Z"
+  const releaseDate = "2025-04-23T00:00:00Z"
+  // const releaseDate = "2025-04-11T14:00:00Z" // For testing
 
   useEffect(() => {
     const localTheme = localStorage.getItem("theme") || "dark"
