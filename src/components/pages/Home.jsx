@@ -1,20 +1,21 @@
-import propTypes from "prop-types"
+import { useOutletContext } from "react-router-dom";
+import PropTypes from "prop-types";
 
-//INFO Pages imports
+// INFO Pages imports
+import Tour from "./Tour";
+import MusicVideos from "./MusicVideos";
+import Booking from "./Booking";
+import Footer from "../sub-components/Footer";
+import Lore from "./Lore";
+import AlbumArtGallery from "../sub-components/AlbumArtGallery";
+import MusicMenu from "../sub-components/MusicMenu";
 
-import Tour from "./Tour"
-import MusicVideos from "./MusicVideos"
-import Booking from "./Booking"
-import Footer from "../sub-components/Footer"
-import Lore from "./Lore"
-import AlbumArtGallery from "../sub-components/AlbumArtGallery"
-import MusicMenu from "../sub-components/MusicMenu"
+// INFO Sub-components imports
+import CanvasLogo from "../sub-components/CanvasLogo";
 
-//INFO Sub-components imports
-import CanvasLogo from "../sub-components/CanvasLogo"
-import MusicMenu from "../sub-components/MusicMenu"
+function Home() {
+  const { theme, isMobile } = useOutletContext();
 
-function Home({ theme, isMobile }) {
   return (
     <div id="main-app" className="w-screen">
       <MusicMenu />
@@ -28,12 +29,14 @@ function Home({ theme, isMobile }) {
       <Booking theme={theme} />
       <Footer theme={theme} />
     </div>
-  )
+  );
 }
 
+// Still useful to define shape for tooling, but now not strictly "required" as props
 Home.propTypes = {
-  theme: propTypes.string.isRequired,
-  isMobile: propTypes.bool.isRequired,
-}
+  //mark as required
+  theme: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool,
+};
 
-export default Home
+export default Home;

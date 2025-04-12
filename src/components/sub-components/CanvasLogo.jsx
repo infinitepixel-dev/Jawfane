@@ -1,21 +1,21 @@
-import { useEffect, useRef } from "react"
-import { gsap } from "gsap"
-import propTypes from "prop-types"
-import logo from "@public/jawfane_logo.svg"
-import hero_bg from "@public/hero_bg.webp"
-import hero_bg_mobile from "/hero_bg_mobile.webp"
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import propTypes from "prop-types";
+// import logo from "@public/jawfane_logo.svg";
+// import hero_bg from "@public/hero_bg.webp";
+// import hero_bg_mobile from "/hero_bg_mobile.webp";
 
-import "../../css/AnimatedLogo.css"
+import "../../css/AnimatedLogo.css";
 
 const AnimatedLogo = ({ theme, isMobile }) => {
-  const logoRef = useRef(null)
+  const logoRef = useRef(null);
 
-  const colorChangeSpeed = 2000 // Duration in milliseconds for the color change
-  const interval = colorChangeSpeed // Interval between color changes
+  const colorChangeSpeed = 2000; // Duration in milliseconds for the color change
+  const interval = colorChangeSpeed; // Interval between color changes
 
   useEffect(() => {
-    const newColor = theme === "dark" ? "#000000" : "#FFFFFF"
-    gsap.to(document.body, { backgroundColor: newColor, duration: 1 })
+    const newColor = theme === "dark" ? "#000000" : "#FFFFFF";
+    gsap.to(document.body, { backgroundColor: newColor, duration: 1 });
 
     const colors = [
       "#1d7d7b",
@@ -28,40 +28,40 @@ const AnimatedLogo = ({ theme, isMobile }) => {
       "#ff8a80",
       "#f06292",
       "#ab47bc",
-    ]
+    ];
 
-    let currentColorIndex = 0
+    let currentColorIndex = 0;
 
     const changeColor = () => {
-      const nextColorIndex = (currentColorIndex + 1) % colors.length
-      const nextColor = colors[nextColorIndex]
+      const nextColorIndex = (currentColorIndex + 1) % colors.length;
+      const nextColor = colors[nextColorIndex];
 
       gsap.to(logoRef.current, {
         duration: colorChangeSpeed / 1000,
         filter: `drop-shadow(0px 0px 10px ${nextColor})`,
         onComplete: () => {
-          currentColorIndex = nextColorIndex
-          setTimeout(changeColor, interval)
+          currentColorIndex = nextColorIndex;
+          setTimeout(changeColor, interval);
         },
-      })
-    }
+      });
+    };
 
-    changeColor()
+    changeColor();
 
     return () => {
       // Cleanup to avoid memory leaks
-      gsap.killTweensOf(logoRef.current)
-    }
-  }, [colorChangeSpeed, interval, theme])
+      gsap.killTweensOf(logoRef.current);
+    };
+  }, [colorChangeSpeed, interval, theme]);
 
   return (
     <div
       id="animatedLogo"
-      className="relative flex items-center justify-center w-full h-screen"
+      className="relative flex justify-center items-center w-full h-screen"
     >
       {isMobile ? (
         <img
-          src={hero_bg_mobile}
+          src="/images/hero_bg_mobile.webp"
           alt="Hero Background"
           className="absolute w-full h-full"
           style={{
@@ -72,7 +72,7 @@ const AnimatedLogo = ({ theme, isMobile }) => {
         />
       ) : (
         <img
-          src={hero_bg}
+          src="/images/hero_bg.webp"
           alt="Hero Background"
           className="absolute w-full h-full"
           style={{
@@ -81,10 +81,10 @@ const AnimatedLogo = ({ theme, isMobile }) => {
           }}
         />
       )}
-      {logo && (
+      {
         <img
           ref={logoRef}
-          src={logo}
+          src="/images/jawfane_logo.svg"
           alt="Jawfane Logo"
           className="relative"
           style={{
@@ -93,14 +93,14 @@ const AnimatedLogo = ({ theme, isMobile }) => {
             objectFit: "contain",
           }}
         />
-      )}
+      }
     </div>
-  )
-}
+  );
+};
 
 AnimatedLogo.propTypes = {
   theme: propTypes.string.isRequired,
   isMobile: propTypes.bool.isRequired,
-}
+};
 
-export default AnimatedLogo
+export default AnimatedLogo;

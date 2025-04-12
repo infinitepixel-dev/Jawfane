@@ -1,34 +1,34 @@
-import { useRef, useState, useEffect } from "react"
-import gsap from "gsap"
-import { Apple, AudioLines, ChevronLeft, ChevronRight } from "lucide-react"
+import { useRef, useState, useEffect } from "react";
+import gsap from "gsap";
+import { Apple, AudioLines, ChevronLeft, ChevronRight } from "lucide-react";
 
 const MusicMenu = () => {
-  const [isOpen, setIsOpen] = useState(true)
-  const menuRef = useRef(null)
-  const buttonRef = useRef(null)
-  const iconRefs = useRef([])
+  const [isOpen, setIsOpen] = useState(true);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+  const iconRefs = useRef([]);
 
   useEffect(() => {
     gsap.to(menuRef.current, {
       x: isOpen ? 0 : 128,
       duration: 0.4,
       ease: "power2.out",
-    })
+    });
 
     gsap.to(buttonRef.current, {
       x: isOpen ? 0 : 45,
       duration: 0.4,
       ease: "power2.out",
-    })
-  }, [isOpen])
+    });
+  }, [isOpen]);
 
   const handleHover = (el) => {
-    if (el) gsap.to(el, { scale: 1.3, duration: 0.2, ease: "power2.out" })
-  }
+    if (el) gsap.to(el, { scale: 1.3, duration: 0.2, ease: "power2.out" });
+  };
 
   const handleLeave = (el) => {
-    if (el) gsap.to(el, { scale: 1, duration: 0.2, ease: "power2.out" })
-  }
+    if (el) gsap.to(el, { scale: 1, duration: 0.2, ease: "power2.out" });
+  };
 
   const handleClick = (el) => {
     if (el) {
@@ -36,17 +36,17 @@ const MusicMenu = () => {
         el,
         { scale: 1 },
         { scale: 0.85, duration: 0.1, yoyo: true, repeat: 1 }
-      )
+      );
     }
-  }
+  };
 
   return (
-    <div className="fixed right-0 z-50 flex items-center -translate-y-1/2 top-1/2">
+    <div className="top-1/2 right-0 z-10 fixed flex items-center -translate-y-1/2">
       {/* Toggle button */}
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="z-50 p-1 rounded-full bg-slate-200 text-slate-800"
+        className="z-50 bg-slate-200 p-1 rounded-full text-slate-800"
       >
         {isOpen ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
       </button>
@@ -54,7 +54,7 @@ const MusicMenu = () => {
       {/* Sliding menu */}
       <div
         ref={menuRef}
-        className="flex flex-col items-center gap-6 px-4 py-6 shadow-lg text-slate-800 bg-slate-200 w-25 rounded-l-2xl ml-[-10px]"
+        className="flex flex-col items-center gap-6 bg-slate-200 shadow-lg ml-[-10px] px-4 py-6 rounded-l-2xl w-25 text-slate-800"
       >
         {[
           {
@@ -114,7 +114,7 @@ const MusicMenu = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MusicMenu
+export default MusicMenu;
