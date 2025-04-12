@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import propTypes from "prop-types";
-import hero_bg from "@public/hero_bg.webp";
+// import hero_bg from "@public/hero_bg.webp";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -75,7 +75,7 @@ const Hero = ({ theme }) => {
     >
       <div
         style={{
-          backgroundImage: `url(${hero_bg})`,
+          backgroundImage: `url('/images/hero_bg_mobile.webp'})`,
           backgroundSize: "contain",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

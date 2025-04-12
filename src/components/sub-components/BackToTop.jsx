@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons"
-import { gsap } from "gsap"
+import { useState, useEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { gsap } from "gsap";
 
 const BackToTop = () => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [showNextButton, setShowNextButton] = useState(true)
-  const buttonRef = useRef(null)
-  const nextButtonRef = useRef(null)
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
+  const [isVisible, setIsVisible] = useState(false);
+  const [showNextButton, setShowNextButton] = useState(true);
+  const buttonRef = useRef(null);
+  const nextButtonRef = useRef(null);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
   const sections = [
     "home",
@@ -18,21 +18,21 @@ const BackToTop = () => {
     "music",
     "booking",
     "footer",
-  ]
+  ];
 
   useEffect(() => {
     const toggleVisibility = () => {
-      const scrollPosition = window.scrollY
-      const windowHeight = window.innerHeight
-      const documentHeight = document.documentElement.scrollHeight
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
 
-      setIsVisible(scrollPosition > 300)
-      setShowNextButton(scrollPosition + windowHeight < documentHeight)
-    }
+      setIsVisible(scrollPosition > 300);
+      setShowNextButton(scrollPosition + windowHeight < documentHeight);
+    };
 
-    window.addEventListener("scroll", toggleVisibility)
-    return () => window.removeEventListener("scroll", toggleVisibility)
-  }, [])
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
 
   useEffect(() => {
     const animateButton = (ref, visible) => {
@@ -46,15 +46,15 @@ const BackToTop = () => {
         ease: visible ? "power2.out" : "power2.in",
         onComplete: () => {
           if (visible) {
-            pulseArrow(ref) // Start subtle animation when visible
+            pulseArrow(ref); // Start subtle animation when visible
           }
         },
-      })
-    }
+      });
+    };
 
-    animateButton(buttonRef, isVisible)
-    animateButton(nextButtonRef, showNextButton)
-  }, [isVisible, showNextButton])
+    animateButton(buttonRef, isVisible);
+    animateButton(nextButtonRef, showNextButton);
+  }, [isVisible, showNextButton]);
 
   const pulseArrow = (ref) => {
     gsap.to(ref.current, {
@@ -63,40 +63,40 @@ const BackToTop = () => {
       repeat: -1, // Infinite loop
       yoyo: true,
       ease: "power1.inOut",
-    })
-  }
+    });
+  };
 
   const scrollToTop = () => {
     gsap.to(window, {
       duration: 1,
       scrollTo: { y: 0 },
       ease: "power2.out",
-    })
-    setCurrentSectionIndex(0)
-  }
+    });
+    setCurrentSectionIndex(0);
+  };
 
   const scrollToNextSection = () => {
-    const nextSectionIndex = currentSectionIndex + 1
+    const nextSectionIndex = currentSectionIndex + 1;
     if (nextSectionIndex < sections.length) {
       const nextSectionElement = document.getElementById(
         sections[nextSectionIndex]
-      )
+      );
       if (nextSectionElement) {
         window.scrollTo({
           top: nextSectionElement.offsetTop,
           behavior: "smooth",
-        })
-        setCurrentSectionIndex(nextSectionIndex)
+        });
+        setCurrentSectionIndex(nextSectionIndex);
       }
     }
-  }
+  };
 
   return (
-    <div className="fixed z-50 flex flex-col space-y-2 bottom-4 right-4">
+    <div className="right-4 bottom-4 z-10 fixed flex flex-col space-y-2">
       <button
         ref={buttonRef}
         onClick={scrollToTop}
-        className="p-4 text-white transition bg-blue-600 rounded-full shadow-lg hover:bg-blue-700"
+        className="bg-blue-600 hover:bg-blue-700 shadow-lg p-4 rounded-full text-white transition"
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
@@ -108,7 +108,7 @@ const BackToTop = () => {
       <button
         ref={nextButtonRef}
         onClick={scrollToNextSection}
-        className="p-4 text-white transition rounded-full shadow-lg bg-neutral-900 hover:bg-neutral-950"
+        className="bg-neutral-900 hover:bg-neutral-950 shadow-lg p-4 rounded-full text-white transition"
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
@@ -117,7 +117,7 @@ const BackToTop = () => {
         <FontAwesomeIcon icon={faArrowDown} />
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default BackToTop
+export default BackToTop;
