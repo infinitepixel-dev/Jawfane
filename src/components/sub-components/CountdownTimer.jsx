@@ -113,6 +113,22 @@ const CountdownTimer = ({
 
   // Countdown logic (separate from orbs)
   useEffect(() => {
+    // Function to check the cookie value
+    const getCookie = (name) => {
+      const regex = new RegExp("(^| )" + name + "=([^;]+)");
+      const match = regex.exec(document.cookie);
+      return match ? decodeURIComponent(match[2]) : null;
+    };
+
+    // Check cookie and bypass timer if true
+    const timesUpMF = getCookie("TimesUpMF");
+    console.log("TimesUpMF cookie value:", timesUpMF);
+
+    if (timesUpMF == "true") {
+      handleTimeUp();
+      return; // Skip setting up the interval
+    }
+
     const timer = setInterval(() => {
       const newTimeLeft = calculateTimeLeft(releaseDate);
       if (!newTimeLeft) {
