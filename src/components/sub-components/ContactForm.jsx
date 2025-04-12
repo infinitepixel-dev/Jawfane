@@ -1,6 +1,6 @@
 //ContactForm.jsx
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 // import ScrollingIconsBar from "./utility/ScrollingIconsBar";
 
@@ -13,6 +13,10 @@ const contactFormPropTypes = {
 };
 
 const ContactForm = ({ setShowModal }) => {
+  //INFO State Variables
+  const [isEmailReady, setIsEmailReady] = useState(false);
+  const [email, setEmail] = useState(null);
+
   const formRef = useRef(null);
   const [formData, setFormData] = useState({
     company: "",
@@ -22,8 +26,6 @@ const ContactForm = ({ setShowModal }) => {
     message: "",
   });
   const maxMessageLength = 250; // Maximum character limit for the message
-
-  const email = import.meta.env.VITE_FORM_EMAIL; // Ensure you have this in your .env file
 
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -113,160 +115,177 @@ const ContactForm = ({ setShowModal }) => {
     }
   };
 
+  //wait for  = import.meta.env.VITE_FORM_EMAIL; // Ensure you have this in your .env file
+  useEffect(() => {
+    setEmail(import.meta.env.VITE_FORM_EMAIL);
+    if (email) {
+      setIsEmailReady(true);
+    }
+  }, [email]);
+
   return (
     <>
       <div id="contact-form" style={{ zIndex: 9999 }}>
-        <form
-          ref={formRef}
-          action="https://formsubmit.co/49b3ec7186e27ea9fd61c9e9f858330c"
-          method="POST"
-          onSubmit={handleSubmit}
-          className="space-y-6 bg-white shadow-xl p-4 md:p-10 rounded-xl min-w-[90svw] md:min-w-[40svw]"
-        >
-          {/* Hidden Fields */}
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_subject" value="New Contact Submission" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="text" name="_honey" style={{ display: "none" }} />
-          <input type="hidden" name="_next" value="http://localhost:5174/" />
-
-          {/* Company */}
-          <div>
-            <label
-              htmlFor="company"
-              className="block font-medium text-sky-950 text-sm"
-            >
-              Company (Optional)
-            </label>
+        {/* if isEmailReady is true */}
+        {isEmailReady ? (
+          <form
+            ref={formRef}
+            action={email}
+            method="POST"
+            onSubmit={handleSubmit}
+            className="space-y-6 bg-white shadow-xl p-4 md:p-10 rounded-xl min-w-[90svw] md:min-w-[40svw]"
+          >
+            {/* Hidden Fields */}
+            <input type="hidden" name="_template" value="table" />
             <input
-              type="text"
-              id="company"
-              name="company"
-              value={formData.company}
-              onChange={handleChange}
-              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
-              placeholder="Business Name"
+              type="hidden"
+              name="_subject"
+              value="New Contact Submission"
             />
-          </div>
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="text" name="_honey" style={{ display: "none" }} />
+            <input type="hidden" name="_next" value="https://jawfane.com/" />
 
-          {/* First & Last Name (Side by Side on md+) */}
-          <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+            {/* Company */}
             <div>
               <label
-                htmlFor="firstName"
+                htmlFor="company"
                 className="block font-medium text-sky-950 text-sm"
               >
-                First Name <span className="text-red-500">*</span>
+                Company (Optional)
               </label>
               <input
                 type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
+                id="company"
+                name="company"
+                value={formData.company}
                 onChange={handleChange}
                 className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
-                placeholder="First Name"
+                placeholder="Business Name"
               />
-              {errors.firstName && (
-                <p className="mt-1 text-red-500 text-sm">{errors.firstName}</p>
-              )}
             </div>
 
+            {/* First & Last Name (Side by Side on md+) */}
+            <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block font-medium text-sky-950 text-sm"
+                >
+                  First Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
+                  placeholder="First Name"
+                />
+                {errors.firstName && (
+                  <p className="mt-1 text-red-500 text-sm">
+                    {errors.firstName}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block font-medium text-sky-950 text-sm"
+                >
+                  Last Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
+                  placeholder="Last Name"
+                />
+                {errors.lastName && (
+                  <p className="mt-1 text-red-500 text-sm">{errors.lastName}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Email */}
             <div>
               <label
-                htmlFor="lastName"
+                htmlFor="email"
                 className="block font-medium text-sky-950 text-sm"
               >
-                Last Name <span className="text-red-500">*</span>
+                Email <span className="text-red-500">*</span>
               </label>
               <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
                 onChange={handleChange}
                 className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
-                placeholder="Last Name"
+                placeholder="Email"
               />
-              {errors.lastName && (
-                <p className="mt-1 text-red-500 text-sm">{errors.lastName}</p>
+              {errors.email && (
+                <p className="mt-1 text-red-500 text-sm">{errors.email}</p>
               )}
             </div>
-          </div>
 
-          {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block font-medium text-sky-950 text-sm"
-            >
-              Email <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
-              placeholder="Email"
-            />
-            {errors.email && (
-              <p className="mt-1 text-red-500 text-sm">{errors.email}</p>
-            )}
-          </div>
-
-          {/* Message */}
-          <div>
-            <label
-              htmlFor="message"
-              className="block font-medium text-sky-950 text-sm"
-            >
-              Message <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
-              rows="4"
-              placeholder="Message"
-              maxLength={maxMessageLength}
-            />
-            <div
-              className={`text-sm text-right mt-1 ${
-                formData.message.length >= maxMessageLength
-                  ? "text-red-800"
-                  : formData.message.length >= maxMessageLength - 20
-                  ? "text-orange-600"
-                  : "text-slate-400"
-              }`}
-            >
-              {formData.message.length}/{maxMessageLength} characters
+            {/* Message */}
+            <div>
+              <label
+                htmlFor="message"
+                className="block font-medium text-sky-950 text-sm"
+              >
+                Message <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
+                rows="4"
+                placeholder="Message"
+                maxLength={maxMessageLength}
+              />
+              <div
+                className={`text-sm text-right mt-1 ${
+                  formData.message.length >= maxMessageLength
+                    ? "text-red-800"
+                    : formData.message.length >= maxMessageLength - 20
+                    ? "text-orange-600"
+                    : "text-slate-400"
+                }`}
+              >
+                {formData.message.length}/{maxMessageLength} characters
+              </div>
+              {errors.message && (
+                <p className="mt-1 text-red-500 text-sm">{errors.message}</p>
+              )}
             </div>
-            {errors.message && (
-              <p className="mt-1 text-red-500 text-sm">{errors.message}</p>
-            )}
-          </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={submitting}
-            className="bg-gradient-to-r from-blue-500 hover:from-blue-600 to-indigo-600 hover:to-indigo-700 py-3 rounded-md focus:ring-4 focus:ring-indigo-300 w-full font-semibold text-white transition duration-200 ease-in-out"
-          >
-            {submitting ? "Submitting..." : "Submit"}
-          </button>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={submitting}
+              className="bg-gradient-to-r from-blue-500 hover:from-blue-600 to-indigo-600 hover:to-indigo-700 py-3 rounded-md focus:ring-4 focus:ring-indigo-300 w-full font-semibold text-white transition duration-200 ease-in-out"
+            >
+              {submitting ? "Submitting..." : "Submit"}
+            </button>
 
-          {/* Close Button */}
-          <button
-            onClick={() => setShowModal(false)}
-            className="bg-gray-400 hover:bg-gray-500 py-2 rounded-md w-full font-semibold text-gray-800 transition duration-200 ease-in-out"
-          >
-            Close
-          </button>
-        </form>
+            {/* Close Button */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="bg-gray-400 hover:bg-gray-500 py-2 rounded-md w-full font-semibold text-gray-800 transition duration-200 ease-in-out"
+            >
+              Close
+            </button>
+          </form>
+        ) : null}
       </div>
 
       {/* Thank You Modal */}
