@@ -43,7 +43,7 @@ const CountdownTimer = ({
   const orbCount = 12;
   const initialized = useRef(false);
 
-  // Stores initial orb positions in a ref so they do not reset on re-renders
+  // Store initial orb positions in a ref so they do not reset on re-renders
   const orbPositions = useRef(
     [...Array(orbCount)].map(() => ({
       size: Math.random() * 150 + 100,
@@ -59,7 +59,7 @@ const CountdownTimer = ({
 
   // Orbs animation (completely independent from countdown)
   useLayoutEffect(() => {
-    if (initialized.current) return;
+    if (initialized.current || !bgRef.current) return;
     initialized.current = true;
 
     gsap.to(bgRef.current, {
@@ -71,6 +71,8 @@ const CountdownTimer = ({
     });
 
     orbsRef.current.forEach((orb, i) => {
+      if (!orb) return; // Skip null orbs
+
       const deltaX = gsap.utils.random(30, 80);
       const deltaY = gsap.utils.random(30, 80);
       const duration = gsap.utils.random(6, 12);

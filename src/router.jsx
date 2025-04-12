@@ -10,9 +10,9 @@ import RootLayout from "./RootLayout";
 
 //INFO Pages
 import Home from "./components/pages/Home";
-import Tour from "./components/pages/Tour";
-import Music from "./components/pages/MusicVideos";
-import Booking from "./components/pages/Booking";
+// import Tour from "./components/pages/Tour";
+// import Music from "./components/pages/MusicVideos";
+// import Booking from "./components/pages/Booking";
 
 // These get passed to routes from RootLayout via function
 const withProps = (Component, props) => <Component {...props} />;
@@ -23,9 +23,9 @@ export const createAppRouter = (layoutProps) =>
       <Route path="/" element={<RootLayout {...layoutProps} />}>
         <Route index element={withProps(Home, layoutProps)} />
         <Route path="home" element={withProps(Home, layoutProps)} />
-        <Route path="tour" element={withProps(Tour, layoutProps)} />
+        {/* <Route path="tour" element={withProps(Tour, layoutProps)} />
         <Route path="music" element={withProps(Music, layoutProps)} />
-        <Route path="booking" element={withProps(Booking, layoutProps)} />
+        <Route path="booking" element={withProps(Booking, layoutProps)} /> */}
       </Route>
     ),
     {
