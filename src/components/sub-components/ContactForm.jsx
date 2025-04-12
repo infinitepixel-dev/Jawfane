@@ -144,7 +144,7 @@ const ContactForm = ({ setShowModal }) => {
               name="company"
               value={formData.company}
               onChange={handleChange}
-              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full"
+              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
               placeholder="Business Name"
             />
           </div>
@@ -164,7 +164,7 @@ const ContactForm = ({ setShowModal }) => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full"
+                className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
                 placeholder="First Name"
               />
               {errors.firstName && (
@@ -185,7 +185,7 @@ const ContactForm = ({ setShowModal }) => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full"
+                className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
                 placeholder="Last Name"
               />
               {errors.lastName && (
@@ -208,7 +208,7 @@ const ContactForm = ({ setShowModal }) => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full"
+              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
               placeholder="Email"
             />
             {errors.email && (
@@ -229,7 +229,7 @@ const ContactForm = ({ setShowModal }) => {
               name="message"
               value={formData.message}
               onChange={handleChange}
-              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full"
+              className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
               rows="4"
               placeholder="Message"
               maxLength={maxMessageLength}
