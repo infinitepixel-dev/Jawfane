@@ -6,6 +6,10 @@ export default {
       borderCustom: {
         color: "#526763",
       },
+      colors: {
+        army: "#6f7d7a",
+        "army-hover": "#4b5754",
+      },
     },
   },
   plugins: [],
