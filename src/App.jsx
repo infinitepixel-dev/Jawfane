@@ -5,8 +5,8 @@ import CountdownTimer from "./components/sub-components/CountdownTimer";
 import { createAppRouter } from "./router";
 
 const App = () => {
-  const date = "04/11/2025 17:11:00"; //Test release date
-  // const date = "04/23/2025 00:00:00"; //Actual release date
+  // const date = "04/11/2025 17:11:00"; //Test release date
+  const date = "04/23/2025 00:00:00"; //Actual release date
 
   const [theme, setTheme] = useState("dark");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
