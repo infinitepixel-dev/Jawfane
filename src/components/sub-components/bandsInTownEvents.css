@@ -1,0 +1,8 @@
+.events-widget-container {
+  opacity: 0;
+  transition: opacity 2s ease-out;
+}
+
+.events-widget-container.visible {
+  opacity: 1;
+}

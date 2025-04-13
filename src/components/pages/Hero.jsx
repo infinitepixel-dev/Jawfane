@@ -80,7 +80,7 @@ const Hero = ({ theme }) => {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
-        className={`flex items-center justify-center h-screen ${
+        className={`flex items-center justify-center  h-screen ${
           theme === "dark" ? "bg-slate-800" : "bg-white"
         }`}
       >

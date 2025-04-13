@@ -81,19 +81,33 @@ const AnimatedLogo = ({ theme, isMobile }) => {
           }}
         />
       )}
-      {
+      {isMobile ? (
         <img
           ref={logoRef}
           src="/images/jawfane_logo.svg"
           alt="Jawfane Logo"
-          className="relative"
+          className="relative px-4"
+          style={{
+            height: "30%",
+            width: "auto",
+            position: "absolute",
+            top: "10%",
+            objectFit: "contain",
+          }}
+        />
+      ) : (
+        <img
+          ref={logoRef}
+          src="/images/jawfane_logo.svg"
+          alt="Jawfane Logo"
+          className="relative mt-48"
           style={{
             height: "30%",
             width: "auto",
             objectFit: "contain",
           }}
         />
-      }
+      )}
     </div>
   );
 };
