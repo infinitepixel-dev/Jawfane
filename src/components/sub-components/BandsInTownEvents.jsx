@@ -1,58 +1,57 @@
-import { useEffect, useRef } from "react"
-import propTypes from "prop-types"
-import { gsap } from "gsap"
+import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+import { gsap } from "gsap";
 
 const BandsInTownEvents = ({ artistName }) => {
-  const widgetRef = useRef(null) // Ref for the BandsInTown widget
+  const widgetRef = useRef(null); // Ref for the BandsInTown widget
 
-  // GSAP animation for the widget
+  // Load Bandsintown script
   useEffect(() => {
-    const widgetElement = widgetRef.current
-
-    if (widgetElement) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            gsap.fromTo(
-              entry.target,
-              { opacity: 0, scale: 0.8 },
-              { opacity: 1, scale: 1, duration: 1 }
-            )
-            observer.unobserve(entry.target)
-          }
-        })
-      })
-
-      observer.observe(widgetElement)
-
-      return () => {
-        if (widgetElement) observer.unobserve(widgetElement)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    const script = document.createElement("script")
-    script.src = "https://widgetv3.bandsintown.com/main.min.js"
-    script.charset = "utf-8"
-    script.async = true
-    document.body.appendChild(script)
+    const script = document.createElement("script");
+    script.src = "https://widgetv3.bandsintown.com/main.min.js";
+    script.charset = "utf-8";
+    script.async = true;
+    document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  // Wait for widget content to appear, then animate
+  useEffect(() => {
+    const widgetContainer = widgetRef.current;
+    if (!widgetContainer) return;
+
+    const observer = new MutationObserver(() => {
+      const widgetContent = widgetContainer.querySelector("*");
+      if (widgetContent) {
+        gsap.fromTo(
+          widgetContainer,
+          { opacity: 0, scale: 0.9 },
+          { opacity: 1, scale: 1, duration: 1, ease: "power2.out" }
+        );
+        observer.disconnect(); // Clean up after first render
+      }
+    });
+
+    observer.observe(widgetContainer, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen px-4 py-10 text-gray-600 bg-gray-200">
-      <h1 className="mb-8 text-3xl font-bold text-center md:text-4xl">
+    <div className="bg-gray-200 px-4 py-10 min-h-screen text-gray-600">
+      <h1 className="mb-8 font-bold text-3xl md:text-4xl text-center">
         {artistName} Tour Dates
       </h1>
-      <div className="max-w-[62%] mx-auto">
+      <div className="mx-auto max-w-[62%]">
         {/* Bandsintown Widget Code */}
         <a
           ref={widgetRef}
-          className="bit-widget-initializer max-w-[62%] mx-auto"
+          className="block mx-auto max-w-[62%] bit-widget-initializer"
           data-artist-name={artistName}
           data-background-color="rgba(230,230,230,1)"
           data-separator-color="rgba(76, 103, 99, 1)"
@@ -125,11 +124,11 @@ const BandsInTownEvents = ({ artistName }) => {
         ></a>
       </div>
     </div>
-  )
-}
+  );
+};
 
 BandsInTownEvents.propTypes = {
-  artistName: propTypes.string.isRequired,
-}
+  artistName: PropTypes.string.isRequired,
+};
 
-export default BandsInTownEvents
+export default BandsInTownEvents;
