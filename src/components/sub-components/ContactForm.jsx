@@ -1,127 +1,127 @@
 //ContactForm.jsx
 
-import { useState, useRef, useEffect } from "react";
-import PropTypes from "prop-types";
+import { useState, useRef, useEffect } from "react"
+import PropTypes from "prop-types"
 // import ScrollingIconsBar from "./utility/ScrollingIconsBar";
 
 //INFO Modals
-import ModalWrapper from "./modals/ModalWrapper";
+import ModalWrapper from "./modals/ModalWrapper"
 
 //Ensure the correct formatatting... when using non typescript projects
 const contactFormPropTypes = {
   setShowModal: PropTypes.func.isRequired,
-};
+}
 
 const ContactForm = ({ setShowModal }) => {
   //INFO State Variables
-  const [isEmailReady, setIsEmailReady] = useState(false);
-  const [email, setEmail] = useState(null);
+  const [isEmailReady, setIsEmailReady] = useState(false)
+  const [email, setEmail] = useState(null)
 
-  const formRef = useRef(null);
+  const formRef = useRef(null)
   const [formData, setFormData] = useState({
     company: "",
     firstName: "",
     lastName: "",
     email: "",
     message: "",
-  });
-  const maxMessageLength = 250; // Maximum character limit for the message
+  })
+  const maxMessageLength = 250 // Maximum character limit for the message
 
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
-  const [showThankYou, setShowThankYou] = useState(false);
+  const [errors, setErrors] = useState({})
+  const [submitting, setSubmitting] = useState(false)
+  const [showThankYou, setShowThankYou] = useState(false)
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors = {}
 
     if (!formData.firstName.trim())
-      newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-    if (!formData.message.trim()) newErrors.message = "Message is required";
+      newErrors.firstName = "First name is required"
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required"
+    if (!formData.message.trim()) newErrors.message = "Message is required"
 
     // Basic email format check
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email is required"
     } else if (!emailRegex.test(formData.email.trim())) {
-      newErrors.email = "Invalid email format";
+      newErrors.email = "Invalid email format"
     }
 
     // Optional: Block suspicious TLDs or domains
-    const spammyPatterns = ["@tempmail", "@10minutemail", "@mailinator"];
+    const spammyPatterns = ["@tempmail", "@10minutemail", "@mailinator"]
     if (
       spammyPatterns.some((pattern) =>
         formData.email.toLowerCase().includes(pattern)
       )
     ) {
-      newErrors.email = "Please use a real email address";
+      newErrors.email = "Please use a real email address"
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
+    e.preventDefault()
+    setSubmitting(true)
 
     if (!validateForm()) {
-      setSubmitting(false);
-      return;
+      setSubmitting(false)
+      return
     }
 
-    const payload = new FormData();
+    const payload = new FormData()
     Object.entries(formData).forEach(([key, value]) => {
-      payload.append(key, value);
-    });
+      payload.append(key, value)
+    })
 
     // FormSubmit required hidden fields
-    payload.append("_template", "table");
-    payload.append("_subject", "New Contact Submission");
-    payload.append("_captcha", "false");
+    payload.append("_template", "table")
+    payload.append("_subject", "New Contact Submission")
+    payload.append("_captcha", "false")
 
     try {
       //import VIte Email from env
       const response = await fetch(email, {
         method: "POST",
         body: payload,
-      });
+      })
 
       if (response.ok) {
-        setShowThankYou(true);
+        setShowThankYou(true)
         setFormData({
           company: "",
           firstName: "",
           lastName: "",
           email: "",
           message: "",
-        });
-        setErrors({});
+        })
+        setErrors({})
       } else {
-        alert("There was a problem submitting the form.");
+        alert("There was a problem submitting the form.")
       }
     } catch (error) {
-      console.error("Error submitting the form:", error);
+      console.error("Error submitting the form:", error)
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   //wait for  = import.meta.env.VITE_FORM_EMAIL; // Ensure you have this in your .env file
   useEffect(() => {
-    setEmail(import.meta.env.VITE_FORM_EMAIL);
+    setEmail(import.meta.env.VITE_FORM_EMAIL)
     if (email) {
-      setIsEmailReady(true);
+      setIsEmailReady(true)
     }
-  }, [email]);
+  }, [email])
 
   return (
     <>
@@ -133,7 +133,7 @@ const ContactForm = ({ setShowModal }) => {
             action={email}
             method="POST"
             onSubmit={handleSubmit}
-            className="space-y-6 bg-white shadow-xl p-4 md:p-10 rounded-xl min-w-[90svw] md:min-w-[40svw]"
+            className="space-y-6 bg-neutral-200 shadow-xl p-4 md:p-10 rounded-xl min-w-[90svw] md:min-w-[40svw]"
           >
             {/* Hidden Fields */}
             <input type="hidden" name="_template" value="table" />
@@ -150,7 +150,7 @@ const ContactForm = ({ setShowModal }) => {
             <div>
               <label
                 htmlFor="company"
-                className="block font-medium text-sky-950 text-sm"
+                className="block text-sm font-medium text-army-hover"
               >
                 Company (Optional)
               </label>
@@ -160,17 +160,17 @@ const ContactForm = ({ setShowModal }) => {
                 name="company"
                 value={formData.company}
                 onChange={handleChange}
-                className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
+                className="w-full p-3 mt-1 border rounded-md border-neutral-500 bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
                 placeholder="Business Name"
               />
             </div>
 
             {/* First & Last Name (Side by Side on md+) */}
-            <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block font-medium text-sky-950 text-sm"
+                  className="block text-sm font-medium text-army-hover"
                 >
                   First Name <span className="text-red-500">*</span>
                 </label>
@@ -180,11 +180,11 @@ const ContactForm = ({ setShowModal }) => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
+                  className="w-full p-3 mt-1 border border-gray-300 rounded-md bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
                   placeholder="First Name"
                 />
                 {errors.firstName && (
-                  <p className="mt-1 text-red-500 text-sm">
+                  <p className="mt-1 text-sm text-red-500">
                     {errors.firstName}
                   </p>
                 )}
@@ -193,7 +193,7 @@ const ContactForm = ({ setShowModal }) => {
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block font-medium text-sky-950 text-sm"
+                  className="block text-sm font-medium text-army-hover"
                 >
                   Last Name <span className="text-red-500">*</span>
                 </label>
@@ -203,11 +203,11 @@ const ContactForm = ({ setShowModal }) => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
+                  className="w-full p-3 mt-1 border border-gray-300 rounded-md bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
                   placeholder="Last Name"
                 />
                 {errors.lastName && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.lastName}</p>
+                  <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
                 )}
               </div>
             </div>
@@ -216,7 +216,7 @@ const ContactForm = ({ setShowModal }) => {
             <div>
               <label
                 htmlFor="email"
-                className="block font-medium text-sky-950 text-sm"
+                className="block text-sm font-medium text-army-hover"
               >
                 Email <span className="text-red-500">*</span>
               </label>
@@ -226,11 +226,11 @@ const ContactForm = ({ setShowModal }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
+                className="w-full p-3 mt-1 border border-gray-300 rounded-md bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
                 placeholder="Email"
               />
               {errors.email && (
-                <p className="mt-1 text-red-500 text-sm">{errors.email}</p>
+                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
               )}
             </div>
 
@@ -238,7 +238,7 @@ const ContactForm = ({ setShowModal }) => {
             <div>
               <label
                 htmlFor="message"
-                className="block font-medium text-sky-950 text-sm"
+                className="block text-sm font-medium text-army-hover"
               >
                 Message <span className="text-red-500">*</span>
               </label>
@@ -247,7 +247,7 @@ const ContactForm = ({ setShowModal }) => {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                className="bg-slate-100 mt-1 p-3 border border-gray-300 focus:border-blue-500 rounded-md focus:ring focus:ring-blue-200 w-full text-slate-800"
+                className="w-full p-3 mt-1 border border-gray-300 rounded-md bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
                 rows="4"
                 placeholder="Message"
                 maxLength={maxMessageLength}
@@ -264,7 +264,7 @@ const ContactForm = ({ setShowModal }) => {
                 {formData.message.length}/{maxMessageLength} characters
               </div>
               {errors.message && (
-                <p className="mt-1 text-red-500 text-sm">{errors.message}</p>
+                <p className="mt-1 text-sm text-red-500">{errors.message}</p>
               )}
             </div>
 
@@ -272,7 +272,7 @@ const ContactForm = ({ setShowModal }) => {
             <button
               type="submit"
               disabled={submitting}
-              className="bg-gradient-to-r from-blue-500 hover:from-blue-600 to-indigo-600 hover:to-indigo-700 py-3 rounded-md focus:ring-4 focus:ring-indigo-300 w-full font-semibold text-white transition duration-200 ease-in-out"
+              className="w-full py-3 font-semibold transition duration-200 ease-in-out rounded-md text-neutral-100 bg-gradient-to-r from-army hover:from-army to-army-hover hover:to-army focus:ring-4 focus:army-hover"
             >
               {submitting ? "Submitting..." : "Submit"}
             </button>
@@ -280,7 +280,7 @@ const ContactForm = ({ setShowModal }) => {
             {/* Close Button */}
             <button
               onClick={() => setShowModal(false)}
-              className="bg-gray-400 hover:bg-gray-500 py-2 rounded-md w-full font-semibold text-gray-800 transition duration-200 ease-in-out"
+              className="w-full py-2 font-semibold transition duration-200 ease-in-out rounded-md bg-stone-400/70 text-army-hover hover:bg-stone-500/60"
             >
               Close
             </button>
@@ -291,20 +291,20 @@ const ContactForm = ({ setShowModal }) => {
       {/* Thank You Modal */}
       {showThankYou && (
         <ModalWrapper>
-          <div className="bg-white shadow-lg p-8 rounded-lg max-w-sm text-center">
-            <h2 className="mb-4 font-bold text-green-600 text-2xl">
+          <div className="max-w-sm p-8 text-center rounded-lg shadow-lg bg-neutral-200">
+            <h2 className="mb-4 text-2xl font-bold text-army-hover">
               Thank You!
             </h2>
-            <p className="text-gray-700">
+            <p className="text-army-hover">
               Your message has been submitted successfully.
             </p>
             <button
               onClick={() => {
-                setShowThankYou(false); // closes the thank you modal
-                setShowModal(false); // closes the contact form modal
-                window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top
+                setShowThankYou(false) // closes the thank you modal
+                setShowModal(false) // closes the contact form modal
+                window.scrollTo({ top: 0, behavior: "smooth" }) // scroll to top
               }}
-              className="bg-blue-600 hover:bg-blue-700 mt-6 px-4 py-2 rounded text-white"
+              className="px-4 py-2 mt-6 rounded text-neutral-100 bg-army hover:bg-army-hover"
             >
               Close
             </button>
@@ -312,9 +312,9 @@ const ContactForm = ({ setShowModal }) => {
         </ModalWrapper>
       )}
     </>
-  );
-};
+  )
+}
 
-ContactForm.propTypes = contactFormPropTypes;
+ContactForm.propTypes = contactFormPropTypes
 
-export default ContactForm;
+export default ContactForm
