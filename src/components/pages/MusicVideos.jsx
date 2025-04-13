@@ -17,15 +17,15 @@ const MusicVideos = ({ theme }) => {
 
   useEffect(() => {
     const section = sectionRef.current
-    const videos = section.querySelectorAll(".video-item")
-    const title = section.querySelector("#music-video-title")
+    const videos = section.querySelectorAll(".more-videos")
+    const title = section.querySelector("#music-video")
 
     gsap.fromTo(
       title,
-      { opacity: 0, y: 50 },
+      { opacity: 0, x: -200 },
       {
         opacity: 1,
-        y: 0,
+        x: 0,
         duration: 1,
         ease: "power2.out",
         scrollTrigger: {
@@ -37,16 +37,16 @@ const MusicVideos = ({ theme }) => {
 
     gsap.fromTo(
       videos,
-      { opacity: 0, y: 50 },
+      { opacity: 0, x: 200 },
       {
         opacity: 1,
+        x: 0,
         y: 0,
-        duration: 1,
-        ease: "power2.out",
-        stagger: 0.3,
+        duration: 0.5,
+        ease: "power2.in",
         scrollTrigger: {
           trigger: section,
-          start: "top 70%",
+          start: "right 80%",
         },
       }
     )
@@ -60,12 +60,13 @@ const MusicVideos = ({ theme }) => {
     <section
       id="music"
       ref={sectionRef}
-      className={`w-full min-h-screen bg-cover bg-center flex flex-col items-center pt-16 ${theme} z-40`}
+      className={`w-full min-h-full mb-4 bg-cover bg-center flex flex-col items-center pt-16 ${theme} z-40`}
     >
       {/* First video taking 50% of viewport height */}
       <div className="w-full max-w-5xl px-4 mb-6">
         <div
           className="relative w-full video-item"
+          id="music-video"
           style={{ paddingBottom: "50vh" }}
         >
           <iframe
@@ -83,9 +84,9 @@ const MusicVideos = ({ theme }) => {
       {/* "More Videos" Button */}
       <button
         onClick={() => setShowMore(!showMore)}
-        className={`mb-8 px-6 py-2 text-lg rounded shadow-md transition duration-300 ${
+        className={`mb-8 more-videos px-6 py-2 text-lg rounded shadow-md transition duration-300 ${
           theme === "dark"
-            ? "bg-army hover:bg-army-hover text-white"
+            ? "bg-sky-600 hover:bg-sky-700 text-black font-bold"
             : "bg-black text-white hover:bg-gray-800"
         }`}
       >
@@ -95,7 +96,7 @@ const MusicVideos = ({ theme }) => {
       {/* Additional videos grid */}
       {showMore && (
         <div
-          className={`grid w-full max-w-5xl px-4 pb-12 gap-8 sm:grid-cols-2 ${
+          className={`grid w-full more-videos max-w-5xl px-4 pb-12 gap-8 sm:grid-cols-2 ${
             theme === "dark" ? "bg-black" : "bg-slate-300"
           }`}
         >

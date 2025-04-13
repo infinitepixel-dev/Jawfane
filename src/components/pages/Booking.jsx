@@ -87,6 +87,8 @@ const Booking = () => {
   const handleBookingClick = (e) => {
     e.preventDefault();
     // window.location.href = "mailto:jawfane@gmail.com?subject=Booking Inquiry";
+    e.preventDefault();
+    // window.location.href = "mailto:jawfane@gmail.com?subject=Booking Inquiry";
 
     setTimeout(() => {
       if (document.visibilityState === "visible") {
