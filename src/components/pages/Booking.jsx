@@ -35,25 +35,71 @@ const Booking = () => {
   const buttonRef = useRef(null);
   const modalRef = useRef(null); // <-- Modal ref
   const [showModal, setShowModal] = useState(false);
+  const sectionRef = useRef(null);
 
   useEffect(() => {
-    gsap.fromTo(
-      headingRef.current,
-      { opacity: 0, y: -50 },
-      { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+    const observer = new IntersectionObserver(
+      ([entry], obs) => {
+        if (entry.isIntersecting) {
+          gsap.to(sectionRef.current, {
+            opacity: 1,
+            duration: 2,
+            ease: "power2.out",
+          });
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.3 }
     );
 
-    gsap.fromTo(
-      buttonRef.current,
-      { opacity: 0, scale: 0.8 },
+    if (sectionRef.current) observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (entry.target === headingRef.current) {
+              gsap.fromTo(
+                headingRef.current,
+                { opacity: 0, y: -50 },
+                { opacity: 1, y: 0, duration: 1.8, ease: "power3.out" }
+              );
+            }
+
+            if (entry.target === buttonRef.current) {
+              gsap.fromTo(
+                buttonRef.current,
+                { opacity: 0, scale: 0.8 },
+                {
+                  opacity: 1,
+                  scale: 1,
+                  duration: 1.8,
+                  ease: "elastic.out(1, 0.3)",
+                  delay: 0.3,
+                }
+              );
+            }
+
+            observer.unobserve(entry.target);
+          }
+        });
+      },
       {
-        opacity: 1,
-        scale: 1,
-        duration: 1,
-        ease: "elastic.out(1, 0.3)",
-        delay: 0.5,
+        threshold: 0.5, // Trigger when 50% of the element is in view
       }
     );
+
+    if (headingRef.current) observer.observe(headingRef.current);
+    if (buttonRef.current) observer.observe(buttonRef.current);
+
+    return () => {
+      if (headingRef.current) observer.unobserve(headingRef.current);
+      if (buttonRef.current) observer.unobserve(buttonRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -99,6 +145,7 @@ const Booking = () => {
 
   return (
     <div
+      ref={sectionRef}
       id="booking"
       className="relative flex flex-col justify-center items-center bg-gray-900 p-4 min-h-screen text-white"
       style={{
@@ -106,7 +153,7 @@ const Booking = () => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        opacity: 0.9,
+        opacity: 0, // Start hidden
       }}
     >
       <div className="absolute inset-0 bg-gray-900 bg-opacity-50"></div>
