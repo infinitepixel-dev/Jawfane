@@ -1,33 +1,33 @@
 import { useEffect, useRef } from "react"
-import propTypes from "prop-types"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import PropTypes from "prop-types"
 import { gsap } from "gsap"
 
+gsap.registerPlugin(ScrollTrigger)
+
 const BandsInTownEvents = ({ artistName }) => {
-  const widgetRef = useRef(null) // Ref for the BandsInTown widget
+  const titleRef = useRef(null)
 
-  // GSAP animation for the widget
   useEffect(() => {
-    const widgetElement = widgetRef.current
+    const title = titleRef.current
 
-    if (widgetElement) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            gsap.fromTo(
-              entry.target,
-              { opacity: 0, scale: 0.8 },
-              { opacity: 1, scale: 1, duration: 1 }
-            )
-            observer.unobserve(entry.target)
-          }
-        })
-      })
-
-      observer.observe(widgetElement)
-
-      return () => {
-        if (widgetElement) observer.unobserve(widgetElement)
+    gsap.fromTo(
+      title,
+      { opacity: 0, x: -500 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: title,
+          start: "top 80%",
+        },
       }
+    )
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }
   }, [])
 
@@ -45,14 +45,17 @@ const BandsInTownEvents = ({ artistName }) => {
 
   return (
     <div className="min-h-screen px-4 py-10 text-gray-600 bg-gray-200">
-      <h1 className="mb-8 text-3xl font-bold text-center md:text-4xl">
+      <h1
+        ref={titleRef}
+        className="mb-8 text-3xl font-bold text-center md:text-4xl"
+        id="band-title"
+      >
         {artistName} Tour Dates
       </h1>
       <div className="max-w-[62%] mx-auto">
         {/* Bandsintown Widget Code */}
         <a
-          ref={widgetRef}
-          className="bit-widget-initializer max-w-[62%] mx-auto"
+          className="bit-widget-initializer max-w-[62%] tour-dates mx-auto"
           data-artist-name={artistName}
           data-background-color="rgba(230,230,230,1)"
           data-separator-color="rgba(76, 103, 99, 1)"
@@ -129,7 +132,7 @@ const BandsInTownEvents = ({ artistName }) => {
 }
 
 BandsInTownEvents.propTypes = {
-  artistName: propTypes.string.isRequired,
+  artistName: PropTypes.string.isRequired,
 }
 
 export default BandsInTownEvents
