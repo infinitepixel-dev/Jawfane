@@ -137,17 +137,17 @@ const Lore = () => {
 
   return (
     <div
-      className="flex items-center justify-center w-full px-4 overflow-y-auto sm:px-6 md:px-8"
+      className="flex items-center justify-center w-full px-4 mt-8 overflow-y-auto sm:px-6 md:px-6"
       id="lore"
     >
-      <div className="flex flex-wrap justify-center w-full gap-4 sm:gap-6 md:gap-8">
+      <div className="flex flex-wrap justify-center w-full gap-4 sm:gap-6 md:gap-6">
         {people.map((person, index) => (
           <div
             key={index}
             id={`card-${index}`}
             data-index={index}
             ref={(el) => (cardsRef.current[index] = el)}
-            className="relative overflow-y-auto w-full sm:w-[calc(50%-8px)] md:w-[calc(33%-8px)] lg:w-[calc(25%-8px)] h-[600px] max-w-[420px] m-2 perspective cursor-pointer mx-auto"
+            className="relative overflow-y-auto w-full sm:w-full flex flex-col h-[600px] md:max-w-[350px] m-2 perspective cursor-pointer mx-auto"
             onClick={() => handleFlip(index)}
             role="button"
             aria-pressed={flipped === index}
