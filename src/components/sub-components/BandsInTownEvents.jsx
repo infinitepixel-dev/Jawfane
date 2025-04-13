@@ -2,15 +2,27 @@ import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { gsap } from "gsap";
 
-const BandsInTownEvents = ({ artistName }) => {
-  const widgetRef = useRef(null); // Ref for the BandsInTown widget
+import "./bandsInTownEvents.css";
 
-  // Load Bandsintown script
+const BandsInTownEvents = ({ artistName }) => {
+  const widgetRef = useRef(null);
+  const titleRef = useRef(null);
+
+  // Animate title on mount
+  useEffect(() => {
+    gsap.fromTo(
+      titleRef.current,
+      { opacity: 0, y: -40 },
+      { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.1 }
+    );
+  }, []);
+
+  // Load Bandsintown widget script
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://widgetv3.bandsintown.com/main.min.js";
-    script.charset = "utf-8";
     script.async = true;
+    script.charset = "utf-8";
     document.body.appendChild(script);
 
     return () => {
@@ -18,39 +30,41 @@ const BandsInTownEvents = ({ artistName }) => {
     };
   }, []);
 
-  // Wait for widget content to appear, then animate
   useEffect(() => {
-    const widgetContainer = widgetRef.current;
-    if (!widgetContainer) return;
+    const widgetEl = widgetRef.current;
+    if (!widgetEl) return;
 
-    const observer = new MutationObserver(() => {
-      const widgetContent = widgetContainer.querySelector("*");
-      if (widgetContent) {
-        gsap.fromTo(
-          widgetContainer,
-          { opacity: 0, scale: 0.9 },
-          { opacity: 1, scale: 1, duration: 1, ease: "power2.out" }
-        );
-        observer.disconnect(); // Clean up after first render
-      }
-    });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        console.log("Observer entries:", entries);
 
-    observer.observe(widgetContainer, { childList: true, subtree: true });
+        if (entries[0].isIntersecting) {
+          widgetEl.classList.add("visible");
+          observer.disconnect(); // only trigger once
+        }
+      },
+      { threshold: 0.3 }
+    );
 
-    return () => {
-      observer.disconnect();
-    };
+    observer.observe(widgetEl);
+
+    return () => observer.disconnect();
   }, []);
 
   return (
     <div className="bg-gray-200 px-4 py-10 min-h-screen text-gray-600">
-      <h1 className="mb-8 font-bold text-3xl md:text-4xl text-center">
+      <h1
+        ref={titleRef}
+        className="mb-8 font-bold text-3xl md:text-4xl text-center"
+      >
         {artistName} Tour Dates
       </h1>
-      <div className="mx-auto max-w-[62%]">
-        {/* Bandsintown Widget Code */}
+
+      <div
+        ref={widgetRef}
+        className="mx-auto max-w-[62%] events-widget-container"
+      >
         <a
-          ref={widgetRef}
           className="block mx-auto max-w-[62%] bit-widget-initializer"
           data-artist-name={artistName}
           data-background-color="rgba(230,230,230,1)"
