@@ -68,7 +68,7 @@ const Tour = ({ theme }) => {
     <>
       <section
         id="tour"
-        className={`w-full min-h-screen bg-cover bg-center pt-16 ${theme} clear-both z-40`}
+        className={`w-full min-h-screen bg-cover bg-center ${theme} clear-both z-40`}
       >
         <BandsInTownEvents artistName="Jawfane" />
       </section>
