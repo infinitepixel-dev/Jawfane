@@ -1,61 +1,71 @@
-import { useEffect, useRef } from "react"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-import PropTypes from "prop-types"
-import { gsap } from "gsap"
+import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+import { gsap } from "gsap";
 
-gsap.registerPlugin(ScrollTrigger)
+import "./bandsInTownEvents.css";
 
 const BandsInTownEvents = ({ artistName }) => {
-  const titleRef = useRef(null)
+  const widgetRef = useRef(null);
+  const titleRef = useRef(null);
 
+  // Animate title on mount
   useEffect(() => {
-    const title = titleRef.current
-
     gsap.fromTo(
-      title,
-      { opacity: 0, x: -500 },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: title,
-          start: "top 80%",
-        },
-      }
-    )
+      titleRef.current,
+      { opacity: 0, y: -40 },
+      { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.1 }
+    );
+  }, []);
+
+  // Load Bandsintown widget script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://widgetv3.bandsintown.com/main.min.js";
+    script.async = true;
+    script.charset = "utf-8";
+    document.body.appendChild(script);
 
     return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-    }
-  }, [])
+      document.body.removeChild(script);
+    };
+  }, []);
 
   useEffect(() => {
-    const script = document.createElement("script")
-    script.src = "https://widgetv3.bandsintown.com/main.min.js"
-    script.charset = "utf-8"
-    script.async = true
-    document.body.appendChild(script)
+    const widgetEl = widgetRef.current;
+    if (!widgetEl) return;
 
-    return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
+    const observer = new IntersectionObserver(
+      (entries) => {
+        console.log("Observer entries:", entries);
+
+        if (entries[0].isIntersecting) {
+          widgetEl.classList.add("visible");
+          observer.disconnect(); // only trigger once
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(widgetEl);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="min-h-screen px-4 py-10 text-gray-600 bg-gray-200">
+    <div className="bg-gray-200 px-4 py-10 min-h-screen text-gray-600">
       <h1
         ref={titleRef}
-        className="mb-8 text-3xl font-bold text-center md:text-4xl"
-        id="band-title"
+        className="mb-8 font-bold text-3xl md:text-4xl text-center"
       >
         {artistName} Tour Dates
       </h1>
-      <div className="max-w-[62%] mx-auto">
-        {/* Bandsintown Widget Code */}
+
+      <div
+        ref={widgetRef}
+        className="mx-auto max-w-[62%] events-widget-container"
+      >
         <a
-          className="bit-widget-initializer max-w-[62%] tour-dates mx-auto"
+          className="block mx-auto max-w-[62%] bit-widget-initializer"
           data-artist-name={artistName}
           data-background-color="rgba(230,230,230,1)"
           data-separator-color="rgba(76, 103, 99, 1)"
@@ -128,11 +138,11 @@ const BandsInTownEvents = ({ artistName }) => {
         ></a>
       </div>
     </div>
-  )
-}
+  );
+};
 
 BandsInTownEvents.propTypes = {
   artistName: PropTypes.string.isRequired,
-}
+};
 
-export default BandsInTownEvents
+export default BandsInTownEvents;

@@ -1,19 +1,19 @@
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 const footerPropTypes = {
   isMobile: PropTypes.bool.isRequired,
-}
+};
 
 const Footer = ({ isMobile }) => {
-  console.log(isMobile, "this is isMobile")
+  console.log(isMobile, "this is isMobile");
 
   return (
     <section id="footer">
-      <footer className="w-full p-8 text-white bg-black">
-        <div className="flex flex-col items-center justify-center gap-12 text-center md:gap-52 md:items-start md:flex-row md:text-left">
+      <footer className="bg-black p-8 w-full text-white">
+        <div className="flex md:flex-row flex-col justify-center items-center md:items-start gap-12 md:gap-52 md:text-left text-center">
           {/* Column 1: Find Our Music */}
           <div>
-            <h3 className="mb-4 text-lg font-bold">Find Our Music</h3>
+            <h3 className="mb-4 font-bold text-lg">Find Our Music</h3>
             <ul className="space-y-2">
               <li>
                 <a
@@ -51,11 +51,20 @@ const Footer = ({ isMobile }) => {
                   Deezer
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://jawfane.bandcamp.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Bandcamp
+                </a>
+              </li>
             </ul>
           </div>
           {isMobile ? (
             <div>
-              <h3 className="mb-4 text-lg font-bold">Follow Us</h3>
+              <h3 className="mb-4 font-bold text-lg">Follow Us</h3>
               <ul className="space-y-2">
                 <li>
                   <a
@@ -93,19 +102,10 @@ const Footer = ({ isMobile }) => {
                     TikTok
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="https://jawfane.bandcamp.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Bandcamp
-                  </a>
-                </li>
               </ul>
             </div>
           ) : (
-            <div className="text-center ">
+            <div className="text-center">
               <p>
                 &copy; {new Date().getFullYear()} Jawfane Band. All rights
                 reserved.
@@ -120,7 +120,7 @@ const Footer = ({ isMobile }) => {
                   <img
                     src="https://infinitepixel.dev/images/logo.svg"
                     alt="Infinite Pixel Logo"
-                    className="w-8 h-8 ml-2"
+                    className="ml-2 w-8 h-8"
                   />
                 </a>
               </p>
@@ -143,14 +143,14 @@ const Footer = ({ isMobile }) => {
                   <img
                     src="https://infinitepixel.dev/images/logo.svg"
                     alt="Infinite Pixel Logo"
-                    className="w-8 h-8 ml-2"
+                    className="ml-2 w-8 h-8"
                   />
                 </a>
               </p>
             </div>
           ) : (
             <div>
-              <h3 className="mb-4 text-lg font-bold">Follow Us</h3>
+              <h3 className="mb-4 font-bold text-lg">Follow Us</h3>
               <ul className="space-y-2">
                 <li>
                   <a
@@ -204,9 +204,9 @@ const Footer = ({ isMobile }) => {
         </div>
       </footer>
     </section>
-  )
-}
+  );
+};
 
-Footer.propTypes = footerPropTypes
+Footer.propTypes = footerPropTypes;
 
-export default Footer
+export default Footer;

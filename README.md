@@ -1,6 +1,6 @@
 # Jawfane
 
-Welcome to the official GitHub page of **Jawfane**, a progressive metal band based out of Nashville! We are passionate about creating powerful music and promoting mental health awareness.
+Welcome to the official GitHub page of **Jawfane**, a Post hardcore metal band based out of Nashville! They are passionate about creating powerful music and promoting mental health awareness.
 
 ## About Us
 
@@ -8,7 +8,7 @@ Welcome to the official GitHub page of **Jawfane**, a progressive metal band bas
 
 ### Our Mission
 
-- **Music**: Deliver progressive metal that challenges the norm and pushes boundaries.
+- **Music**: Deliver metal that challenges the norm and pushes boundaries.
 - **Mental Health**: Advocate for mental health awareness and provide support through our music and community.
 - **Community**: Foster an inclusive environment where everyone feels welcomed and valued.
 
@@ -38,5 +38,4 @@ Join our community and help us spread the word about Jawfane and our mission. Wh
 Your support means the world to us! Here are a few ways you can help:
 
 - **Stream Our Music**: Listen to Jawfane on [Spotify](https://spotify.com/jawfane) and [Apple Music](https://music.apple.com/jawfane).
-- **Buy Our Merch**: Check out our latest merchandise [here](https://jawfane.com/merch).
 - **Attend Our Shows**: See us live and experience the Jawfane energy in person.
