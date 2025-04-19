@@ -2,9 +2,8 @@
 
 - [x] Create audio player
 - [x] Add/Animate Logo
-- [ ] navigation - home, tour, merch, booking
-- [ ] Add band photo as Hero Image
-- [ ] Tour scheduling section
-- [ ] merchandise section
-- [ ] music video gallery
-- [ ] footer section
+- [x] navigation - home, tour, merch, booking
+- [x] Add band photo as Hero Image
+- [x] Tour scheduling section
+- [x] music video gallery
+- [x] footer section

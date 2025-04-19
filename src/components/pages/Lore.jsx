@@ -137,7 +137,7 @@ const Lore = () => {
 
   return (
     <div
-      className="flex items-center justify-center w-full px-4 mt-8 overflow-y-auto sm:px-6 md:px-6"
+      className="flex items-center justify-center w-full p-4 overflow-y-auto sm:px-6 md:px-6 bg-gradient-to-t from-black to-neutral-900"
       id="lore"
     >
       <div className="flex flex-wrap justify-center w-full gap-4 sm:gap-6 md:gap-6">

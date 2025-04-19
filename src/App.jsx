@@ -1,33 +1,33 @@
 // App.jsx
-import { useEffect, useState, useMemo } from "react";
-import { RouterProvider } from "react-router-dom";
-import CountdownTimer from "./components/sub-components/CountdownTimer";
-import { createAppRouter } from "./router";
+import { useEffect, useState, useMemo } from "react"
+import { RouterProvider } from "react-router-dom"
+import CountdownTimer from "./components/sub-components/CountdownTimer"
+import { createAppRouter } from "./router"
 
 const App = () => {
   // const date = "04/11/2025 17:11:00"; //Test release date
-  const date = "04/23/2025 00:00:00"; //Actual release date
+  const date = "04/23/2025 00:00:00" //Actual release date
 
-  const [theme, setTheme] = useState("dark");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [theme, setTheme] = useState("dark")
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
   // eslint-disable-next-line no-unused-vars
-  const [toggleNavbar, setToggleNavbar] = useState(false);
-  const [showWebsite, setShowWebsite] = useState(false);
+  const [toggleNavbar, setToggleNavbar] = useState(false)
+  const [showWebsite, setShowWebsite] = useState(false)
 
-  const releaseDate = new Date(date.replace(/-/g, "/")).toISOString();
+  const releaseDate = new Date(date.replace(/-/g, "/")).toISOString()
 
   useEffect(() => {
-    const localTheme = localStorage.getItem("theme") || "dark";
-    setTheme(localTheme);
-    document.documentElement.classList.add(localTheme);
+    const localTheme = localStorage.getItem("theme") || "dark"
+    setTheme(localTheme)
+    document.documentElement.classList.add(localTheme)
 
-    const now = new Date();
-    const launchDate = new Date(releaseDate);
+    const now = new Date()
+    const launchDate = new Date(releaseDate)
     if (now >= launchDate) {
-      setShowWebsite(true);
+      setShowWebsite(true)
     }
-  }, []);
+  }, [])
 
   const router = useMemo(
     () =>
@@ -39,14 +39,7 @@ const App = () => {
         setIsMobile,
       }),
     [theme, isMobile] // rebuild router if layout changes
-  );
-
-  // const toggleTheme = () => {
-  //   const newTheme = theme === "light" ? "dark" : "light";
-  //   document.documentElement.classList.replace(theme, newTheme);
-  //   setTheme(newTheme);
-  //   localStorage.setItem("theme", newTheme);
-  // };
+  )
 
   if (!showWebsite) {
     return (
@@ -54,10 +47,10 @@ const App = () => {
         releaseDate={releaseDate}
         onTimeUp={() => setShowWebsite(true)}
       />
-    );
+    )
   }
 
-  return <RouterProvider router={router} />;
-};
+  return <RouterProvider router={router} />
+}
 
-export default App;
+export default App
