@@ -22,7 +22,7 @@ function Home() {
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <AlbumArtGallery />
       <Tour theme={theme} />
-      <div className="p-2">
+      <div>
         <Lore theme={theme} isMobile={isMobile} />
       </div>
       <MusicVideos theme={theme} />

@@ -60,7 +60,7 @@ const MusicVideos = ({ theme }) => {
     <section
       id="music"
       ref={sectionRef}
-      className={`w-full min-h-full mb-4 bg-cover bg-center flex flex-col items-center pt-16 ${theme} z-40`}
+      className={`w-full min-h-full bg-cover bg-center bg-gradient-to-b from-black/95 to-zinc-950/90 flex flex-col items-center pt-16 ${theme} z-40`}
     >
       {/* First video taking 50% of viewport height */}
       <div className="w-full max-w-5xl px-4 mb-6">
@@ -97,7 +97,7 @@ const MusicVideos = ({ theme }) => {
       {showMore && (
         <div
           className={`grid w-full more-videos max-w-5xl px-4 pb-12 gap-8 sm:grid-cols-2 ${
-            theme === "dark" ? "bg-black" : "bg-slate-300"
+            theme === "dark"
           }`}
         >
           {videoList.slice(1).map((url, index) => (

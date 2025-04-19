@@ -67,10 +67,13 @@ const AlbumArtCarousel = () => {
   }
 
   return (
-    <div className="flex flex-col items-center" id="album">
+    <div
+      className="flex flex-col items-center bg-gradient-to-br from-black to-neutral-950"
+      id="album"
+    >
       <div
-        className="relative w-full max-w-lg mt-10 overflow-hidden"
-        style={{ height: "600px" }}
+        className="relative w-full max-w-lg p-2 mt-2 overflow-hidden"
+        style={{ height: "auto" }}
       >
         <img
           ref={imageRef}
@@ -97,7 +100,7 @@ const AlbumArtCarousel = () => {
         <img
           src={bandLabel}
           alt="Exitus Stratagem Records"
-          className="w-6/12 mx-auto mt-20 h-25"
+          className="w-6/12 p-5 mx-auto mt-20 h-25"
         />
       </a>
     </div>
