@@ -46,7 +46,7 @@ const MusicMenu = () => {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="z-50 p-1 rounded-full bg-stone-100 text-slate-800"
+        className="z-50 p-2 rounded-lg md:p-1 bg-gradient-to-br from-stone-200 to-gray-300 text-slate-800"
       >
         {isOpen ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
       </button>
@@ -54,7 +54,7 @@ const MusicMenu = () => {
       {/* Sliding menu */}
       <div
         ref={menuRef}
-        className="flex flex-col items-center gap-6 bg-stone-100 shadow-md ml-[-10px] px-4 py-6 rounded-l-2xl w-25 text-slate-800"
+        className="flex flex-col items-center gap-6 bg-gradient-to-br from-stone-100 to-gray-400 shadow-md ml-[-10px] px-4 py-6 rounded-l-2xl w-25 text-slate-800"
       >
         {[
           {
