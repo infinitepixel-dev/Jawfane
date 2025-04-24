@@ -96,6 +96,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
           style={{ zIndex: 1000 }}
         >
           <button
+            role="button"
             onClick={toggleNavbar}
             className="p-2 text-white bg-blue-500 rounded-lg"
           >
@@ -126,6 +127,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
           {["tour", "music", "booking"].map((item) => (
             <li
               key={item}
+              role="button"
               className={`p-2 rounded transition-transform cursor-pointer ${
                 selected === item
                   ? `bg-sky-500 ${
