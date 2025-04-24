@@ -46,6 +46,9 @@ const MusicMenu = () => {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={
+          isOpen ? "Collapse music links menu" : "Expand music links menu"
+        }
         className="z-50 p-2 rounded-lg md:p-1 bg-gradient-to-br from-stone-200 to-gray-300 text-slate-800"
       >
         {isOpen ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -71,16 +74,19 @@ const MusicMenu = () => {
               </svg>
             ),
             color: "hover:text-green-400",
+            label: "Visit Jawfane on Spotify (opens in a new tab)",
           },
           {
             href: "https://music.apple.com/us/artist/jawfane/1582900055",
             icon: <Apple />,
             color: "hover:text-pink-400",
+            label: "Visit Jawfane on Apple Music (opens in a new tab)",
           },
           {
             href: "https://www.deezer.com/en/artist/143517472",
             icon: <AudioLines />,
             color: "hover:text-purple-400",
+            label: "Visit Jawfane on Deezer (opens in a new tab)",
           },
           {
             href: "https://music.amazon.com/artists/B09DNTY4B3/jawfane",
@@ -96,6 +102,7 @@ const MusicMenu = () => {
               </svg>
             ),
             color: "hover:text-yellow-400",
+            label: "Visit Jawfane on Amazon Music (opens in a new tab)",
           },
         ].map((item, index) => (
           <a
@@ -105,6 +112,7 @@ const MusicMenu = () => {
             target="_blank"
             rel="noopener noreferrer"
             className={`transition-colors ${item.color}`}
+            aria-label={item.label}
             onMouseEnter={() => handleHover(iconRefs.current[index])}
             onMouseLeave={() => handleLeave(iconRefs.current[index])}
             onClick={() => handleClick(iconRefs.current[index])}

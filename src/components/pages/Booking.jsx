@@ -157,12 +157,12 @@ const Booking = () => {
       }}
     >
       <div className="absolute inset-0 bg-gray-900 bg-opacity-50"></div>
-      <h1
+      <h2
         ref={headingRef}
         className="relative z-10 mb-6 text-5xl font-bold text-center shadow-md"
       >
         For Bookings, Click Below
-      </h1>
+      </h2>
       <button
         role="button"
         aria-label="Open contact form"
