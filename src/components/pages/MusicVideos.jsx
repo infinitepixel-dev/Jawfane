@@ -6,8 +6,9 @@ import propTypes from "prop-types"
 gsap.registerPlugin(ScrollTrigger)
 
 const videoList = [
-  "https://www.youtube.com/embed/rSdiBTpiFbY?si=PjIO9GIjFRnusqa0", // First video
-  "https://www.youtube.com/embed/hK7ekE0Sry4?si=nJ00ieaI8d6W9ixL", // Additional video
+  "https://www.youtube.com/embed/HNBtGIHT7f0?si=PmxxKga8fh4LR5qi", // First video
+  "https://www.youtube.com/embed/rSdiBTpiFbY?si=PjIO9GIjFRnusqa0", // second video
+  "https://www.youtube.com/embed/hK7ekE0Sry4?si=nJ00ieaI8d6W9ixL", // third video
   // Add more URLs as needed
 ]
 
@@ -45,8 +46,8 @@ const MusicVideos = ({ theme }) => {
         duration: 0.5,
         ease: "power2.in",
         scrollTrigger: {
-          trigger: section,
-          start: "right 80%",
+          trigger: title,
+          start: "top 70%",
         },
       }
     )
