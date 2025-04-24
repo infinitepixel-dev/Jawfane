@@ -1,13 +1,13 @@
 //jawfane@gmail.com
 
-// {/* <h2 className="font-bold text-gray-900 text-lg">
+// {/* <h2 className="text-lg font-bold text-gray-900">
 //   No Email Client Found
 // </h2>
 // <p className="mt-2 text-gray-700">
 //   It looks like you don&apos;t have a default email app set up on
 //   your device. You can:
 // </p>
-// <ul className="space-y-2 mt-3 text-gray-700 text-sm">
+// <ul className="mt-3 space-y-2 text-sm text-gray-700">
 //   <li>
 //     ✅ Open your preferred email service (Gmail, Outlook, etc.) and
 //     manually send an email to: <strong>jawfane@gmail.com</strong>
@@ -21,21 +21,21 @@
 //   </li>
 // </ul> */}
 
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
+import { useEffect, useRef, useState } from "react"
+import { gsap } from "gsap"
 
 //INFO Modals
-import ModalWrapper from "../sub-components/modals/ModalWrapper";
+import ModalWrapper from "../sub-components/modals/ModalWrapper"
 
 //INFO Forms
-import ContactForm from "../sub-components/ContactForm";
+import ContactForm from "../sub-components/ContactForm"
 
 const Booking = () => {
-  const headingRef = useRef(null);
-  const buttonRef = useRef(null);
-  const modalRef = useRef(null); // <-- Modal ref
-  const [showModal, setShowModal] = useState(false);
-  const sectionRef = useRef(null);
+  const headingRef = useRef(null)
+  const buttonRef = useRef(null)
+  const modalRef = useRef(null) // <-- Modal ref
+  const [showModal, setShowModal] = useState(false)
+  const sectionRef = useRef(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -45,17 +45,17 @@ const Booking = () => {
             opacity: 1,
             duration: 2,
             ease: "power2.out",
-          });
-          obs.disconnect();
+          })
+          obs.disconnect()
         }
       },
       { threshold: 0.3 }
-    );
+    )
 
-    if (sectionRef.current) observer.observe(sectionRef.current);
+    if (sectionRef.current) observer.observe(sectionRef.current)
 
-    return () => observer.disconnect();
-  }, []);
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -67,7 +67,7 @@ const Booking = () => {
                 headingRef.current,
                 { opacity: 0, y: -50 },
                 { opacity: 1, y: 0, duration: 1.8, ease: "power3.out" }
-              );
+              )
             }
 
             if (entry.target === buttonRef.current) {
@@ -81,26 +81,26 @@ const Booking = () => {
                   ease: "elastic.out(1, 0.3)",
                   delay: 0.3,
                 }
-              );
+              )
             }
 
-            observer.unobserve(entry.target);
+            observer.unobserve(entry.target)
           }
-        });
+        })
       },
       {
         threshold: 0.5, // Trigger when 50% of the element is in view
       }
-    );
+    )
 
-    if (headingRef.current) observer.observe(headingRef.current);
-    if (buttonRef.current) observer.observe(buttonRef.current);
+    if (headingRef.current) observer.observe(headingRef.current)
+    if (buttonRef.current) observer.observe(buttonRef.current)
 
     return () => {
-      if (headingRef.current) observer.unobserve(headingRef.current);
-      if (buttonRef.current) observer.unobserve(buttonRef.current);
-    };
-  }, []);
+      if (headingRef.current) observer.unobserve(headingRef.current)
+      if (buttonRef.current) observer.unobserve(buttonRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (showModal && modalRef.current) {
@@ -113,41 +113,41 @@ const Booking = () => {
           duration: 0.5,
           ease: "power2.out",
         }
-      );
+      )
     }
 
     if (showModal) {
       // Prevent scrolling
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"
     } else {
       // Re-enable scrolling
-      document.body.style.overflow = "";
+      document.body.style.overflow = ""
     }
 
     // Clean up on unmount in case component is removed with modal open
     return () => {
-      document.body.style.overflow = "";
-    };
-  }, [showModal]);
+      document.body.style.overflow = ""
+    }
+  }, [showModal])
 
   const handleBookingClick = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     // window.location.href = "mailto:jawfane@gmail.com?subject=Booking Inquiry";
-    e.preventDefault();
+    e.preventDefault()
     // window.location.href = "mailto:jawfane@gmail.com?subject=Booking Inquiry";
 
     setTimeout(() => {
       if (document.visibilityState === "visible") {
-        setShowModal(true);
+        setShowModal(true)
       }
-    }, 100);
-  };
+    }, 100)
+  }
 
   return (
     <div
       ref={sectionRef}
       id="booking"
-      className="relative flex flex-col justify-center items-center bg-gray-900 p-4 min-h-screen text-white"
+      className="relative flex flex-col items-center justify-center min-h-screen p-4 text-white bg-gray-900"
       style={{
         backgroundImage: `url(/images/Jawfane-44.jpg)`,
         backgroundSize: "cover",
@@ -159,14 +159,16 @@ const Booking = () => {
       <div className="absolute inset-0 bg-gray-900 bg-opacity-50"></div>
       <h1
         ref={headingRef}
-        className="z-10 relative shadow-md mb-6 font-bold text-5xl text-center"
+        className="relative z-10 mb-6 text-5xl font-bold text-center shadow-md"
       >
-        For bookings, click below
+        For Bookings, Click Below
       </h1>
       <button
+        role="button"
+        aria-label="Open contact form"
         ref={buttonRef}
         onClick={handleBookingClick}
-        className="z-10 relative bg-orange-500 hover:bg-orange-600 shadow-lg px-6 py-3 rounded-lg font-semibold text-white transition-transform transform"
+        className="relative z-10 px-6 py-3 font-semibold text-white transition-transform transform bg-orange-500 rounded-lg shadow-lg hover:bg-orange-600"
       >
         Book Now
       </button>
@@ -179,7 +181,7 @@ const Booking = () => {
         </ModalWrapper>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Booking;
+export default Booking
