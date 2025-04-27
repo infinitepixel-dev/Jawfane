@@ -127,7 +127,7 @@ const AlbumArtCarousel = () => {
 
   return (
     <div
-      className="grid items-center min-h-screen grid-cols-6 gap-4 p-6 bg-gradient-to-br from-black to-slate-900"
+      className="grid items-center min-h-screen grid-cols-6 gap-4 p-6 bg-gradient-to-b from-black via-gray-950 to-slate-900"
       id="album"
     >
       {/* Left side: Image Gallery */}
