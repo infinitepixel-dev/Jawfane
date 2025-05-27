@@ -127,13 +127,13 @@ const AlbumArtCarousel = () => {
 
   return (
     <div
-      className="grid items-center min-h-screen grid-cols-6 gap-4 p-6 bg-gradient-to-b from-black via-gray-950 to-slate-900"
+      className="items-center gap-4 grid grid-cols-6 bg-gradient-to-b from-black via-gray-950 to-slate-900 p-6 min-h-screen"
       id="album"
     >
       {/* Left side: Image Gallery */}
       <div className="flex flex-col items-center col-span-6 md:col-span-3">
         <div
-          className="relative w-full max-w-lg p-2 overflow-hidden"
+          className="relative p-2 w-full max-w-lg overflow-hidden"
           style={{ height: "auto" }}
         >
           <img
@@ -141,30 +141,30 @@ const AlbumArtCarousel = () => {
             key={images[index]}
             src={images[index]}
             alt="Album Art"
-            className="object-contain w-full h-full transition-all rounded-lg shadow-lg"
+            className="shadow-lg rounded-lg w-full h-full object-contain transition-all"
             style={{ opacity: 0 }}
           />
         </div>
         <button
           ref={buttonRef}
           onClick={nextImage}
-          className="px-6 py-3 mt-6 text-white transition bg-purple-800 rounded-lg shadow-lg hover:bg-purple-900"
+          className="bg-purple-800 hover:bg-purple-900 shadow-lg mt-6 px-6 py-3 rounded-lg text-white transition"
         >
           Next
         </button>
       </div>
 
       {/* Right side: Presave Button + Label */}
-      <div className="flex flex-col items-center justify-center col-span-6 space-y-8 md:col-span-3">
+      <div className="flex flex-col justify-center items-center space-y-8 col-span-6 md:col-span-3">
         <a
-          href="https://hypeddit.com/jawfane/timehuntsusall"
+          href="https://hypeddit.com/jawfane/meandallmydemons"
           target="_blank"
           rel="noopener noreferrer"
           ref={presaveRef}
-          className="flex items-center justify-center gap-2 px-8 py-4 text-sm font-extrabold text-white transition-shadow transition-transform duration-300 rounded-full shadow-lg md:text-xl bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 hover:shadow-lg hover:shadow-purple-800"
+          className="flex justify-center items-center gap-2 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 shadow-lg hover:shadow-lg hover:shadow-purple-800 px-8 py-4 rounded-full font-extrabold text-white text-sm md:text-xl transition-shadow transition-transform duration-300"
         >
           <FiMusic size={24} />
-          Pre-Save Time Hunts Us All Now!
+          Pre-Save Me And All My Demons
         </a>
         <a
           href="https://www.exsrmusic.com/"
@@ -175,7 +175,7 @@ const AlbumArtCarousel = () => {
           <img
             src={bandLabel}
             alt="Exitus Stratagem Records"
-            className="w-6/12 p-5 mx-auto h-25"
+            className="mx-auto p-5 w-6/12 h-25"
           />
         </a>
       </div>
