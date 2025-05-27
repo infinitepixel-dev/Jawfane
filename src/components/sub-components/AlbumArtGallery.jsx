@@ -164,7 +164,7 @@ const AlbumArtCarousel = () => {
           className="flex justify-center items-center gap-2 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 shadow-lg hover:shadow-lg hover:shadow-purple-800 px-8 py-4 rounded-full font-extrabold text-white text-sm md:text-xl transition-shadow transition-transform duration-300"
         >
           <FiMusic size={24} />
-          Pre-Save Me And All My Demons
+          Pre-Save Me And All My Demons!
         </a>
         <a
           href="https://www.exsrmusic.com/"
