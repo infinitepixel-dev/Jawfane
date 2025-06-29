@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react"
 import { gsap } from "gsap"
 import "../../css/lore.css"
 import cory from "/images/cory.jpg"
-import austin from "/images/austin.jpg"
 import chase from "/images/chase.jpg"
 import aj from "/images/aj.jpg"
 import jesse from "/images/jesse.jpg"
@@ -22,25 +21,7 @@ Cory found him one day whilst trying to create the brown note, instead of Sh***i
 
 With his talents and the help from his new friends Jawfane would take over the static in every speaker in the known universe.`,
   },
-  {
-    name: "Austin Heipp",
-    photo: austin,
-    bio: `It's without thought some things should be done. Defense of the our youngest and smallest should be a reflex, not a debate. 
 
-I may be the loudest, but it's only through pain that you learn to be the softest. 
-
-Self-taught vocalist, I care not remember my younger years, only the songs that got me through them. It's with those feelings, i replace training, and invoke pure, unfiltered, emotion. It's with those feelings I replace doubt, with certainty, certain that the reflex to defend the indefensible the ones to yet have a voice, is the reflex that I so desired. 
-
-I am the reckoning. The shield against what was done to me. 
-
-I am someone who would have protected me when I was younger. 
-
-Across the distance Frodo and sam journeyed I have been, and same as them I saw many tragedies. But like Frodo carrying the burden of the age, I spoke to the ones hurt me like me and through them I was able to cast the nagging, unending voice of defeat into the fire. 
-
-“I carry my shield not for me alone, I carry it for the sake of everyone like me and those who not yet know the strength of their position” 
-
--The Shield Sage Austin`,
-  },
   {
     name: "Jesse Marquez",
     photo: jesse,
@@ -137,17 +118,17 @@ const Lore = () => {
 
   return (
     <div
-      className="flex items-center justify-center w-full p-4 overflow-y-auto sm:px-6 md:px-6 bg-gradient-to-t from-black to-neutral-900"
+      className="flex justify-center items-center bg-gradient-to-t from-black to-neutral-900 p-4 sm:px-6 md:px-6 w-full overflow-y-auto"
       id="lore"
     >
-      <div className="flex flex-wrap justify-center w-full gap-4 sm:gap-6 md:gap-6">
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-6 w-full">
         {people.map((person, index) => (
           <div
             key={index}
             id={`card-${index}`}
             data-index={index}
             ref={(el) => (cardsRef.current[index] = el)}
-            className="relative overflow-y-auto w-full sm:w-full flex flex-col h-[600px] md:max-w-[350px] m-2 perspective cursor-pointer mx-auto"
+            className="relative flex flex-col m-2 mx-auto w-full sm:w-full md:max-w-[350px] h-[600px] overflow-y-auto cursor-pointer perspective"
             onClick={() => handleFlip(index)}
             role="button"
             aria-pressed={flipped === index}
@@ -158,20 +139,20 @@ const Lore = () => {
               }`}
             >
               {/* Front Face */}
-              <div className="absolute flex flex-col w-full h-full border-4 border-transparent backface-hidden rounded-xl">
-                <div className="w-full h-[80%] bg-cover rounded-t-lg">
+              <div className="absolute flex flex-col border-4 border-transparent rounded-xl w-full h-full backface-hidden">
+                <div className="bg-cover rounded-t-lg w-full h-[80%]">
                   <img
                     src={person.photo}
                     alt={`${person.name}'s photo`}
-                    className="object-cover w-full h-full rounded-t-lg"
+                    className="rounded-t-lg w-full h-full object-cover"
                   />
                 </div>
-                <div className="flex items-center justify-center h-[20%] text-2xl font-bold text-center text-black bg-gradient-to-b from-sky-500 to-sky-600 rounded-b-lg">
+                <div className="flex justify-center items-center bg-gradient-to-b from-sky-500 to-sky-600 rounded-b-lg h-[20%] font-bold text-black text-2xl text-center">
                   {person.name}
                 </div>
               </div>
               {/* Back Face */}
-              <div className="absolute flex items-center justify-center w-full h-full p-6 text-lg text-gray-800 bg-gray-200 shadow-lg backface-hidden rounded-xl rotateY-180">
+              <div className="absolute flex justify-center items-center bg-gray-200 shadow-lg p-6 rounded-xl w-full h-full text-gray-800 text-lg backface-hidden rotateY-180">
                 <div className="max-h-full back-content">
                   <p className="text-base text-center">
                     {person.bio || "Bio unavailable."}
