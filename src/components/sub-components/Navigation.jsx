@@ -76,7 +76,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
   return (
     <header className="top-0 z-50 fixed w-full">
       <div
-        className={`flex items-center justify-between px-6 py-4 ${
+        className={`flex items-center justify-between px-6 py-2 ${
           theme === "dark" ? "bg-black bg-opacity-70" : "bg-white bg-opacity-80"
         } backdrop-blur-md`}
       >
