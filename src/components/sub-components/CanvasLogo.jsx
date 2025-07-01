@@ -101,9 +101,9 @@ const AnimatedLogo = ({ theme, isMobile }) => {
           ref={logoRef}
           src="/images/jawfane_logo.svg"
           alt="Jawfane Logo"
-          className="relative mt-48"
+          className="relative"
           style={{
-            height: "30%",
+            height: "40%",
             width: "auto",
             objectFit: "contain",
           }}
