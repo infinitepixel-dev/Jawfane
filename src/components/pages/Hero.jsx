@@ -1,20 +1,19 @@
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import propTypes from "prop-types";
-// import hero_bg from "@public/hero_bg.webp";
+import { useEffect, useRef } from "react"
+import { gsap } from "gsap"
+import { ScrollToPlugin } from "gsap/ScrollToPlugin"
+import propTypes from "prop-types"
 
-gsap.registerPlugin(ScrollToPlugin);
+gsap.registerPlugin(ScrollToPlugin)
 
 const Hero = ({ theme }) => {
-  const isUserInteracting = useRef(false);
-  const debounceTimeout = useRef(null);
+  const isUserInteracting = useRef(false)
+  const debounceTimeout = useRef(null)
 
   useEffect(() => {
-    const heroSection = document.getElementById("tour");
+    const heroSection = document.getElementById("tour")
 
     const snapIntoView = (entries) => {
-      if (isUserInteracting.current) return;
+      if (isUserInteracting.current) return
 
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -22,51 +21,51 @@ const Hero = ({ theme }) => {
             duration: 1.5, // Increased duration for a more pronounced effect
             scrollTo: { y: heroSection, offsetY: 0 },
             ease: "elastic.out(1, 1)", // Elastic easing for a bounce effect
-          });
+          })
         }
-      });
-    };
+      })
+    }
 
     const observer = new IntersectionObserver(snapIntoView, {
       threshold: 0.4, // Adjust this value as needed
-    });
+    })
 
-    observer.observe(heroSection);
+    observer.observe(heroSection)
 
     const handleUserInteractionStart = () => {
-      isUserInteracting.current = true;
-      clearTimeout(debounceTimeout.current);
-    };
+      isUserInteracting.current = true
+      clearTimeout(debounceTimeout.current)
+    }
 
     const handleUserInteractionEnd = () => {
       debounceTimeout.current = setTimeout(() => {
-        isUserInteracting.current = false;
-      }, 100); // Debounce timeout to prevent immediate re-triggering
-    };
+        isUserInteracting.current = false
+      }, 100) // Debounce timeout to prevent immediate re-triggering
+    }
 
-    window.addEventListener("scroll", handleUserInteractionStart);
-    window.addEventListener("mousedown", handleUserInteractionStart);
-    window.addEventListener("mouseup", handleUserInteractionEnd);
-    window.addEventListener("touchstart", handleUserInteractionStart);
-    window.addEventListener("touchend", handleUserInteractionEnd);
+    window.addEventListener("scroll", handleUserInteractionStart)
+    window.addEventListener("mousedown", handleUserInteractionStart)
+    window.addEventListener("mouseup", handleUserInteractionEnd)
+    window.addEventListener("touchstart", handleUserInteractionStart)
+    window.addEventListener("touchend", handleUserInteractionEnd)
 
     return () => {
-      observer.disconnect(); // Ensure cleanup by disconnecting the observer
-      window.removeEventListener("scroll", handleUserInteractionStart);
-      window.removeEventListener("mousedown", handleUserInteractionStart);
-      window.removeEventListener("mouseup", handleUserInteractionEnd);
-      window.removeEventListener("touchstart", handleUserInteractionStart);
-      window.removeEventListener("touchend", handleUserInteractionEnd);
-    };
-  }, []);
+      observer.disconnect() // Ensure cleanup by disconnecting the observer
+      window.removeEventListener("scroll", handleUserInteractionStart)
+      window.removeEventListener("mousedown", handleUserInteractionStart)
+      window.removeEventListener("mouseup", handleUserInteractionEnd)
+      window.removeEventListener("touchstart", handleUserInteractionStart)
+      window.removeEventListener("touchend", handleUserInteractionEnd)
+    }
+  }, [])
 
   useEffect(() => {
     gsap.fromTo(
       "#hero-title",
       { opacity: 0, y: -50 },
       { opacity: 1, y: 0, duration: 1 }
-    );
-  }, []);
+    )
+  }, [])
 
   return (
     <section
@@ -93,17 +92,15 @@ const Hero = ({ theme }) => {
           >
             Hero Page - Jawfane Band
           </h1>
-          <div className="flex justify-center mt-4">
-            {/* <img className="w-full" src={hero_bg} alt="hero" /> */}
-          </div>
+          <div className="flex justify-center mt-4"></div>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
 Hero.propTypes = {
   theme: propTypes.string.isRequired,
-};
+}
 
-export default Hero;
+export default Hero

@@ -7,7 +7,6 @@ import PropTypes from "prop-types"
 //INFO Modals
 import ModalWrapper from "./modals/ModalWrapper"
 
-//Ensure the correct formatatting... when using non typescript projects
 const contactFormPropTypes = {
   setShowModal: PropTypes.func.isRequired,
 }
@@ -150,7 +149,7 @@ const ContactForm = ({ setShowModal }) => {
             <div>
               <label
                 htmlFor="company"
-                className="block text-sm font-medium text-army-hover"
+                className="block font-medium text-army-hover text-sm"
               >
                 Company (Optional)
               </label>
@@ -160,17 +159,17 @@ const ContactForm = ({ setShowModal }) => {
                 name="company"
                 value={formData.company}
                 onChange={handleChange}
-                className="w-full p-3 mt-1 border rounded-md border-neutral-500 bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
+                className="bg-neutral-100 mt-1 p-3 border border-neutral-500 focus:border-army-hover rounded-md focus:ring focus:ring-army w-full text-army-hover"
                 placeholder="Business Name"
               />
             </div>
 
             {/* First & Last Name (Side by Side on md+) */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block text-sm font-medium text-army-hover"
+                  className="block font-medium text-army-hover text-sm"
                 >
                   First Name <span className="text-red-500">*</span>
                 </label>
@@ -180,11 +179,11 @@ const ContactForm = ({ setShowModal }) => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full p-3 mt-1 border border-gray-300 rounded-md bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
+                  className="bg-neutral-100 mt-1 p-3 border border-gray-300 focus:border-army-hover rounded-md focus:ring focus:ring-army w-full text-army-hover"
                   placeholder="First Name"
                 />
                 {errors.firstName && (
-                  <p className="mt-1 text-sm text-red-500">
+                  <p className="mt-1 text-red-500 text-sm">
                     {errors.firstName}
                   </p>
                 )}
@@ -193,7 +192,7 @@ const ContactForm = ({ setShowModal }) => {
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block text-sm font-medium text-army-hover"
+                  className="block font-medium text-army-hover text-sm"
                 >
                   Last Name <span className="text-red-500">*</span>
                 </label>
@@ -203,11 +202,11 @@ const ContactForm = ({ setShowModal }) => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="w-full p-3 mt-1 border border-gray-300 rounded-md bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
+                  className="bg-neutral-100 mt-1 p-3 border border-gray-300 focus:border-army-hover rounded-md focus:ring focus:ring-army w-full text-army-hover"
                   placeholder="Last Name"
                 />
                 {errors.lastName && (
-                  <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
+                  <p className="mt-1 text-red-500 text-sm">{errors.lastName}</p>
                 )}
               </div>
             </div>
@@ -216,7 +215,7 @@ const ContactForm = ({ setShowModal }) => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-army-hover"
+                className="block font-medium text-army-hover text-sm"
               >
                 Email <span className="text-red-500">*</span>
               </label>
@@ -226,11 +225,11 @@ const ContactForm = ({ setShowModal }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full p-3 mt-1 border border-gray-300 rounded-md bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
+                className="bg-neutral-100 mt-1 p-3 border border-gray-300 focus:border-army-hover rounded-md focus:ring focus:ring-army w-full text-army-hover"
                 placeholder="Email"
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                <p className="mt-1 text-red-500 text-sm">{errors.email}</p>
               )}
             </div>
 
@@ -238,7 +237,7 @@ const ContactForm = ({ setShowModal }) => {
             <div>
               <label
                 htmlFor="message"
-                className="block text-sm font-medium text-army-hover"
+                className="block font-medium text-army-hover text-sm"
               >
                 Message <span className="text-red-500">*</span>
               </label>
@@ -247,7 +246,7 @@ const ContactForm = ({ setShowModal }) => {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full p-3 mt-1 border border-gray-300 rounded-md bg-neutral-100 focus:border-army-hover focus:ring focus:ring-army text-army-hover"
+                className="bg-neutral-100 mt-1 p-3 border border-gray-300 focus:border-army-hover rounded-md focus:ring focus:ring-army w-full text-army-hover"
                 rows="4"
                 placeholder="Message"
                 maxLength={maxMessageLength}
@@ -264,7 +263,7 @@ const ContactForm = ({ setShowModal }) => {
                 {formData.message.length}/{maxMessageLength} characters
               </div>
               {errors.message && (
-                <p className="mt-1 text-sm text-red-500">{errors.message}</p>
+                <p className="mt-1 text-red-500 text-sm">{errors.message}</p>
               )}
             </div>
 
@@ -272,7 +271,7 @@ const ContactForm = ({ setShowModal }) => {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3 font-semibold transition duration-200 ease-in-out rounded-md text-neutral-100 bg-gradient-to-r from-army hover:from-army to-army-hover hover:to-army focus:ring-4 focus:army-hover"
+              className="bg-gradient-to-r from-army hover:from-army to-army-hover hover:to-army py-3 rounded-md focus:ring-4 w-full font-semibold text-neutral-100 transition duration-200 ease-in-out focus:army-hover"
             >
               {submitting ? "Submitting..." : "Submit"}
             </button>
@@ -280,7 +279,7 @@ const ContactForm = ({ setShowModal }) => {
             {/* Close Button */}
             <button
               onClick={() => setShowModal(false)}
-              className="w-full py-2 font-semibold transition duration-200 ease-in-out rounded-md bg-stone-400/70 text-army-hover hover:bg-stone-500/60"
+              className="bg-stone-400/70 hover:bg-stone-500/60 py-2 rounded-md w-full font-semibold text-army-hover transition duration-200 ease-in-out"
             >
               Close
             </button>
@@ -291,8 +290,8 @@ const ContactForm = ({ setShowModal }) => {
       {/* Thank You Modal */}
       {showThankYou && (
         <ModalWrapper>
-          <div className="max-w-sm p-8 text-center rounded-lg shadow-lg bg-neutral-200">
-            <h2 className="mb-4 text-2xl font-bold text-army-hover">
+          <div className="bg-neutral-200 shadow-lg p-8 rounded-lg max-w-sm text-center">
+            <h2 className="mb-4 font-bold text-army-hover text-2xl">
               Thank You!
             </h2>
             <p className="text-army-hover">
@@ -304,7 +303,7 @@ const ContactForm = ({ setShowModal }) => {
                 setShowModal(false) // closes the contact form modal
                 window.scrollTo({ top: 0, behavior: "smooth" }) // scroll to top
               }}
-              className="px-4 py-2 mt-6 rounded text-neutral-100 bg-army hover:bg-army-hover"
+              className="bg-army hover:bg-army-hover mt-6 px-4 py-2 rounded text-neutral-100"
             >
               Close
             </button>

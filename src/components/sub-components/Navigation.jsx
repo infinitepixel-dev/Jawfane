@@ -1,42 +1,37 @@
-import { useEffect, useState, useRef, useCallback } from "react"
-import { gsap } from "gsap"
+import { useEffect, useState, useRef } from "react"
 import { useLocation } from "react-router-dom"
-import propTypes from "prop-types"
-// import AudioPlayer from "./AudioPlayer"
+import { gsap } from "gsap"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBars, faArrowUp } from "@fortawesome/free-solid-svg-icons"
+import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons"
+import PropTypes from "prop-types"
 
 const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
   const location = useLocation()
   const [selected, setSelected] = useState("")
+  const [menuOpen, setMenuOpen] = useState(false)
 
-  const navBarRef = useRef(null)
-  const navRef = useRef(null)
-  const hamburgerRef = useRef(null)
+  const navDrawerRef = useRef(null)
 
-  // Handle resize to detect mobile vs desktop
   useEffect(() => {
     const handleResize = () => {
-      const isNowMobile = window.innerWidth < 768
-      setIsMobile(isNowMobile)
+      const nowMobile = window.innerWidth < 768
+      setIsMobile(nowMobile)
     }
 
     window.addEventListener("resize", handleResize)
     handleResize()
-
     return () => window.removeEventListener("resize", handleResize)
   }, [setIsMobile])
 
-  // Handle URL hash scrolling on initial load
   useEffect(() => {
     const hash = location.hash.substring(1)
-    setSelected(hash ? hash : "home")
+    setSelected(hash || "home")
 
     if (hash) {
-      const targetElement = document.getElementById(hash)
-      if (targetElement) {
+      const target = document.getElementById(hash)
+      if (target) {
         gsap.to(window, {
-          scrollTo: { y: targetElement, offsetY: 0 },
+          scrollTo: { y: target, offsetY: 0 },
           duration: 1,
           ease: "power2.inOut",
         })
@@ -44,115 +39,115 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     }
   }, [location])
 
-  const toggleNavbar = useCallback(() => {
-    if (navBarRef.current) {
-      const isNavVisible = navBarRef.current.classList.contains("hidden")
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev)
+    setToggleNavbar((prev) => !prev)
 
-      // If the navbar is currently hidden, show it
-      if (isNavVisible) {
-        gsap.to(navBarRef.current, {
-          opacity: 1,
-          height: "auto", // Ensure it expands to show the menu items
-          duration: 0.5,
-          ease: "power2.out",
-        })
-        navBarRef.current.classList.remove("hidden")
-      } else {
-        // If the navbar is visible, hide it
-        gsap.to(navBarRef.current, {
-          opacity: 0,
-          height: 0, // Collapse the menu
-          duration: 0.5,
-          ease: "power2.out",
-        })
-        navBarRef.current.classList.add("hidden")
-      }
+    if (!menuOpen) {
+      gsap.to(navDrawerRef.current, {
+        x: 0,
+        duration: 0.4,
+        ease: "power2.out",
+      })
+    } else {
+      gsap.to(navDrawerRef.current, {
+        x: "-100%",
+        duration: 0.4,
+        ease: "power2.in",
+      })
     }
-
-    setToggleNavbar((prev) => !prev) // Toggle the state to control navbar visibility
-  }, [isMobile, setToggleNavbar])
+  }
 
   const handleItemClick = (item) => {
     setSelected(item)
-    const targetElement = document.getElementById(item)
-    if (targetElement) {
+    const target = document.getElementById(item)
+    if (target) {
       gsap.to(window, {
-        scrollTo: { y: targetElement, offsetY: 0 },
+        scrollTo: { y: target, offsetY: 0 },
         duration: 1,
         ease: "power2.inOut",
       })
     }
-    if (isMobile) {
-      toggleNavbar()
-    }
+    if (isMobile && menuOpen) toggleMenu()
   }
 
+  const menuItems = ["tour", "music", "booking"]
+
   return (
-    <>
-      {isMobile && (
-        <div
-          ref={hamburgerRef}
-          className="sticky pl-4 top-4"
-          style={{ zIndex: 1000 }}
-        >
-          <button
-            role="button"
-            onClick={toggleNavbar}
-            className="p-2 text-white bg-blue-500 rounded-lg"
-          >
-            {isMobile ? (
-              <FontAwesomeIcon icon={faBars} />
-            ) : (
-              <FontAwesomeIcon icon={faArrowUp} />
-            )}
+    <header className="top-0 z-50 fixed w-full">
+      <div
+        className={`flex items-center justify-between px-6 py-4 ${
+          theme === "dark" ? "bg-black bg-opacity-70" : "bg-white bg-opacity-80"
+        } backdrop-blur-md`}
+      >
+        {isMobile && (
+          <button onClick={toggleMenu} className="z-50 text-white">
+            <FontAwesomeIcon icon={menuOpen ? faXmark : faBars} size="lg" />
           </button>
-        </div>
+        )}
+      </div>
+
+      {/* Desktop Menu */}
+      {!isMobile && (
+        <nav className="flex justify-center gap-12 bg-black bg-opacity-50 backdrop-blur-md py-2 font-semibold text-white">
+          {menuItems.map((item) => (
+            <button
+              key={item}
+              onClick={() => handleItemClick(item)}
+              className={`px-4 py-2 rounded-full transition-all duration-300 ${
+                selected === item
+                  ? "bg-sky-500 text-black"
+                  : "hover:bg-sky-700 hover:text-white"
+              }`}
+            >
+              {item.charAt(0).toUpperCase() + item.slice(1)}
+            </button>
+          ))}
+        </nav>
       )}
 
-      <nav
-        ref={navRef}
-        id="navigation"
-        className={`sticky top-0 w-full z-50 transition-all duration-300 ease-in-out ${
-          !isMobile ? "bg-black bg-opacity-60" : "bg-transparent"
-        } ${
-          theme === "dark" ? " text-slate-950" : "bg-gray-100 text-slate-900"
-        }`}
-      >
-        <ul
-          ref={navBarRef}
-          className={`px-8 ${
-            isMobile ? "hidden" : "flex"
-          } py-4 md:py-2 flex-col md:flex-row gap-14 justify-center items-center space-y-2 md:space-y-0 md:space-x-16 font-extrabold transition-all duration-300 ease-in-out`}
+      {/* Mobile Drawer */}
+      {isMobile && (
+        <nav
+          ref={navDrawerRef}
+          className="top-0 left-0 z-40 fixed bg-black p-6 pt-6 w-3/4 h-screen text-white -translate-x-full transform"
         >
-          {["tour", "music", "booking"].map((item) => (
-            <li
-              key={item}
-              role="button"
-              className={`p-2 rounded transition-transform cursor-pointer ${
-                selected === item
-                  ? `bg-sky-500 ${
-                      theme === "dark" ? "text-black" : "text-slate-950"
-                    } rounded-full`
-                  : theme === "dark"
-                  ? "hover:bg-sky-700 text-white rounded-full"
-                  : "hover:bg-gray-500 text-slate-950 rounded-full"
-              }`}
-              onClick={() => handleItemClick(item)}
+          {/* Close Button */}
+          <div className="flex justify-end mb-8">
+            <button
+              onClick={toggleMenu}
+              className="focus:outline-none text-white text-2xl"
+              aria-label="Close menu"
             >
-              <span>{item.charAt(0).toUpperCase() + item.slice(1)}</span>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </>
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
+          </div>
+
+          {/* Menu Items */}
+          <ul className="flex flex-col gap-6 font-bold text-lg">
+            {menuItems.map((item) => (
+              <li
+                key={item}
+                onClick={() => handleItemClick(item)}
+                className={`cursor-pointer transition-colors ${
+                  selected === item ? "text-sky-400" : "hover:text-sky-500"
+                }`}
+              >
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </header>
   )
 }
 
 Navigation.propTypes = {
-  theme: propTypes.string.isRequired,
-  setToggleNavbar: propTypes.func.isRequired,
-  isMobile: propTypes.bool.isRequired,
-  setIsMobile: propTypes.func.isRequired,
+  theme: PropTypes.string.isRequired,
+  setToggleNavbar: PropTypes.func.isRequired,
+  isMobile: PropTypes.bool.isRequired,
+  setIsMobile: PropTypes.func.isRequired,
 }
 
 export default Navigation
