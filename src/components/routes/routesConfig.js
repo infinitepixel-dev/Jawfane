@@ -2,16 +2,17 @@ import { lazy } from "react"
 
 export const navigationRoutes = [
   { id: "n1", name: "home", label: "Home" },
-  { id: "n2", name: "album", label: "Album" },
-  { id: "n3", name: "tour", label: "Tour" },
-  { id: "n4", name: "lore", label: "Lore" },
-  { id: "n5", name: "music", label: "Music" },
-  { id: "n6", name: "booking", label: "Booking" },
+  { id: "n3", name: "album", label: "Album" },
+  { id: "n4", name: "tour", label: "Tour" },
+  { id: "n5", name: "merch", label: "Merch" },
+  { id: "n6", name: "lore", label: "Lore" },
+  { id: "n7", name: "music", label: "Music" },
+  { id: "n8", name: "booking", label: "Booking" },
 ]
 
 export const componentRoutes = [
   {
-    id: "a1",
+    id: "home",
     key: "a1",
     path: "/",
     componentPath: "../pages/Home.jsx",
@@ -44,8 +45,19 @@ export const componentRoutes = [
     },
   },
   {
-    id: "lore",
+    id: "merch",
     key: "a4",
+    path: "/merch",
+    componentPath: "../pages/MerchPage.jsx",
+    metaData: {
+      title: "Jawfane Band",
+      description: "Find Jawfane Merch",
+      keywords: "jawfane, band, music, tour, merch",
+    },
+  },
+  {
+    id: "lore",
+    key: "a5",
     path: "/lore",
     componentPath: "../pages/Lore.jsx",
     metaData: {
@@ -57,7 +69,7 @@ export const componentRoutes = [
   },
   {
     id: "music",
-    key: "a5",
+    key: "a6",
     path: "/music",
     componentPath: "../pages/MusicVideos.jsx",
     metaData: {
@@ -68,7 +80,7 @@ export const componentRoutes = [
   },
   {
     id: "booking",
-    key: "a6",
+    key: "a7",
     path: "/booking",
     componentPath: "../pages/Booking.jsx",
     metaData: {

@@ -1,12 +1,12 @@
-import { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import { gsap } from "gsap";
+import { useEffect, useRef } from "react"
+import PropTypes from "prop-types"
+import { gsap } from "gsap"
 
-import "./bandsInTownEvents.css";
+import "./bandsInTownEvents.css"
 
 const BandsInTownEvents = ({ artistName }) => {
-  const widgetRef = useRef(null);
-  const titleRef = useRef(null);
+  const widgetRef = useRef(null)
+  const titleRef = useRef(null)
 
   // Animate title on mount
   useEffect(() => {
@@ -14,42 +14,42 @@ const BandsInTownEvents = ({ artistName }) => {
       titleRef.current,
       { opacity: 0, y: -40 },
       { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.1 }
-    );
-  }, []);
+    )
+  }, [])
 
   // Load Bandsintown widget script
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://widgetv3.bandsintown.com/main.min.js";
-    script.async = true;
-    script.charset = "utf-8";
-    document.body.appendChild(script);
+    const script = document.createElement("script")
+    script.src = "https://widgetv3.bandsintown.com/main.min.js"
+    script.async = true
+    script.charset = "utf-8"
+    document.body.appendChild(script)
 
     return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+      document.body.removeChild(script)
+    }
+  }, [])
 
   useEffect(() => {
-    const widgetEl = widgetRef.current;
-    if (!widgetEl) return;
+    const widgetEl = widgetRef.current
+    if (!widgetEl) return
 
     const observer = new IntersectionObserver(
       (entries) => {
-        console.log("Observer entries:", entries);
+        // console.log("Observer entries:", entries);
 
         if (entries[0].isIntersecting) {
-          widgetEl.classList.add("visible");
-          observer.disconnect(); // only trigger once
+          widgetEl.classList.add("visible")
+          observer.disconnect() // only trigger once
         }
       },
       { threshold: 0.3 }
-    );
+    )
 
-    observer.observe(widgetEl);
+    observer.observe(widgetEl)
 
-    return () => observer.disconnect();
-  }, []);
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="bg-gray-200 px-4 py-10 min-h-screen text-gray-600">
@@ -138,11 +138,11 @@ const BandsInTownEvents = ({ artistName }) => {
         ></a>
       </div>
     </div>
-  );
-};
+  )
+}
 
 BandsInTownEvents.propTypes = {
   artistName: PropTypes.string.isRequired,
-};
+}
 
-export default BandsInTownEvents;
+export default BandsInTownEvents

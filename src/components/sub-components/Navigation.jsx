@@ -71,7 +71,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     if (isMobile && menuOpen) toggleMenu()
   }
 
-  const menuItems = ["tour", "music", "booking"]
+  const menuItems = ["tour", "merch", "music", "booking"]
 
   return (
     <header className="top-0 z-50 fixed w-full">
