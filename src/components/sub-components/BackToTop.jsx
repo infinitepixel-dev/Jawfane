@@ -14,6 +14,7 @@ const BackToTop = () => {
     "home",
     "album",
     "tour",
+    "merch",
     "lore",
     "music",
     "booking",
@@ -92,11 +93,11 @@ const BackToTop = () => {
   }
 
   return (
-    <div className="fixed z-10 flex flex-col space-y-2 right-4 bottom-4">
+    <div className="right-4 bottom-4 z-10 fixed flex flex-col space-y-2">
       <button
         ref={buttonRef}
         onClick={scrollToTop}
-        className="p-4 text-white transition rounded-full shadow-lg bg-army hover:bg-army-hover"
+        className="bg-army hover:bg-army-hover shadow-lg p-4 rounded-full text-white transition"
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
@@ -108,7 +109,7 @@ const BackToTop = () => {
       <button
         ref={nextButtonRef}
         onClick={scrollToNextSection}
-        className="p-4 text-black transition rounded-full shadow-lg bg-stone-400 hover:bg-stone-500"
+        className="bg-stone-400 hover:bg-stone-500 shadow-lg p-4 rounded-full text-black transition"
         style={{
           opacity: 0,
           transform: "translateY(20px) scale(0.8) rotate(45deg)",
