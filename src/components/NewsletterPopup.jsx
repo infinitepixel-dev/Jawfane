@@ -51,10 +51,10 @@ const NewsletterPopup = ({ onClose }) => {
   }
 
   return (
-    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 md:p-5">
+    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-90">
       <div
         ref={popupRef}
-        className="relative bg-white dark:bg-zinc-900 shadow-2xl p-6 rounded-xl w-full max-w-md"
+        className="relative bg-white dark:bg-zinc-900 shadow-2xl p-6 rounded-xl md:w-full max-w-md"
       >
         <button
           onClick={onClose}
@@ -85,7 +85,7 @@ const NewsletterPopup = ({ onClose }) => {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="bg-black dark:bg-white hover:opacity-90 py-2 rounded-md font-semibold text-white dark:text-black transition-all"
+            className="bg-black dark:bg-white hover:opacity-90 py-2 rounded-md font-semibold text-slate-900 dark:text-black transition-all"
           >
             {status === "loading" ? "Subscribing…" : "Subscribe"}
           </button>

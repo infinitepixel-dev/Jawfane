@@ -18,7 +18,7 @@ export default async function subscribeHandler(req, res) {
       {
         email,
         updateEnabled: true,
-        listIds: [3], // 👈 your Brevo list ID
+        listIds: [3],
       },
       {
         headers: {

@@ -15,14 +15,14 @@ import CanvasLogo from "../sub-components/CanvasLogo"
 
 function Home() {
   const { theme, isMobile } = useOutletContext()
-  const [showPopup, setShowPopup] = useState(false)
+  const [showPopup, setShowPopup] = useState(true) // start hidden
 
   useEffect(() => {
     const hasSubscribed = localStorage.getItem("jawfane_subscribed")
     if (!hasSubscribed) {
       const timer = setTimeout(() => {
         setShowPopup(true)
-      }, 1500)
+      }, 3000)
 
       return () => clearTimeout(timer)
     }
@@ -36,6 +36,7 @@ function Home() {
   return (
     <div id="main-app" className="w-screen">
       {showPopup && <NewsletterPopup onClose={handlePopupClose} />}
+
       <MusicMenu />
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <AlbumArtGallery />

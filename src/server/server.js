@@ -10,5 +10,5 @@ app.use(express.json())
 app.post("/api/subscribe", subscribeHandler)
 
 app.listen(PORT, () => {
-  console.log(`✅ Backend running at http://localhost:${PORT}`)
+  console.log(` Backend running at http://localhost:${PORT}`)
 })
