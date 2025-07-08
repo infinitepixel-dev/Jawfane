@@ -24,14 +24,6 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: true, // Clean the output directory before building
   },
-  server: {
-    host: "0.0.0.0", // Listen on all network interfaces
-    port: 5173,
-    cors: {
-      origin: ["*"],
-      methods: ["GET", "POST", "PUT", "DELETE"],
-    },
-  },
   resolve: {
     alias: {
       "@public": resolve(__dirname, "public"),
