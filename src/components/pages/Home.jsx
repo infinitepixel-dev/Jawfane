@@ -64,10 +64,8 @@ function Home() {
     <div id="main-app" className="w-screen">
       <MusicMenu />
       <CanvasLogo theme={theme} isMobile={isMobile} />
-
       {/* Brevo Modal
       <BrevoModal /> */}
-
       <AlbumArtGallery />
       <Tour theme={theme} />
       <MerchPage theme={theme} />
