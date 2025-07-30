@@ -17,7 +17,7 @@ function Home() {
 
   return (
     <div id="main-app" className="w-screen">
-      <BrevoModal />
+      {/* <BrevoModal /> */}
 
       <MusicMenu />
       <CanvasLogo theme={theme} isMobile={isMobile} />
