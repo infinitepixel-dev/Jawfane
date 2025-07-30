@@ -21,9 +21,10 @@ export default function BrevoModal() {
     script.onload = () => {
       window.Brevo = window.Brevo || []
       window.Brevo.push([
-        "init",
+        "subscribe:createForm",
         {
-          client_key: "dtq5ykan67fp7ln64p33o8n0",
+          formId: "686d468980ba4da59c34244b", // your form ID
+          target: "#brevo-form-container",
         },
       ])
       // If Brevo form creation API is available, we can add:
