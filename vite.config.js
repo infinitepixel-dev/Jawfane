@@ -32,6 +32,13 @@ export default defineConfig({
       methods: ["GET", "POST", "PUT", "DELETE"],
     },
   },
+  proxy: {
+    "/api": {
+      target: "http://localhost:3000",
+      changeOrigin: true,
+      secure: false,
+    },
+  },
   resolve: {
     alias: {
       "@public": resolve(__dirname, "public"),
