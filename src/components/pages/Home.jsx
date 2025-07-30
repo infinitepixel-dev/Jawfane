@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import { useOutletContext } from "react-router-dom"
 import PropTypes from "prop-types"
 
@@ -10,32 +9,16 @@ import Footer from "../sub-components/Footer"
 import Lore from "./Lore"
 import AlbumArtGallery from "../sub-components/AlbumArtGallery"
 import MusicMenu from "../sub-components/MusicMenu"
-import NewsletterPopup from "../../components/NewsletterPopup"
 import CanvasLogo from "../sub-components/CanvasLogo"
+import BrevoModal from "../sub-components/modals/BrevoModal"
 
 function Home() {
   const { theme, isMobile } = useOutletContext()
-  const [showPopup, setShowPopup] = useState(true) // start hidden
-
-  useEffect(() => {
-    const hasSubscribed = localStorage.getItem("jawfane_subscribed")
-    if (!hasSubscribed) {
-      const timer = setTimeout(() => {
-        setShowPopup(true)
-      }, 3000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [])
-
-  const handlePopupClose = () => {
-    setShowPopup(false)
-    localStorage.setItem("jawfane_subscribed", "true")
-  }
 
   return (
     <div id="main-app" className="w-screen">
-      {showPopup && <NewsletterPopup onClose={handlePopupClose} />}
+      {/* Brevo Modal */}
+      {/* <BrevoModal /> */}
 
       <MusicMenu />
       <CanvasLogo theme={theme} isMobile={isMobile} />
