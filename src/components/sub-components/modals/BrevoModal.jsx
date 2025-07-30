@@ -1,13 +1,39 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export default function BrevoModal() {
   const [isOpen, setIsOpen] = useState(false)
 
-  // Optional auto-trigger (after 3 seconds)
-  useState(() => {
+  // Auto-trigger modal after 3 seconds
+  useEffect(() => {
     const timer = setTimeout(() => setIsOpen(true), 3000)
     return () => clearTimeout(timer)
   }, [])
+
+  // Load Brevo SDK and initialize
+  useEffect(() => {
+    if (!isOpen) return
+
+    const script = document.createElement("script")
+    script.src = "https://cdn.brevo.com/js/sdk-loader.js"
+    script.async = true
+    document.body.appendChild(script)
+
+    script.onload = () => {
+      window.Brevo = window.Brevo || []
+      window.Brevo.push([
+        "init",
+        {
+          client_key: "dtq5ykan67fp7ln64p33o8n0",
+        },
+      ])
+      // If Brevo form creation API is available, we can add:
+      // Brevo.push(["subscribe:createForm", { formId: "YOUR_FORM_ID", target: "#brevo-form-container" }])
+    }
+
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [isOpen])
 
   return (
     <>
@@ -20,14 +46,10 @@ export default function BrevoModal() {
             >
               ✕
             </button>
-            <div className="w-full h-[500px]">
-              <iframe
-                src="https://your-brevo-form-url" // Replace with actual Brevo URL
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                title="Brevo Signup Form"
-              ></iframe>
+
+            {/* Brevo form will be injected here */}
+            <div id="brevo-form-container" className="w-full min-h-[400px]">
+              {/* Brevo SDK will populate this div */}
             </div>
           </div>
         </div>
