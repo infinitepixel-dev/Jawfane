@@ -10,15 +10,12 @@ import Lore from "./Lore"
 import AlbumArtGallery from "../sub-components/AlbumArtGallery"
 import MusicMenu from "../sub-components/MusicMenu"
 import CanvasLogo from "../sub-components/CanvasLogo"
-import BrevoModal from "../sub-components/modals/BrevoModal"
 
 function Home() {
   const { theme, isMobile } = useOutletContext()
 
   return (
     <div id="main-app" className="w-screen">
-      {/* <BrevoModal /> */}
-
       <MusicMenu />
       <CanvasLogo theme={theme} isMobile={isMobile} />
       <AlbumArtGallery />

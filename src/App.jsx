@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo } from "react"
 import { RouterProvider } from "react-router-dom"
 import CountdownTimer from "./components/sub-components/CountdownTimer"
+import BrevoModal from "./components/sub-components/modals/BrevoModal"
 import { createAppRouter } from "./router"
 
 const App = () => {
@@ -43,10 +44,11 @@ const App = () => {
 
   if (!showWebsite) {
     return (
-      <CountdownTimer
-        releaseDate={releaseDate}
-        onTimeUp={() => setShowWebsite(true)}
-      />
+      <BrevoModal />
+      // <CountdownTimer
+      //   releaseDate={releaseDate}
+      //   onTimeUp={() => setShowWebsite(true)}
+      // />
     )
   }
 
