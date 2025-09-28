@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Footer from "../sub-components/Footer.jsx"
+import { useOutletContext } from "react-router-dom"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -62,6 +63,7 @@ export default function Store() {
   const heroRef = useRef(null)
   const gridRef = useRef(null)
   const [openEmbed, setOpenEmbed] = useState(null)
+  const { isMobile } = useOutletContext() || {}
 
   // read initial view from URL (?type=songs | albums)
   const initialView = useMemo(() => {
@@ -200,8 +202,7 @@ export default function Store() {
         )}
       </main>
 
-      {/* Site Footer */}
-      <Footer />
+      <Footer isMobile={isMobile} />
     </>
   )
 }

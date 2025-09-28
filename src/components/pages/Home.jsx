@@ -12,8 +12,11 @@ import AlbumArtGallery from "../sub-components/AlbumArtGallery"
 import MusicMenu from "../sub-components/MusicMenu"
 import CanvasLogo from "../sub-components/CanvasLogo"
 
-function Home() {
-  const { theme, isMobile } = useOutletContext()
+function Home(props) {
+  // Prefer outlet context, fall back to props if someone renders <Home theme="..." />
+  const outlet = useOutletContext?.() || {}
+  const theme = props.theme ?? outlet.theme
+  const isMobile = props.isMobile ?? outlet.isMobile
 
   return (
     <div id="main-app" className="w-screen">
@@ -34,9 +37,9 @@ function Home() {
   )
 }
 
-// Still useful to define shape for tooling, but now not strictly "required" as props
+// Make them OPTIONAL since Home reads from Outlet context
 Home.propTypes = {
-  theme: PropTypes.string.isRequired,
+  theme: PropTypes.string,
   isMobile: PropTypes.bool,
 }
 
