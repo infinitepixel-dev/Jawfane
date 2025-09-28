@@ -8,6 +8,7 @@ export const navigationRoutes = [
   { id: "n6", name: "lore", label: "Lore" },
   { id: "n7", name: "music", label: "Music" },
   { id: "n8", name: "booking", label: "Booking" },
+  { id: "n9", name: "buy-music", label: "Buy Music" }, // cleaned name
 ]
 
 export const componentRoutes = [
@@ -26,7 +27,7 @@ export const componentRoutes = [
     id: "album",
     key: "a2",
     path: "/album",
-    componentPath: "../pages/AlbumArtGallery.jsx",
+    componentPath: "../sub-components/AlbumArtGallery.jsx",
     metaData: {
       title: "Cataclysm Nightmare",
       description: "Explore the latest album from Jawfane.",
@@ -48,7 +49,7 @@ export const componentRoutes = [
     id: "merch",
     key: "a4",
     path: "/merch",
-    componentPath: "../pages/MerchPage.jsx",
+    componentPath: "../pages/Merch.jsx",
     metaData: {
       title: "Jawfane Band",
       description: "Find Jawfane Merch",
@@ -89,6 +90,17 @@ export const componentRoutes = [
         "Bring Jawfane to your event. Book the band for an unforgettable performance.",
       keywords:
         "book Jawfane, live performance, metal band, concert, music booking, event",
+    },
+  },
+  {
+    id: "buy-music",
+    key: "a8",
+    path: "/buy-music",
+    componentPath: "../pages/BuyJawfane.jsx",
+    metaData: {
+      title: "Buy Music",
+      description: "Purchase Jawfane's music from various platforms",
+      keywords: "buy music, Jawfane, band, albums, singles",
     },
   },
 ]
