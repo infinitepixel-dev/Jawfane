@@ -267,6 +267,12 @@ function MediaCard({ item, kind, onListen }) {
     }
   }, [])
 
+  // === NEW: determine if this item should be marked unavailable ===
+  // Compare exact title string per your request.
+  const isUnavailable =
+    typeof item.title === "string" &&
+    item.title.trim() === "Me And All My Demons"
+
   return (
     <article
       ref={cardRef}
@@ -310,14 +316,39 @@ function MediaCard({ item, kind, onListen }) {
       </div>
 
       <div className="flex gap-2 mt-4">
-        <a
-          href={item.purchaseUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex flex-1 justify-center items-center gap-2 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 px-4 py-2 border border-fuchsia-500/40 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 font-semibold text-fuchsia-300 text-sm transition"
-        >
-          Buy
-        </a>
+        {/* If the item is unavailable (exact album title), show a disabled 'Not available' button */}
+        {isUnavailable ? (
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            title="Not available"
+            className="inline-flex flex-1 justify-center items-center gap-2 bg-white/6 px-4 py-2 border border-white/10 rounded-xl font-semibold text-white/40 text-sm cursor-not-allowed"
+          >
+            Not available
+          </button>
+        ) : (
+          // Default Buy link (kept as anchor if purchaseUrl exists, otherwise render a disabled fallback)
+          item.purchaseUrl ? (
+            <a
+              href={item.purchaseUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex flex-1 justify-center items-center gap-2 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 px-4 py-2 border border-fuchsia-500/40 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 font-semibold text-fuchsia-300 text-sm transition"
+            >
+              Buy
+            </a>
+          ) : (
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              className="inline-flex flex-1 justify-center items-center gap-2 bg-white/6 px-4 py-2 border border-white/10 rounded-xl font-semibold text-white/40 text-sm cursor-not-allowed"
+            >
+              Not available
+            </button>
+          )
+        )}
 
         {item.embedUrl && (
           <button
