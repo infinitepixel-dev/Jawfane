@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
+import PropTypes from "prop-types"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Footer from "../sub-components/Footer.jsx"
@@ -14,7 +15,7 @@ const albums = [
       "https://m.media-amazon.com/images/I/51yCstSkojL._UX358_FMwebp_QL85_.jpg",
     title: "Me And All My Demons",
     year: "2025",
-    // embedUrl: "https://bandcamp.com/EmbeddedPlayer/album=XXXXX/size=large/bgcol=333333/linkcol=ffffff/artwork=none/transparent=true/",
+    purchaseUrl: "https://jawfane.bandcamp.com/album/me-and-all-my-demons",
   },
 ]
 
@@ -63,7 +64,8 @@ export default function Store() {
   const heroRef = useRef(null)
   const gridRef = useRef(null)
   const [openEmbed, setOpenEmbed] = useState(null)
-  const { isMobile } = useOutletContext() || {}
+  const outlet = useOutletContext?.() || {}
+  const { isMobile = false } = outlet
 
   // read initial view from URL (?type=songs | albums)
   const initialView = useMemo(() => {
@@ -128,7 +130,7 @@ export default function Store() {
       <main className="relative bg-neutral-950 selection:bg-fuchsia-500/30 min-h-screen text-neutral-100">
         {/* Background accents */}
         <div
-          aria-hidden
+          aria-hidden={true}
           className="-top-32 absolute inset-x-0 bg-gradient-to-br from-fuchsia-600/30 via-indigo-600/25 to-cyan-500/20 blur-3xl mx-auto rounded-full w-[40rem] h-[40rem] pointer-events-none blob"
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06),transparent_60%)] pointer-events-none" />
@@ -176,7 +178,7 @@ export default function Store() {
             >
               {data.map((item, idx) => (
                 <MediaCard
-                  key={(item.title || "item") + idx}
+                  key={`${item?.title || "item"}_${idx}`}
                   item={item}
                   kind={view} // 'albums' | 'songs'
                   onListen={() => setOpenEmbed(item)}
@@ -187,7 +189,7 @@ export default function Store() {
         </section>
 
         {/* Listen Modal (optional) */}
-        {openEmbed && openEmbed.embedUrl && (
+        {openEmbed?.embedUrl && (
           <Modal onClose={() => setOpenEmbed(null)} title={openEmbed.title}>
             <div className="bg-black border border-white/10 rounded-xl w-full aspect-video overflow-hidden">
               <iframe
@@ -220,11 +222,20 @@ function ToggleButton({ active, onClick, label }) {
           ? "bg-fuchsia-500/15 text-fuchsia-300"
           : "text-white/80 hover:bg-white/10",
       ].join(" ")}
-      aria-pressed={active}
+      aria-pressed={!!active}
     >
       {label}
     </button>
   )
+}
+ToggleButton.propTypes = {
+  active: PropTypes.bool,
+  onClick: PropTypes.func,
+  label: PropTypes.string.isRequired,
+}
+ToggleButton.defaultProps = {
+  active: false,
+  onClick: () => {},
 }
 
 function MediaCard({ item, kind, onListen }) {
@@ -267,18 +278,17 @@ function MediaCard({ item, kind, onListen }) {
     }
   }, [])
 
-  // === NEW: determine if this item should be marked unavailable ===
-  // Compare exact title string per your request.
-  const isUnavailable =
-    typeof item.title === "string" &&
-    item.title.trim() === "Me And All My Demons"
+  // Drive buttons by presence of links.
+  const hasBuy = !!item.purchaseUrl
+  const albumHref = item.albumUrl || (kind === "albums" ? item.purchaseUrl : "")
+  const hasAlbum = !!albumHref
 
   return (
     <article
       ref={cardRef}
       className="group relative bg-white/5 hover:shadow-[0_10px_40px_rgba(255,0,255,0.15)] backdrop-blur mx-auto p-3 border border-white/10 rounded-2xl w-full max-w-sm overflow-hidden transition-shadow media-card"
     >
-      <div className="relative bg-black rounded-xl w-full aspect-square overflow-hidden">
+      <div className="relative bg-black rounded-xl aspect-square overflow-hidden w/full">
         <img
           src={item.cover}
           alt={`${item.title} cover art`}
@@ -298,17 +308,21 @@ function MediaCard({ item, kind, onListen }) {
           </h3>
           <div className="mt-0.5 text-white/60 text-sm">
             {item.year}
-            {kind === "songs" && item.albumTitle && (
+            {kind === "songs" && !!item.albumTitle && (
               <>
                 {" · "}
-                <a
-                  className="hover:underline underline-offset-4"
-                  href={item.albumUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {item.albumTitle}
-                </a>
+                {hasAlbum ? (
+                  <a
+                    className="hover:underline underline-offset-4"
+                    href={albumHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.albumTitle}
+                  </a>
+                ) : (
+                  <span>{item.albumTitle}</span>
+                )}
               </>
             )}
           </div>
@@ -316,38 +330,40 @@ function MediaCard({ item, kind, onListen }) {
       </div>
 
       <div className="flex gap-2 mt-4">
-        {/* If the item is unavailable (exact album title), show a disabled 'Not available' button */}
-        {isUnavailable ? (
+        {/* Prefer "Buy" when a purchase link exists */}
+        {hasBuy && (
+          <a
+            href={item.purchaseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex flex-1 justify-center items-center gap-2 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 px-4 py-2 border border-fuchsia-500/40 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 font-semibold text-fuchsia-300 text-sm transition"
+          >
+            {kind === "albums" ? "Buy Album" : "Buy Song"}
+          </a>
+        )}
+
+        {/* Show Album CTA when available */}
+        {hasAlbum && kind !== "albums" && (
+          <a
+            href={albumHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex justify-center items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 border border-white/15 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 font-medium text-white/90 text-sm transition"
+          >
+            Album
+          </a>
+        )}
+
+        {/* If neither link exists, fall back to disabled */}
+        {!hasBuy && !hasAlbum && (
           <button
             type="button"
             disabled
             aria-disabled="true"
-            title="Not available"
             className="inline-flex flex-1 justify-center items-center gap-2 bg-white/6 px-4 py-2 border border-white/10 rounded-xl font-semibold text-white/40 text-sm cursor-not-allowed"
           >
             Not available
           </button>
-        ) : (
-          // Default Buy link (kept as anchor if purchaseUrl exists, otherwise render a disabled fallback)
-          item.purchaseUrl ? (
-            <a
-              href={item.purchaseUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex flex-1 justify-center items-center gap-2 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 px-4 py-2 border border-fuchsia-500/40 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 font-semibold text-fuchsia-300 text-sm transition"
-            >
-              Buy
-            </a>
-          ) : (
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              className="inline-flex flex-1 justify-center items-center gap-2 bg-white/6 px-4 py-2 border border-white/10 rounded-xl font-semibold text-white/40 text-sm cursor-not-allowed"
-            >
-              Not available
-            </button>
-          )
         )}
 
         {item.embedUrl && (
@@ -359,20 +375,25 @@ function MediaCard({ item, kind, onListen }) {
             Listen
           </button>
         )}
-
-        {kind === "songs" && item.albumUrl && (
-          <a
-            href={item.albumUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex justify-center items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 border border-white/15 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 font-medium text-white/90 text-sm transition"
-          >
-            Album
-          </a>
-        )}
       </div>
     </article>
   )
+}
+MediaCard.propTypes = {
+  item: PropTypes.shape({
+    cover: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    year: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    purchaseUrl: PropTypes.string, // optional, enables Buy
+    albumTitle: PropTypes.string, // optional label
+    albumUrl: PropTypes.string, // optional, enables Album link (or fallback via purchaseUrl on albums view)
+    embedUrl: PropTypes.string, // optional, enables Listen modal
+  }).isRequired,
+  kind: PropTypes.oneOf(["albums", "songs"]).isRequired,
+  onListen: PropTypes.func,
+}
+MediaCard.defaultProps = {
+  onListen: () => {},
 }
 
 function Modal({ title, onClose, children }) {
@@ -407,4 +428,13 @@ function Modal({ title, onClose, children }) {
       </div>
     </div>
   )
+}
+Modal.propTypes = {
+  title: PropTypes.string.isRequired,
+  onClose: PropTypes.func,
+  children: PropTypes.node,
+}
+Modal.defaultProps = {
+  onClose: () => {},
+  children: null,
 }
