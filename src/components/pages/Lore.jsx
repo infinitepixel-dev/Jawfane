@@ -147,7 +147,7 @@ const Lore = () => {
                     className="rounded-t-lg w-full h-full object-cover"
                   />
                 </div>
-                <div className="flex justify-center items-center bg-gradient-to-b from-sky-500 to-sky-600 rounded-b-lg h-[20%] font-bold text-black text-2xl text-center">
+                <div className="flex justify-center items-center bg-gradient-to-b from-blue-700 to-blue-800 rounded-b-lg h-[20%] font-bold text-black text-2xl text-center">
                   {person.name}
                 </div>
               </div>

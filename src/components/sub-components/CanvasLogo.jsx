@@ -67,17 +67,18 @@ const AnimatedLogo = ({ theme, isMobile }) => {
           style={{
             objectFit: "scale-down",
             objectPosition: "center",
-            filter: "contrast(1.2) brightness(0.27)",
+            filter: "contrast(1.2) brightness(0.37)",
           }}
         />
       ) : (
         <img
-          src="/images/hero_bg.png"
+          src="/images/hero_bg.jpg"
           alt="Hero Background"
           className="absolute w-full h-full"
           style={{
             objectFit: "cover",
             objectPosition: "center",
+            filter: "contrast(1.1) brightness(0.47)",
           }}
         />
       )}
@@ -103,7 +104,7 @@ const AnimatedLogo = ({ theme, isMobile }) => {
           alt="Jawfane Logo"
           className="relative"
           style={{
-            height: "40%",
+            height: "35%",
             width: "auto",
             objectFit: "contain",
           }}
