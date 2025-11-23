@@ -47,7 +47,7 @@ const Footer = ({ isMobile }) => {
           <h3 className="mb-4 font-bold text-xl">Follow Us</h3>
           <ul className="space-y-2 text-gray-300">
             {[
-              { name: "Blog", url: "https://jawfane.blogspot.com/" },
+              { name: "Blog", url: "https://blog.jawfane.com/" },
               { name: "Facebook", url: "https://www.facebook.com/Jawfane" },
               { name: "Twitter", url: "https://twitter.com" },
               { name: "Instagram", url: "https://instagram.com/jawfane" },
