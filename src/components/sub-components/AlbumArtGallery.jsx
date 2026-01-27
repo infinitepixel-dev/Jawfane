@@ -3,7 +3,7 @@ import gsap from "gsap"
 import bandLabel from "/exsr.png"
 
 const AlbumArtCarousel = () => {
-  const images = ["/art3.jpg", "/art1.jpg", "/art2.jpg", "/art4.jpg"]
+  const images = ["/album1.jpg"]
   const [index, setIndex] = useState(0)
   const imageRef = useRef(null)
   const buttonRef = useRef(null)
@@ -28,7 +28,7 @@ const AlbumArtCarousel = () => {
       gsap.fromTo(
         img,
         { opacity: 0 },
-        { opacity: 1, duration: 0.5, ease: "power2.out" }
+        { opacity: 1, duration: 0.5, ease: "power2.out" },
       )
     }
   }, [index])
@@ -47,13 +47,13 @@ const AlbumArtCarousel = () => {
       </div>
 
       {/* Next Image Button */}
-      <button
+      {/* <button
         ref={buttonRef}
         onClick={nextImage}
         className="bg-purple-700 hover:bg-purple-800 shadow-md px-6 py-3 rounded-lg text-white transition"
       >
         Next Image
-      </button>
+      </button> */}
 
       {/* Platform Availability Text */}
       <p className="mt-2 font-medium text-lg text-center">
