@@ -11,6 +11,13 @@ gsap.registerPlugin(ScrollTrigger)
 // Albums
 const albums = [
   {
+    cover: "https://f4.bcbits.com/img/a1224467787_10.jpg",
+    title: "The Instrumentals (2022-2024)",
+    year: "2026",
+    purchaseUrl:
+      "https://jawfane.bandcamp.com/album/the-instrumentals-2022-2024-2",
+  },
+  {
     cover:
       "https://m.media-amazon.com/images/I/51yCstSkojL._UX358_FMwebp_QL85_.jpg",
     title: "Me And All My Demons",
