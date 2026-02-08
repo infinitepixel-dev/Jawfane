@@ -17,7 +17,7 @@ export default defineConfig({
     sitemap({
       hostname: siteUrl,
       exclude: ["/admin", "/private"], // Exclude any private pages
-      routes: ["/", "/about", "/music", "/tour", "/merch", "/contact"], // Define your main pages
+      routes: ["/", "/about", "/music", "/tour", "/contact"], // Define your main pages
     }),
   ],
   build: {

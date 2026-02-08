@@ -14,7 +14,6 @@ const BackToTop = () => {
     "home",
     "album",
     "tour",
-    "merch",
     "lore",
     "music",
     "booking",
@@ -80,7 +79,7 @@ const BackToTop = () => {
     const nextSectionIndex = currentSectionIndex + 1
     if (nextSectionIndex < sections.length) {
       const nextSectionElement = document.getElementById(
-        sections[nextSectionIndex]
+        sections[nextSectionIndex],
       )
       if (nextSectionElement) {
         window.scrollTo({
