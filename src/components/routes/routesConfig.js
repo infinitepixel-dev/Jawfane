@@ -4,11 +4,10 @@ export const navigationRoutes = [
   { id: "n1", name: "home", label: "Home" },
   { id: "n3", name: "album", label: "Album" },
   { id: "n4", name: "tour", label: "Tour" },
-  { id: "n5", name: "merch", label: "Merch" },
-  { id: "n6", name: "lore", label: "Lore" },
-  { id: "n7", name: "music", label: "Music" },
-  { id: "n8", name: "booking", label: "Booking" },
-  { id: "n9", name: "buy-music", label: "Buy Music" }, // cleaned name
+  { id: "n5", name: "lore", label: "Lore" },
+  { id: "n6", name: "music", label: "Music" },
+  { id: "n7", name: "booking", label: "Booking" },
+  { id: "n8", name: "buy-music", label: "Buy Music" }, // cleaned name
 ]
 
 export const componentRoutes = [
@@ -20,7 +19,8 @@ export const componentRoutes = [
     metaData: {
       title: "Jawfane Band",
       description: "Official website of Jawfane Band",
-      keywords: "jawfane, band, music, tour, merch",
+      keywords:
+        "jawfane, band, music, tour, booking, lore, album, music videos",
     },
   },
   {
@@ -45,17 +45,7 @@ export const componentRoutes = [
       keywords: "tour, dates, band, jawfane",
     },
   },
-  {
-    id: "merch",
-    key: "a4",
-    path: "/merch",
-    componentPath: "../pages/Merch.jsx",
-    metaData: {
-      title: "Jawfane Band",
-      description: "Find Jawfane Merch",
-      keywords: "jawfane, band, music, tour, merch",
-    },
-  },
+
   {
     id: "lore",
     key: "a5",

@@ -42,7 +42,7 @@ const Navigation = ({ theme }) => {
     gsap.fromTo(
       navItems,
       { y: -20, opacity: 0 },
-      { y: 0, opacity: 1, stagger: 0.2, duration: 1, ease: "power2.out" }
+      { y: 0, opacity: 1, stagger: 0.2, duration: 1, ease: "power2.out" },
     )
 
     navItems.forEach((item) => {
@@ -86,10 +86,10 @@ const Navigation = ({ theme }) => {
       } transition-all duration-300 ease-in-out`}
       style={{ marginTop: "0rem", marginBottom: "-1rem" }}
     >
-      <div className="absolute left-1 top-4">
+      <div className="top-4 left-1 absolute">
         <button
           onClick={toggleNavbar}
-          className="p-2 text-white bg-blue-500 rounded-lg md:hidden"
+          className="md:hidden bg-blue-500 p-2 rounded-lg text-white"
         >
           <FontAwesomeIcon icon={isCollapsed ? faBars : faArrowUp} />
         </button>
@@ -100,7 +100,7 @@ const Navigation = ({ theme }) => {
           isCollapsed && isMobile ? "hidden" : "flex"
         } flex-col md:flex-row justify-around items-center space-y-2 md:space-y-0 md:space-x-32 font-extrabold transition-all duration-300 ease-in-out`}
       >
-        {["home", "merch", "music", "tour", "booking"].map((item) => (
+        {["home", "music", "tour", "booking"].map((item) => (
           <li
             key={item}
             className={`p-2 rounded transition-transform cursor-pointer ${
@@ -109,10 +109,10 @@ const Navigation = ({ theme }) => {
                     theme === "dark" ? "text-black" : "text-white"
                   } rounded-full`
                 : theme === "dark"
-                ? "hover:bg-blue-800 text-white rounded-full"
-                : "hover:bg-gray-500 text-black rounded-full"
+                  ? "hover:bg-blue-800 text-white rounded-full"
+                  : "hover:bg-gray-500 text-black rounded-full"
             } ${
-              ["merch", "tour", "booking"].includes(item)
+              ["tour", "booking"].includes(item)
                 ? "pointer-events-none line-through"
                 : ""
             }`}
@@ -124,7 +124,7 @@ const Navigation = ({ theme }) => {
           </li>
         ))}
 
-        <div className="relative top-[-1rem] mx-auto">
+        <div className="top-[-1rem] relative mx-auto">
           <AudioPlayer theme={theme} />
         </div>
       </ul>

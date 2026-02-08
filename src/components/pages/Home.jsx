@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 
 // INFO Pages imports
 import Tour from "./Tour"
-import MerchPage from "./Merch"
 import MusicVideos from "./MusicVideos"
 import Booking from "./Booking"
 import Footer from "../sub-components/Footer"
@@ -26,7 +25,6 @@ function Home(props) {
       <BrevoModal /> */}
       <AlbumArtGallery />
       <Tour theme={theme} />
-      <MerchPage theme={theme} />
       <div>
         <Lore theme={theme} isMobile={isMobile} />
       </div>

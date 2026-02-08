@@ -60,9 +60,6 @@ const AlbumArtCarousel = () => {
         <strong className="text-red-600">NOW Available</strong> on all streaming
         platforms
       </p>
-
-      {/* Band Label */}
-      <img src={bandLabel} alt="Band Label" className="mt-6 w-48" />
     </div>
   )
 }

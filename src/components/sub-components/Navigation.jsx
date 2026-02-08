@@ -20,7 +20,6 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
   const menuItems = [
     { label: "Home", type: "route", to: "/" },
     { label: "Tour", type: "route", to: "/tour" },
-    { label: "Merch", type: "route", to: "/merch" },
     { label: "Buy Music", type: "route", to: "/buy-music" },
     { label: "Booking", type: "route", to: "/booking" },
   ]
@@ -49,7 +48,7 @@ const Navigation = ({ theme, setToggleNavbar, isMobile, setIsMobile }) => {
     } else {
       // match by pathname to keep active state
       const match = menuItems.find(
-        (m) => m.type === "route" && m.to === location.pathname
+        (m) => m.type === "route" && m.to === location.pathname,
       )
       setSelected(match?.label?.toLowerCase() || "")
     }
